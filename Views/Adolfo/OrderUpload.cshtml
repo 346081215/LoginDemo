@@ -1,0 +1,206 @@
+﻿@using Maxim.Model.BaseModel
+@using System.Data;
+@model HydroFlaskModel
+@{
+    ViewBag.Title = "OrderUpload";
+    Layout = null;
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>OrderUpload</title>
+    <script src="~/scripts/Adolfo/OrderUpload.js"></script>
+    <script type="text/javascript">
+        $('input[id=UploadFile]').change(function () {
+            $('#photoCover').val($(this).val());
+        });
+    </script>
+</head>
+
+@using (Html.BeginForm("OrderUpload", "Adolfo", FormMethod.Post, new { enctype = "multipart/form-data", id = "FormUpload" }))
+{
+    <body>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box" id="form_wizard_1">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <em class="red-em" id="step">OrderUpload</em>
+                            <em class="gray-em" id="step1" style="display:none;"></em>
+                            <em class="gray-em" id="step2" style="display:none;"></em>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div id="Query">
+                            <input class="m-wrap span8" id="brandid" name="brandid" type="text" value="@Model.Brandid"  style="display:none;">
+                            <h3 class="form-section" style="text-align:center"></h3>
+                            <div id="HideQuery">
+                                @*第一行*@
+                                <div class="row-fluid">
+                                    <div class="span2 span2_hide">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName"></label>
+                                            <div class="controls">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4 ">
+                                        <span>PrintShop:</span>
+                                        @Html.DropDownListFor(x => x.PSID, Model.PSlist, new { @class = "m-wrap span8" })
+                                    </div>
+                                    <div class="span4 ">
+                                        <span>Shipto#:</span>
+                                        @Html.DropDownListFor(x => x.ShiptoId, Model.ShiptoList, new { @class = "m-wrap span8" })
+                                    </div>
+                                </div>
+                                @*第二行*@
+                                <div class="row-fluid">
+                                    <div class="span2 span2_hide">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName"></label>
+                                            <div class="controls">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4 ">
+                                        <span>Billto#:</span>
+                                        @Html.DropDownListFor(x => x.BilltoId, Model.BilltoList, new { @class = "m-wrap span8" })
+
+
+                                    </div>
+                                    <div class="span4 ">
+                                        <span>Shipping Address:</span>
+                                        @Html.DropDownListFor(x => x.ShipAddrId, Model.ShipAddrList, new { @class = "m-wrap span8" })
+                                    </div>
+                                </div>
+                                @*第三行*@
+                                <div class="row-fluid">
+                                    <div class="span2 span2_hide">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName"></label>
+                                            <div class="controls">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4 ">
+                                        <span>Billing Address:</span>
+                                        <input id="iBilltoAddress" name="iBilltoAddress" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddress " />
+                                    </div>
+                                    <div class="span4 ">
+                                        <span>Contact:</span>
+                                        <input class="m-wrap span8" id="iShipAddrContact" name="iShipAddrContact" type="text" value="@Model.ShipAddrContact" readonly="readonly">
+
+                                    </div>
+                                </div>
+                                @*第四行*@
+                                <div class="row-fluid">
+                                    <div class="span2 span2_hide">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName"></label>
+                                            <div class="controls">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4 ">
+                                        <span>Currency:</span>
+                                        <input class="m-wrap span8" id="iCurrency" name="iCurrency" type="text" value="@Model.Currency" readonly="readonly">
+
+                                    </div>
+                                    <div class="span4 ">
+                                        <span>Tel:</span>
+                                        <input class="m-wrap span8" id="iShipAddrTel" name="iShipAddrTel" type="text" value="@Model.ShipAddrTel" readonly="readonly">
+
+                                    </div>
+
+                                </div>
+                                @*第五行*@
+                                <div class="row-fluid">
+                                    <div class="span2 span2_hide">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName"></label>
+                                            <div class="controls">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4 ">
+                                        <span>Contact:</span>
+                                        <input class="m-wrap span8" id="iBillingAddrContact" name="iBillingAddrContact" type="text" value="@Model.BilltoAddrContact" readonly="readonly">
+
+                                    </div>
+                                    <div class="span4 ">
+                                    </div>
+
+                                </div>
+                                @*第六行*@
+                                <div class="row-fluid">
+                                    <div class="span2 span2_hide">
+                                        <div class="control-group">
+                                            <label class="control-label" for="firstName"></label>
+                                            <div class="controls">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span4 ">
+                                        <span>Tel:</span>
+                                        <input class="m-wrap span8" id="iBillingAddrTel" name="iBillingAddrTel" type="text" value="@Model.BilltoAddrTel" readonly="readonly">
+
+
+                                    </div>
+                                    <div class="span4 ">
+                                    </div>
+
+                                </div>
+                            </div>
+                            @*第七行*@
+                            <div class="row-fluid">
+                                <div class="span2 span2_hide">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"></label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4 ">
+                                    <span>File:</span>
+                                    <input id="photoCover" class="m-wrap span8" type="text" style="position:relative;">
+                                    <input id="UploadFile" type="file" style="display:none" name="UploadFile">
+
+                                </div>
+                                <div class="span4" style="margin-left: 10px;">
+                                    <a class="btn Browse" style="margin-top:0 !important;" onclick="$('input[id=UploadFile]').click();">Browse...</a>
+                                </div>
+
+
+                            </div>
+                            @*第八行*@
+                            <div class="row-fluid">
+                                <div class="span2 span2_hide">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"></label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4 ">
+                                    <span></span>
+                                <button type="button" id="btnUpload" name="Upload" class="btn btn-default">Upload</button>
+                                </div>
+                                <div class="span4 ">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="portlet-body" id="Query-Results">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </body>
+}
+</html>
+

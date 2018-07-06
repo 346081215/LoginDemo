@@ -1,0 +1,82 @@
+﻿
+@{
+    Layout = null;
+}
+@RenderPage("~/Views/Shared/Nav_View.cshtml")
+@RenderPage("~/Views/Shared/Foot.cshtml")
+@RenderPage("~/Views/Shared/PopDiv.cshtml")
+<link href="~/Content/css/font-awesome.css" rel="stylesheet" />
+<link href="~/Content/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
+<link href="~/Content/js/Lightweight-Chart/cssCharts.css" rel="stylesheet" />
+<script src="../Content/js_order/jquery-2.1.1.min.js"></script>
+<script src="~/Content/js/Popup.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#Query").click(function () {
+            QueryOrder();
+        });
+        $("#Submitqty").click(function () {
+            QueryOrder();
+            alert("Completed");
+        });
+    });
+    function QueryOrder()
+    {
+        var postdata = {
+            OOSOrderNO: $("#OOSOrderNO").val(),
+            Item: $("#Item").val(),
+            ShipQty: $("#shipqty").val()
+        };
+        $.post("/HydroFlask/QueryShipOrder", postdata, function (data) {
+            if (data.FunStatus == "success")
+            {
+                $("#OrderQty").val(data.OrderQty);
+                $("#remanentqty").val(data.RemanentQty);
+                $("#shipqty").val("");
+            }
+            else
+            {
+                alert(data.ErrorCode);
+            }
+        });
+    }
+</script>
+<div id="page-inner">
+    <div class="main_body" id="main">
+        <div class="clearfix main_form">
+            <h2 class="title clearfix">
+                <em class="red-em">Shopping Cart</em>
+            </h2>
+            <div class="clearfix ron">
+                <div class="clearfix">
+                    <ul class="fl main_left">
+                        <li>
+                            <span>Maxim OOS NO.:</span>
+                            <input id="OOSOrderNO" name="OOSOrderNO"  />
+                        </li>
+                        <li>
+                            <span>Item NO.:</span>
+                            <input id="Item" name="Item"  />
+                            <input type="button" id="Query" name="Query" value="查询" />
+                        </li>
+                        <li>
+                            <span>OrderQty:</span>
+                            <input id="OrderQty" name="OrderQty" readonly="readonly" />
+                        </li>
+                        <li>
+                            <span>剩余数量:</span>
+                            <input id="remanentqty" name="remanentqty" readonly="readonly" />
+                        </li>
+                        <li>
+                            <span>本次出货数量:</span>
+                            <input id="shipqty" name="shipqty" />
+                        </li>
+                        <li>
+                            <input type="button" id="Submitqty" name="Submitqty" value="提交" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

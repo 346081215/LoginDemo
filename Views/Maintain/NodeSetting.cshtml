@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewBag.Title = "NodeSetting";
+    Layout = null;
+}
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE> ZTREE DEMO - addNodes / editName / removeNode / removeChildNodes</TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link href="~/scripts/ztree/css/zTreeStyle.css" rel="stylesheet" />
+    <script src="~/scripts/ztree/js/jquery.ztree.core.js"></script>
+    <script src="~/scripts/ztree/js/jquery.ztree.exedit.js"></script>
+    <script src="~/scripts/ztree/js/jquery.ztree.exhide.js"></script>
+    <script src="~/scripts/ztree/js/jquery.ztree.excheck.js"></script>
+    <script src="~/scripts/Maintain/NodeSetting.js"></script>
+    <link href="~/css/Maintain/NodeSetting.css" rel="stylesheet" />
+</HEAD>
+<BODY>
+            <div class="portlet box " id="form_wizard_1">
+                
+                <div class="portlet-title">
+                    <div class="caption">
+                        <em class="red-em" id="step1">NodesSetting</em>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <input type="hidden" name="Node" id="Nodes" />
+                    <div class="content_wrap">
+                        <div class="zTreeDemoBackground left">
+                            <ul id="treeDemo" class="ztree"></ul>
+                        </div>
+                        <div class="right">
+                            @*&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="callbackTrigger" checked /> Display delete confirmation dialog<br />*@
+                            @*&nbsp;&nbsp;&nbsp;&nbsp;[ <a id="addParent" href="#" title="增加父节点" onclick="return false;">增加父节点</a> ]*@
+                            &nbsp;&nbsp;&nbsp;&nbsp;[ <a id="addLeaf" href="#" title="增加叶子节点" onclick="return false;">AddChildNode</a> ]
+                            &nbsp;&nbsp;&nbsp;&nbsp;[ <a id="edit" href="#" title="编辑名称" onclick="return false;"> EditNode</a> ]
+                            &nbsp;&nbsp;&nbsp;&nbsp;[ <a id="remove" href="#" title="删除节点" onclick="return false;"> Delete Node</a> ]
+                            @*&nbsp;&nbsp;&nbsp;&nbsp;[ <a id="clearChildren" href="#" title="清空子节点" onclick="return false;"> Delete Nodes</a> ]<br />*@
+                        </div>
+                        <div id="Query-order">
+                            <div class="UpdataNode" id="UpNode">
+                                <h4><h id="Tit"></h></h4>
+                                <form id="formUp">
+                                    <span>ID:</span><input type="text" name="ID" id="ID" disabled="disabled" /><br />
+                                    <span>CateName:</span><input type="text" name="CateName" id="CateName" placeholder="这里输入名称" onkeyup="hidewarning()" /><br />
+                                    <div class="alert alert-warning" id="alert-warning">
+                                        <a href="#" class="close" data-dismiss="alert">
+                                            &times;
+                                        </a>
+                                        <strong>提示：</strong>请您输入该菜单节点的名称
+                                    </div>
+                                    <span>EnCateName:</span><input type="text" name="EnCateName" id="EnCateName" placeholder="enter a EnCateName" />
+                                    @if (ViewBag.BrandId == "ADO001" || ViewBag.BrandId == "ECI001")
+                                    {
+                                        <button type="button" id="Other" name="Other" class="btn btn-defalut" style="display:none;" onclick="funOther()">Other</button>
+                                    }
+                                    <br />
+                                    <span>RootID:</span><input type="text" name="RootID" id="RootID"  /><br />
+                                    <span>ParentID:</span><input type="text" name="ParentID" id="ParentID"  /><br />
+                                    <span>ProcessPage:</span><input type="text" name="ProcessPage" id="ProcessPage" /><br />
+                                    <span>ProcessPage_MVC:</span><input type="text" name="ProcessPage_MVC" id="ProcessPage_MVC" /><br />
+                                    <span>OrderID:</span><input type="text" name="OrderID" id="OrderID" /><br />
+                                    <span>CateDescription:</span><input type="text" name="CateDescription" id="CateDescription" value="OnlineOrder" readonly="readonly" /><br />
+                                    <span>Note1:</span><input type="text" name="Note1" id="Note1" /><br />
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="button" name="Sub" id="sub" value="OK" class="btn btn-defalut" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="Cancel" name="button" onclick="CloSub()" class="btn btn-defalut" />
+                                </form>
+
+                                <form id="updateOtherlg" style="display:none;">
+                                    <span>EsCateName:</span><input type="text" name="EsCateName" id="EsCateName" placeholder="enter a EsCateName" /><br />
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="button" name="SubES" id="subES" onclick="funUpdateES();" value="OK" class="btn btn-defalut" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="Cancel" name="button" onclick="CloSub()" class="btn btn-defalut" />
+                                </form>
+                                <div id="popupdiv" style="display:none;">
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    </div>
+                </div>
+          
+
+
+
+</BODY>
+</HTML>

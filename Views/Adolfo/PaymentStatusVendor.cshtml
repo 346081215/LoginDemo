@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "PaymentStatusVendor";
+    Layout = null;
+}
+<script src="~/scripts/Adolfo/PaymentStatusVendor.js"></script>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="portlet box " id="form_wizard_1">
+            <div class="portlet-title">
+                <div class="caption">
+                    <em class="red-em" id="step1">Payment Status</em>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                @*Table*@
+                <div class="portlet-body" id="Query-Results">
+                    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                        <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="Order" aria-describedby="sample_2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th class="center">Seq</th>
+                                    <th class="center">Vendor Code</th>
+                                    <th class="center">Vendor Name</th>
+                                    <th class="center">Not due</th>
+                                    <th class="center">0-30</th>
+                                    <th class="center">30-60</th>
+                                    <th class="center">60-90</th>
+                                    <th class="center">90-120</th>
+                                    <th class="center">120+</th>
+                                    <th class="center">Total overdue</th>
+                            </thead>
+                            <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                        </table>
+                    </div>
+                    @*分页*@
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <div class="mypage">
+                                <ul>
+                                    <li id="PageIndex"><<</li>
+                                    <li id="Pageup"><</li>
+                                    <li><input type="text" id="nowpage" value="1" /></li>
+                                    <li>/</li>
+                                    <li><i id="TotalPageCount">60</i></li>
+                                    <li id="Pagewown">></li>
+                                    <li id="PageLast">>></li>
+                                    <li id="PageGO">GO</li>
+                                    <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

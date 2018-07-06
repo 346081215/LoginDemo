@@ -1,0 +1,163 @@
+﻿@model OOSControllerBLL.CreateAccountModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>CreateAccount</title>
+    <link rel="shortcut icon" href="~/Content/image/maxim.ico" />
+    <script src="~/Content/js/jquery-1.10.1.min.js"></script>
+    <script src="~/Content/js/loading.js"></script>
+    <script src="~/Content/js/bootstrap.min.js"></script>
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/css/left.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/css/Bootstrapv3.css" rel="stylesheet" />
+    <link href="~/Content/css/signin.css" rel="stylesheet" />
+    <link href="~/Content/css/style-metro.css" rel="stylesheet" />
+    <style type="text/css">
+        .ul li span {
+        margin-top:5px;
+        
+        }
+
+    </style>
+<script type="text/javascript">
+    $(function () {
+        $("#Submit").click(function () {
+            var data = {
+                UserName:$("#UserName").val(),
+                CustomName: $("#CustomName").val(),
+                VendorID: $("#VendorID").val(),
+                Telephone: $("#Telephone").val,
+                Contact: $("#Contact").val(),
+                Country: $("#Country").val(),
+                Currency: $("#Currency").val(),
+                PayType: $("#PayType").val(),
+                Street: $("#Street").val(),
+                City: $("#City").val(),
+                Address: $("#Address").val(),
+                PrintShop: $("#PrintShop").val(),
+                Fax: $("#Fax").val(),
+
+                Email: $("#Email").val(),
+                Bank: $("#Bank").val(),
+                Tax: $("#Tax").val(),
+                ShipmentType: $("#ShipmentType").val(),
+                FreightCompany: $("#FreightCompany").val(),
+            }
+            $.ajax({
+                url: "/HOME/CreateAccount",
+                dataType: "json",
+                type: "post",
+                data: data,
+                success: function (result) {
+
+                }
+            })
+
+        })
+    })
+
+</script>
+</head>
+<body>
+    <div class="container">
+        <div class="clearfix main_form" id="CareLabel-step2">
+            <div id="Body_header" class="clearfix ron" style="border:solid 1px #ec008c;border-left:20px solid #ec008c">
+                <div class="clearfix order-y" >
+                    <ul class="main_left ul">
+                        <li>
+                            <span>User Name</span>:
+                            @Html.Editor("UserName", new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Customer Name</span>:
+                            @Html.Editor("CustomName", new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Vendor ID</span>:
+                            @Html.Editor("VendorID", new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Telephone</span>:
+                            @Html.Editor("Telephone", new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Contact</span>:
+                            @Html.Editor("Contact", new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Country</span>:
+                            @Html.DropDownListFor(x => x.Country, Model.CountryList, new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Currency</span>:
+                            @Html.DropDownListFor(x => x.Currency, Model.CurrencyList, new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Pay Type</span>:
+                            @Html.DropDownListFor(x => x.PayType, Model.PayTypeList, new { @class = "m-wrap span6" })
+                        </li>
+
+                    </ul>
+
+                    <ul class="main_right ul">
+                        <li>
+                            <span>Default PrintShop</span>:
+                            @Html.DropDownListFor(x => x.PrintShop, Model.PrintShopList, new { @class = "m-wrap span6" })
+                        </li>
+
+                        <li>
+                            <span>Fax</span>:
+                            @Html.Editor("Fax", new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Parent Customer</span>:
+                            @Html.DropDownListFor(x=>x.ParentCustomer,Model.ParentCustomerList, new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Email</span>:
+                            @Html.Editor("Email", new { @class = "m-wrap span6" })
+                        </li>
+
+                        <li>
+                            <span>Bank Acc#.</span>:
+                            @Html.Editor("Bank", new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Tax#.</span>:
+                            @Html.Editor("Tax", new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Shipment Type</span>:
+                            @Html.DropDownListFor(x => x.ShipmentType, Model.ShipmentTypeList, new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Freight Company</span>:
+                            @Html.DropDownListFor(x => x.FreightCompany, Model.FreightCompanyList, new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Street</span>:
+                            @Html.Editor("Street", new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>City</span>:
+                            @Html.Editor("City", new { @class = "m-wrap span6" })
+                        </li>
+                        <li>
+                            <span>Address</span>:
+                            @Html.Editor("Address", new { @class = "m-wrap span6" })
+                        </li>
+                    </ul>
+                </div>
+                <button id="Submit" type="button" class="btn btn-default" style="background-color:#ec008c;float:right;">Submit</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

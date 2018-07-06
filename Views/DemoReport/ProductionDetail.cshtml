@@ -1,0 +1,52 @@
+﻿@using Maxim.Model.DemoReportModel
+@model ProductionDetailViewModel
+
+
+<tr class="head">
+    @foreach (var column in Model.ShowColumns)
+    {
+        <th class="center">@column</th>
+    }
+    @if (!Model.ShowTotal)
+    {
+        <th class="center">Jan</th>
+        <th class="center">Feb</th>
+        <th class="center">Mar</th>
+        <th class="center">Apr</th>
+        <th class="center">May</th>
+        <th class="center">Jun</th>
+        <th class="center">Jul</th>
+        <th class="center">Aug</th>
+        <th class="center">Sep</th>
+        <th class="center">Oct</th>
+        <th class="center">Nov</th>
+        <th class="center">Dec</th>
+    }
+    <th class="center">Total</th>
+</tr>
+
+@foreach (var item in Model.Details)
+{
+    <tr>
+        @foreach (var column in Model.ShowColumns)
+        {
+            <td class="center">@item.ColumnValue[column]</td>
+        }
+        @if (!Model.ShowTotal)
+        {
+            <td class="center">@item.Jan</td>
+            <td class="center">@item.Feb</td>
+            <td class="center">@item.Mar</td>
+            <td class="center">@item.Apr</td>
+            <td class="center">@item.May</td>
+            <td class="center">@item.Jun</td>
+            <td class="center">@item.Jul</td>
+            <td class="center">@item.Aug</td>
+            <td class="center">@item.Sep</td>
+            <td class="center">@item.Oct</td>
+            <td class="center">@item.Nov</td>
+            <td class="center">@item.Dec</td>
+        }
+        <td class="center">@item.Total</td>
+    </tr>
+}

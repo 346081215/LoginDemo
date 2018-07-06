@@ -1,0 +1,688 @@
+﻿@using Maxim.Model.BaseModel
+@using System.Data;
+@model CarelableOrderUploadBind
+
+@{
+    ViewBag.Title = "LoadOrderCarelable";
+    Layout = null;
+}
+@*@RenderPage("~/Views/Shared/Nav_View.cshtml")*@
+<title>OrderUploadCarelable</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .TSC_line {
+        margin-bottom: 10px !important;
+    }
+
+    #dowebok {
+        /*width: 700px;*/
+        margin: 0 auto;
+        font-size: 0;
+    }
+
+    #dowebok li {
+        display: inline-block;
+        width: 10%;
+        margin-left: 1%;
+        padding-top: 1%;
+    }
+
+    #dowebok li img {
+        width: 20%;
+        height: 20%;
+    }
+
+    #LineFiberComposition th, td {
+        border-right: 1px solid #c6c6c6;
+    }
+
+    #stateChk li span {
+        margin-top: 4px;
+    }
+
+    #Symbols li span {
+        margin-top: 3px;
+    }
+
+    #LineWashCare tr {
+        border: 1px solid #c6c6c6;
+    }
+</style>
+<link href="~/css/viewer.min.css" rel="stylesheet" />
+<script src="~/scripts/ShowImgJS/jquery.min.js"></script>
+<script src="~/scripts/ShowImgJS/viewer.min.js"></script>
+<script src="~/scripts/ShowImgJS/viewer-jquery.min.js"></script>
+<script type="text/javascript">
+$(function() {
+
+
+});
+</script>
+<script src="~/scripts/Tesco/LoadOrderCarelable.js"></script>
+<script src="~/scripts/Tesco/OrderPdfUpload.js"></script>
+<script src="~/scripts/Tesco/CreateCareLabelData.js"></script>
+@*<script src="~/Content/js/Popup.js"></script>*@
+<script src="~/Content/js/loading.js"></script>
+
+
+
+@*@Html.HiddenFor(x => x.oos_orderno)
+    @Html.HiddenFor(x => x.isupload)
+    @Html.HiddenFor(x => x.Error)*@
+
+<input id="hfIsSubmit" name="hfIsSubmit" type="hidden" value="0">
+
+<form id="FormUploadPdf" method="post" enctype="multipart/form-data">
+    @*@Html.AntiForgeryToken()*@
+
+    @RenderPage("~/Views/Shared/PopDiv.cshtml")
+    @RenderPage("~/Views/Shared/loading.cshtml")
+
+    <div id="page-inner">
+        <div class="main_body">
+            <div class="portlet-title" style="background-color:black;margin-bottom: 0px;">
+                <h2 class="title clearfix">
+                    <em id="step1" class="red-em" onclick="return funcBackToUpload();">Order Upload</em>
+                    <em id="step2" class="gray-em" style="width:500px !important; display:none;" onclick="return funcBackToShowFiber();">Fiber and Additional optional statements</em>
+                    <em id="step3" class="gray-em" style="width:320px !important; display:none;">Washing Instructions</em>
+                    <em id="step4" class="gray-em" style="width:320px !important; display:none;">Saved successfully!</em>
+                </h2>
+            </div>
+            <div class="clearfix main_form" id="Query-step1">
+                <input type="hidden" id="createOrUpload" />
+                <div id="Body_header" class="clearfix ron">
+                    <div class="clearfix order-y" style="margin-top:3px;border:solid 1px #ec008c;padding-bottom:11px;margin-bottom: 3px;display:none;">
+                        <p><img src="~/images/proImages/Landmark/AEO logo.jpg" style="width:400px;margin-left:20px;margin-top:20px;margin-bottom:20px" /></p>
+                        <span style="width:200px;margin-left:20px;margin-top:5px">Garment's Final Destination</span>:
+                        @*@Html.DropDownListFor(x => x._Shipment, Model.Shipment)*@
+
+                    </div>
+                    <div class="clearfix order-y" style="border:solid 1px #ec008c">
+                        <ul class="main_left">
+                            <li>
+                                <span>Print Shop</span>:
+                                @Html.DropDownListFor(x => x.PSID, Model.PSlist)
+                            </li>
+                            <li>
+                                <span>Billing To</span>:
+
+                                @Html.DropDownListFor(x => x.BilltoId, Model.BilltoList, new { @name = "BilltoId" })
+                            </li>
+                            <li style="width:500px">
+                                <span>Billing Address</span>:
+                                <input id="iBilltoAddress" name="iBilltoAddress" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddress " />
+                            </li>
+                            <li>
+                                <span>Contact</span>:
+                                <input id="iBilltoAddrContact" name="iBilltoAddrContact" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddrContact " />
+                            </li>
+                            <li>
+                                <span>Tel</span>:
+                                <input id="iBilltoAddrTel" name="iBilltoAddrTel" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddrTel " />
+                            </li>
+                            <li>
+                                <span>Shipment Type<font color="red">*</font></span>:
+                                @Html.DropDownListFor(x => x._ShipmentType, Model.ShipmentType)
+                            </li>
+                            <li>
+                                <span>Freight Company<font color="red">*</font></span>:
+                                @Html.DropDownListFor(x => x._ExpressCompany, Model.ExpressCompany)
+                            </li>
+                        </ul>
+
+                        <ul class="main_right">
+                            <li>
+                                <span>Currency</span>:
+                                <input id="iCurrency" name="iCurrency" class="m-wrap span8" readonly="readonly" type="text" value="@Model.Currency" />
+
+                            </li>
+                            <li style="width:500px">
+                                <span>Ship To</span>:
+                                @Html.DropDownListFor(x => x.ShiptoId, Model.ShiptoList, new { @name = "ShiptoId" })
+                            </li>
+                            <li>
+                                <span>Shipping Address</span>:
+                                @Html.DropDownListFor(x => x.ShipAddrId, Model.ShipAddrList, new { @name = "ShipAddrId" })
+                            </li>
+                            <li>
+                                <span>Contact</span>:
+                                @*<b id="iShipAddrContact">@Model.BilltoAddrContact</b>*@
+                                <input id="iShipAddrContact" name="iShipAddrContact" class="m-wrap span8" readonly="readonly" type="text" value="@Model.ShipAddrContact" />
+                            </li>
+                            <li>
+                                <span>Tel</span>:
+                                @*<b id="iShipAddrTel">+86(0)21 33580899(ext)837</b>*@
+                                <input id="iShipAddrTel" name="iShipAddrTel" class="m-wrap span8" readonly="readonly" type="text" value="@Model.ShipAddrTel" />
+                            </li>
+
+                            <li>
+                                <span>Country</span>:
+                                @*<b id="iShipAddrCountry">China</b>*@
+                                <input id="iShipAddrCountry" name="iShipAddrCountry" class="m-wrap span8" readonly="readonly" type="text" value="@Model.Country" />
+                            </li>
+                            <li style="display:none">
+                                <span>Sewing Line</span>:
+                                @*@Html.DropDownListFor(x => x._SewingLine, Model.SewingLinelist)*@
+                            </li>
+
+
+
+
+
+                        </ul>
+                    </div>
+                    <div class="clearfix order-y" style="margin-top:3px;border:solid 1px #ec008c">
+                        <ul class="fl main_left">
+                            <li>
+                                <span>Item<font color="red">*</font></span>:
+                                @*<select id="BrandLogoId" name="BrandLogoId">
+                                        <option>FF/57/M9043G</option>
+                                    </select>*@
+                                @Html.DropDownListFor(x => x.productid, Model.ProductList)
+                            </li>
+                            <li style="display:none">
+                                <span>Material & Color</span>:
+                                @*@Html.DropDownListFor(x => x.CarelableId, Model.Carelablelist)*@
+                            </li>
+                            <li style="display:none">
+                                <span>Need COO Label</span>:
+                                @*@Html.DropDownListFor(x => x._NeedCOOLabe, Model.NeedCOOLabellist)*@
+
+                            </li>
+                            <li style="margin-top: 30px;">
+                                <span style="width:240px;">
+                                    UPLOAD TESCO PO<font color="red">*</font>:
+                                    <a class="btn Browse" onclick="$('input[id=UploadFile]').click();">Browse...</a>
+                                </span>
+                                <input id="photoCover" name="photoCover" class="input-large" type="text" style="width:355px !important;position:relative;margin-top:16px;" />
+                                <input id="UploadFile" type="file" style="display:none" name="UploadFile">
+                            </li>
+
+                        </ul>
+
+                        <ul class="fl main_right">
+                            <li>
+                                <span style="width:130px;">Waste allowance</span>:
+                                @Html.DropDownListFor(x => x._SpareRate, Model.SpareRate)
+                            </li>
+                            <li>
+                                <span style="width:130px;">Comments</span>:
+                                <input type="text" name="Comments" id="Comments" />
+                            </li>
+                            <li style="display:none">
+
+                            </li>
+                        </ul>
+
+                    </div>
+
+
+                    <button type="button" id="btnUpload" name="btnUpload" class="clearfix btn btn-default">Upload</button>
+                    <button type="button" id="btnUploadEna" name="btnUploadEna" class="clearfix btn btn-default">Continue to upload</button>
+                    <button type="button" id="Create" onclick="return funcToCreate()" name="Create" class="clearfix btn btn-default">Create</button>
+                    @*UPloadpdf*@
+                    <div class="clearfix main_table" id="page-inner2" style="display:none">
+                        <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                            <table id="OrdDetail" class="table table-striped table-responsive">
+                                <thead>
+                                    <tr class="head">
+                                        <th class="center">Line</th>
+                                        <th class="center">QTY</th>
+                                        <th class="center">Purchase Order</th>
+                                        <th class="center">Supplier No</th>
+                                        <th class="center">Category</th>
+                                        <th class="center">Country</th>
+                                        <th class="center">VPN</th>
+                                        <th class="center">StyleNo</th>
+                                        <th class="center">Colour</th>
+                                        <th class="center" style="display:none">Size</th>
+                                        <th class="center">EANBarcode</th>
+                                        <th class="center">Dept</th>
+                                        <th class="center">UK Primary Size</th>
+                                        <th class="center">Optional Secondary Sizing1</th>
+                                        <th class="center">Optional Secondary Sizing2</th>
+                                        <th class="center">Optional Secondary Sizing3</th>
+                                        <th class="center">Optional Secondary Sizing4</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail" id="PdfLineData"></tbody>
+
+
+                            </table>
+                        </div>
+                        <div style="padding:10px 15px;" class="clearfix">
+                            @*<p class="fl" style="width:40%;"><span>COO Label</span>:<b id="_COOLabelName2">@Model.COOLabelName</b></p>*@
+                            <p class="fl" style="width:40%; display:none"><span> COO Label QTY</span>:<b><input type="text" value="" id="COOLabelQty2" class="COOLabelQty" disabled="disabled" /> </b></p>
+                        </div>
+                        <div class="clearfix main_submit">
+                            <input type="text" id="hfTempOrderId" name="hfTempOrderId" value="" style="display:none" />
+                            <button class="btn btn-default" type="button" id="Button_artwork" onclick="return funcToGetFiber();" name="Button_artwork">Fiber</button>
+                            <button class="btn btn-default" type="button" onclick="return btn_Back()" name="Button_Back">Cancel</button>
+                        </div>
+
+                    </div>
+
+                </div><!--ron end-->
+                @*begin*@
+                <div class="clearfix order-y" style="border:solid 1px #ec008c;display:none;" id="CreateTxt">
+                    <div class="page-inner" style="background-color:white">
+                        <div class="main_body">
+                            <div style="text-align:center;">
+                                <ul class="fl main_left">
+                                    <li>
+                                        <span style="margin-top:7px;">Purchase Order<font color="red">*</font>:</span>
+                                        <input id="PurchaseOrderT" value="" type="text" />
+                                    </li>
+                                    <li>
+                                        <span style="margin-top:7px;">Style NO<font color="red">*</font>:</span>
+                                        <input id="StyleNoT" name="Style" value="" type="text" />
+                                    </li>
+                                    <li style="display:none;">
+                                        <span style="margin-top:7px;">Category:</span>
+                                        <input id="CategoryT" name="Category" value="" type="text" />
+                                    </li>
+                                </ul>
+                                <ul class="fl main_left">
+                                    <li>
+                                        <span style="margin-top:7px;">VPN<font color="red">*</font>:</span>
+                                        <input id="VPNCodeT" name="Vpnid" value="" type="text">
+                                    </li>
+                                    <li>
+                                        <span>SupplierNo<font color="red">*</font>:</span>
+                                        <input type="text" class="sup" id="SupplierNoT" value="" name="ComPercent" />
+                                    </li>
+                                    <li>
+                                        <span style="margin-top:7px;">Country<font color="red">*</font>:</span>
+                                        @Html.DropDownListFor(x => x.Country, Model.MadeInList)
+                                    </li>
+                                </ul>
+                            </div>
+                            @*Create pdfOrder"*@
+                            <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                                <table id="OrderList" class="table table-striped table-responsive">
+                                    <thead>
+                                        <tr class="head">
+                                            <th class="center">Line</th>
+                                            @*<th class="center">SupplierNo</th>*@
+                                            <th class="center">Qty<font color="red">*</font></th>
+                                            <th class="center">Colour</th>
+                                            <th class="center">EANBarcode<font color="red">*</font></th>
+                                            <th class="center">Dept<font color="red">*</font></th>
+                                            <th class="center">UK Primary Size<font color="red">*</font></th>
+                                            <th class="center">Optional Secondary Sizing1</th>
+                                            <th class="center">Optional Secondary Sizing2</th>
+                                            <th class="center">Optional Secondary Sizing3</th>
+                                            <th class="center">Optional Secondary Sizing4</th>
+                                            <th>Operating</th>
+                                        </tr>
+                                        <tr>
+                                            <th id="index"></th>
+                                            @*<td><input type="text" class="sup" id="SupplierNoT." value="" name="ComPercent" style="width:100px !important" /></td>*@
+                                            <th><input type="text" class="Qty TSC_line" id="OrderQtyT" value="0" name="ComPercent" style="width:70px !important;margin-bottom:10px !important;" /></th>
+                                            <th><input type="text" class="colur TSC_line" id="ColourCodeT" value="" style="width:100px !important;margin-bottom:10px !important;" /></th>
+                                            <th><input type="text" class="ean TSC_line" id="EANBarcodeCodeT" value="" name="ComPercent" style="width:130px !important;margin-bottom:10px !important;" /></th>
+                                            <th><select id="DeptT" class="CDeptt" onchange="return UPdetaDepttoSizeT(0 ,this)"></select></th>
+                                            <th><select id="SizeT" class="CSizeT" onchange="return UPSizeToSecT( 0 ,this)"><option value="">--Please Select--</option></select></th>
+                                            <th><select id="Size1sT"><option value=""></option></select></th>
+                                            <th><select id="Size2sT"><option value=""></option></select></th>
+                                            <th><select id="Size3sT"><option value=""></option></select></th>
+                                            <th><select id="Size4sT"><option value=""></option></select></th>
+                                            <th><button type="button" id="CreateAdd" onclick="funCreateAdd(-1,this)">Add</button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="OrderDetail" id="tr"></tbody>
+
+
+                                </table>
+                            </div>
+                            <div class="clearfix main_submit">
+                                <button class="btn btn-default" type="button" id="Button_artwork" onclick="funcToCreateTxtFiber();" name="Button_artwork">Next</button>
+                                <button class="btn btn-default" type="button" onclick="btn_CreateTxtBack()" name="Button_Back">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*end*@
+
+                <div class="ron" id="EditFiberCareInstr" style="display:none;">
+                    <div class="page-inner" style="background-color:white">
+                        <div class="main_body">
+                            <div id="divMadeInFiber" class="clearfix main_form">
+                                <div class="clearfix main_form">
+                                    <div class="clearfix">
+                                        <ul class="fl main_left">
+                                            <li>
+                                                @*<span>Made In</span>:
+                                                    <select id="SelectMadeIn" name="SelectMadeIn">
+                                                        <option value=""> --Please Select--</option>
+                                                        <option value="MadeinChina">Made in China </option>
+                                                        <option value="MadeinColombia">Made in Colombia</option>
+                                                    </select>*@
+                                            </li>
+                                            <li>
+                                                <span style="margin-top:10px;">Composition for</span>:
+                                                @Html.DropDownListFor(x => x.CategoryId, Model.CategoryList)
+                                                <button type="button" id="btnAdd" class="btn btn-default" value="Add" style="padding:5px 12px; margin:0;display:none;" onclick="return funcAddorUpdateTableFiberComp();">Add</button>
+                                                <input id="txtCategoryAdd" name="txtCategoryAdd" value="" type="text" style="display:none">
+
+                                            </li>
+                                        </ul>
+
+                                        <ul class="fl main_right">
+                                            <li></li>
+                                            <li>
+                                                <span style="margin-top:10px !important">Fiber:</span>
+                                                <input id="ComPercent" name="ComPercent" value="" type="text" style="margin-left:-90px !important;width:36px;">%
+                                                @Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList)
+                                                <button type="button" id="btnAdd" class="btn btn-default" value="Add" style="padding:5px 12px; margin-top:-10px;" onclick="return funcAddorUpdateTableFiberComp();">Add</button>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                    <ul class="">
+                                        <div class="col-sm-6 col-xs-12" id="Items" style="width:50%;">
+                                            <div class="clearfix main_table">
+                                                <table id="LineFiberComposition" class="table table-striped table-responsive" style="border: 1px solid #c6c6c6;">
+                                                    <thead>
+                                                        <tr class="head">
+                                                            <th class="center">ID</th>
+                                                            <th class="center">Composition for(Category)</th>
+                                                            <th class="center">%</th>
+                                                            <th class="center">Fiber</th>
+                                                            <th class="center" style="width: 1px;"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="OrderDetail"></tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </ul>
+                                    <ul class="fl main_right">
+                                        <div class="col-sm-6 col-xs-12" id="Items">
+                                            <div class="clearfix main_table">
+                                                <table id="Fiber" class="table table-striped table-responsive" style="display:none;">
+                                                    <thead>
+                                                        <tr role="row">
+                                                            <th class="center" style="border:1px solid #d4d4d4;">Fiber</th>
+                                                            <th class="center" style="border:1px solid #d4d4d4;">%</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="Category"></tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </ul>
+
+
+                                    <div style="width:50%;margin-top:200px;">
+                                        <ul id="stateChk" class="fl main_left">
+                                            <li>
+                                                <span style="width:400px;">LOW FLAMMABILITY TO BS 5722</span>
+                                                <input type="checkbox" id="BS_5722" name="BS_5722" />
+                                            </li>
+                                            <li>
+                                                <span style="width:400px;">Part of Set</span>
+                                                <input type="checkbox" id="Set" name="Set" />
+                                            </li>
+                                            <li>
+                                                <span style="width:400px;">Exclusive of trims</span>
+                                                <input type="checkbox" id="Exclusive" name="Exclusive" />
+                                            </li>
+                                            <li>
+                                                <span style="width:400px;">Contains non-textile parts of animal origin</span>
+                                                <input type="checkbox" id="origin" name="origin" />
+                                            </li>
+                                            <li>
+                                                <span style="width:400px;">Colour may fade in direct sunlight and chlorinated water.To care for swimwear,rinse with cold water and hang dry immediately after wear.</span>
+                                                <input type="checkbox" id="Colour" name="Colour" />
+                                            </li>
+                                            <li>
+                                                <span style="width:400px;margin-top:50px;">Keep Away from fire</span>
+                                                <input style="margin-top:50px;" type="radio" id="fire" name="fire" checked="checked" disabled="disabled" />
+                                            </li>
+                                            <li>
+                                                <span style="width:400px;margin-top:50px;">WARNING! Keep Away from fire</span>
+                                                <input style="margin-top:50px;" type="radio" id="fire2" name="fire" disabled="disabled" />
+                                            </li>
+                                        </ul>
+
+                                        <ul class="fl main_right" style="width:70%;z-index:1005">
+                                            <li>
+                                                <span>Batch Code # </span>
+                                                <input id="BatchCode" name="BatchCode" value="" type="text">
+                                            </li>
+                                            <li>
+                                                <span>Tog Rating</span>
+                                                <select id="Rating" name="Rating">
+                                                    <option value=""> --Please Select--</option>
+                                                    <option value="1">1</option>
+                                                    <option value="1.5">1.5</option>
+                                                    <option value="2">2</option>
+                                                    <option value="2.5">2.5</option>
+                                                    <option value="3">3</option>
+                                                    <option value="3.5">3.5</option>
+                                                    <option value="4">4</option>
+                                                    <option value="4.5">4.5</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                            </li>
+                                            <li>
+                                                <span>BS STATEMENT</span>
+                                                <input type="text" id="BS_STATEMENT" />
+                                            </li>
+                                        </ul>
+                                    </div>
+
+
+                                    <div class="clearfix main_submit">
+                                        <button type="button" id="btnNextToCare" class="btn btn-default" value="Next" onclick="return funcNextToSelectCare();">Next</button>
+
+                                        <button type="button" id="btnBackToUpload" class="btn btn-default" value="Back" onclick="return funcBackToUpload();">Back</button>
+
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                            <input id="hfWashCode" name="hfWashCode" type="hidden" value="">
+                            <div id="divWashImage" style="display:none;position:absolute;z-index:1001"><img src="#" alt="" style="height:auto;width:auto;" /></div>
+
+                            <div id="divWashCare" class="clearfix main_form" style="display:none">
+
+                                <div class="clearfix">
+                                    <b style="font-size:14px;"> Washcare Symbols</b>
+                                </div>
+                                <div class="clearfix" style="margin-bottom:20px;margin-left: 13%;">
+                                    <ul id="Symbols" class="main_left" style="width:50%">
+                                        <li>
+                                            <span>Washing</span>
+                                            @Html.DropDownListFor(x => x.WashingID, Model.WashingList, new { @class = "select btnWashingID" })
+                                        </li>
+                                        <li>
+                                            <span>Bleaching</span>
+                                            @Html.DropDownListFor(x => x.BleachingID, Model.BleachingList, new { @class = "select btnBleachingID" })
+                                        </li>
+                                        <li>
+                                            <span>Drying</span>
+                                            @Html.DropDownListFor(x => x.DryingID, Model.DryingList, new { @class = "select btnDryingID" })
+                                        </li>
+                                        <li>
+                                            <span>Ironing</span>
+                                            @Html.DropDownListFor(x => x.IroningID, Model.IroningList, new { @class = "select btnIroningID" })
+                                        </li>
+                                        <li>
+                                            <span>Professional Cleaning</span>
+                                            @Html.DropDownListFor(x => x.ProCleanID, Model.ProCleanList, new { @class = "select btnProCleanID" })
+                                        </li>
+                                    </ul>
+
+                                </div>
+                                <div class="clearfix">
+                                    <span style="font-size:14px;">CHILDREN WARNING STATEMENTS：</span>
+                                    @Html.DropDownListFor(x => x.ChildrenWarning, Model.ChildrenWarningList, new { @id = "SelectChildren" })
+                                    @*<select id="SelectChildren">
+                                            <option value="">--Please Select--</option>
+                                            <option value="Warning! Not suitable for children under 36 months. Small parts. Choking hazard.">Warning! Not suitable for children under 36 months. Small parts. Choking hazard.</option>
+                                            <option value="Not suitable for children under 36 months. Long cord. Strangulation hazard.">Not suitable for children under 36 months. Long cord. Strangulation hazard.</option>
+                                            <option value="Not suitable for children under 36 months. Hemispherical shape. Suffocation hazard.">Not suitable for children under 36 months. Hemispherical shape. Suffocation hazard.</option>
+                                            <option value="Not suitable for under 3 years">Not suitable for under 3 years</option>
+                                            <option value="WARNING! Functional sharp point. Not suitable for children under 3 years due to small parts. All items should be removed before sleep.">WARNING! Functional sharp point. Not suitable for children under 3 years due to small parts. All items should be removed before sleep.</option>
+                                            <option value="Warning not suitable for children under 4 years">Warning not suitable for children under 4 years</option>
+                                            <option value="WARNING: Not suitable for children under 3 years, due to small parts. Please cut and remove all labels and tags before giving this product to a child. Adult supervision is recommended when operating an umbrella. Leave open to dry.">WARNING: Not suitable for children under 3 years, due to small parts. Please cut and remove all labels and tags before giving this product to a child. Adult supervision is recommended when operating an umbrella. Leave open to dry.</option>
+                                            <option value="Warning! Not suitable for children under 36 months. Choking hazard.">Warning! Not suitable for children under 36 months. Choking hazard.</option>
+                                            <option value="Warning! Not suitable for children under 36 months. Long cord. Strangulation hazard.">Warning! Not suitable for children under 36 months. Long cord. Strangulation hazard.</option>
+                                            <option value="Warning! Not suitable for children under 36 months. Suffocation hazard">Warning! Not suitable for children under 36 months. Suffocation hazard</option>
+                                            <option value="warning - to avoid danger of suffocation keep this bag away from babies and children. Do not use in cribs, beds, carriages or play pens.">warning - to avoid danger of suffocation keep this bag away from babies and children. Do not use in cribs, beds, carriages or play pens.</option>
+                                            <option value="WARNING! Silica gel do not eat">WARNING! Silica gel do not eat</option>
+                                            <option value="WARNING! To avoid suffocation, keep this bag away from babies and children. This bag is not a toy">WARNING! To avoid suffocation, keep this bag away from babies and children. This bag is not a toy</option>
+                                            <option value="Warning: Sharp Point. Please be careful with pin attachment on brooch. Not suitable for children under 36 months due to small and sharp parts. Remove brooch before washing.">Warning: Sharp Point. Please be careful with pin attachment on brooch. Not suitable for children under 36 months due to small and sharp parts. Remove brooch before washing.</option>
+                                            <option value="Warning - to avoid danger of suffocation keep this bag away from babies and children.">Warning - to avoid danger of suffocation keep this bag away from babies and children.</option>
+                                            <option value="This is a presentation bag and should not be given to babies and small children as the drawstring may present a strangulation risk.">This is a presentation bag and should not be given to babies and small children as the drawstring may present a strangulation risk.</option>
+                                            <option value="Caution! This is not a toy. Keep out of reach of children and babies">Caution! This is not a toy. Keep out of reach of children and babies</option>
+                                            <option value="Warning! Not suitable for children under 36 months. Hemispherical shape. Suffocation hazard.">Warning! Not suitable for children under 36 months. Hemispherical shape. Suffocation hazard.</option>
+                                            <option value="WARNING: Not suitable for children under 36 months due to long strap. Strangulation hazard.">WARNING: Not suitable for children under 36 months due to long strap. Strangulation hazard.</option>
+                                            <option value="Warning! Not suitable for children under  18 months. Choking hazard ">Warning! Not suitable for children under  18 months. Choking hazard </option>
+                                            <option value="In the interest of hygiene we request that customers do not try on pierced jewellery">In the interest of hygiene we request that customers do not try on pierced jewellery</option>
+                                            <option value="Stickers not suitable for use on the skin. Risk of skin irritation">Stickers not suitable for use on the skin. Risk of skin irritation</option>
+                                            <option value="Remove all items before sleep">Remove all items before sleep</option>
+                                            <option value="only suitable for adults">only suitable for adults</option>
+                                            <option value="Warning! Not suitable for children under 36 months. Long Pile. Choking hazard.">Warning! Not suitable for children under 36 months. Long Pile. Choking hazard.</option>
+                                            <option value="WARNING. This product contains a magnet which may interfere with electronic devices.">WARNING. This product contains a magnet which may interfere with electronic devices.</option>
+                                            <option value="WARNING THIS IS NOT A TOY">WARNING THIS IS NOT A TOY</option>
+                                            <option value="Please remove all packaging before giving to a child">Please remove all packaging before giving to a child</option>
+                                        </select>*@
+                                    <p></p>
+                                    <span style="font-size:14px;">Additional Washcare Instructions：</span>
+                                    @*<select id="SelectCommCustUsed" name="SelectCommCustUsed" style="width: 220px !important;">
+                                            <option value=""> --Please Select--</option>
+                                            <option value="contains natural rubber">contains natural rubber</option>
+                                            <option value="wash similar colours together">wash similar colours together</option>
+                                            <option value="drip dry">drip dry</option>
+                                            <option value="some loss of glitter may occur">some loss of glitter may occur</option>
+                                            <option value="do not wear in rain">do not wear in rain</option>
+                                            <option value="contains natural rubber">contains natural rubber</option>
+                                            <option value="due to the delicate nature of this product some fibre loss may occur">due to the delicate nature of this product some fibre loss may occur</option>
+                                            <option value="wash dark colours separately">wash dark colours separately</option>
+                                        </select>*@
+                                    @Html.DropDownListFor(x => x.WashcareID, Model.WashcareList)
+                                    <button type="button" id="btnAddCommCustUsed" class="btn btn-default" value="Add" style="padding:5px 12px;margin-top:-10px;" onclick="return funcAddCommCustUsedClick();">Add</button>
+                                </div>
+                                <div class="col-sm-6 col-xs-12" id="Item" style="display:none;">
+                                    <div class="clearfix main_table">
+                                        <table id="LineWashCare" class="table table-striped table-responsive">
+                                            <thead>
+                                                <tr class="head">
+                                                    <th class="center">Washing Instructions</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="LineWashCare"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <ul class="fl main_left" style="width:100%;margin:0px;">
+                                    <li>
+                                        <span style="width:auto;">leather_and_suede_identity_code:</span>
+                                        <input type="text" id="Code" name="Code" />
+                                    </li>
+
+                                </ul>
+                                <ul class="fl main_right">
+                                    <li>
+
+                                    </li>
+                                </ul>
+
+                                <div class="clearfix main_submit">
+                                    <button type="button" id="btnPreview" class="btn" value="Preview" style="border: 1px solid #D6D6D6;" onclick="return funcSaveFiberAndCare(this);">Preview</button>
+                                    <button type="button" id="btnSaveFiberAndCare" class="btn btn-default" value="Save" onclick="return funcSaveFiberAndCare(this);">Submit</button>
+                                    <button type="button" id="btnBackToFiber" class="btn btn-default" value="Back" onclick="return funcBackToShowFiber();">Back</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div id="PreviewImg" style="display:none;">
+                    <ul id="dowebok"></ul>
+                </div>
+
+                <div id="panSuccess" style="display:none;">
+                    <div style="border: #ec008c solid 1px;">
+                        <span id="lblRemark" style="margin-left: 25px;"> <i>Your Maxim No. is :</i><b id="TescoOrderNo" style="top:0;font-size: 20px;color: #ff0015;"></b> </span>
+                        <span id="lblOrderNO"></span>
+                        <br>
+                        <br>
+                        <div>
+                            <div id="pan_en">
+
+                                <ul>
+                                    <li style="color:red"><em style="font-size:24px;">Important! </em>Currently system is uploading your data. Click "Confirm Order" icon afterward to submit the order.</li>
+                                    <li>
+                                        1.For barcode items, please confirm artwork before submitting the order.
+                                    </li>
+                                    <li>**Processed orders cannot be cancelled or changed** </li>
+                                    <li>
+                                        2. Payment Terms are ship upon payment. Goods will be delivered after we receive
+                                        your payment.
+                                    </li>
+                                    <li>
+                                        3. If you have any complaints regarding our customer service, delays or product
+                                        quality, please contact us at:<a href="mailto: tescosales04@maxim-group.com" style="color:blue">
+                                            tescosales04@maxim-group.com 
+                                        </a>. Your feedback is very important to us.
+                                    </li>
+                                </ul>
+
+                            </div>
+
+                            <div id="pan_zh" style="display: none;">
+                                <ul style="list-style: none; width: 960px; padding: 0px; margin: 0px;">
+                                    <li>1.关于barcode产品，请确认画稿无误后再提交订单。 </li>
+                                    <li>&nbsp;&nbsp; 若订单已生产是无法取消或做任何更改。 </li>
+                                    <li>2.付款方式：款到发货。收到您的货款后，我司会尽快为您发货。</li>
+                                    <li>
+                                        3.若您对我们业务人员的服务有任何意见或建议，或对我司产品有任何疑问，请联系：<a href="mailto: tescosales04@maxim-group.com" style="color:blue">
+                                            tescosales04@maxim-group.com
+                                        </a>. 您的反馈对我们来说至关重要！
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                        <br>
+
+                        <button id="btnReturnToTescoMain" type="button" class="btn btn-default" name="Cancel" style="margin:10px;">Return</button>
+                    </div>
+
+                </div>
+                @*<input type="hidden" value="@Model.Language" name="Language" id="Language" />
+                    <input type="hidden" value="@Model.TempOrderID" name="TempOrderID" id="TempOrderID" />*@
+                <input type="hidden" value="" name="COOLabelName" id="COOLabelName" />
+                <input type="hidden" value="" name="OrderNo" id="OrderNo" />
+
+
+                @*<input type="hidden" value="@TempData["Uploadstatus"]" id="Uploadstatus" name="Uploadstatus" />*@
+                <input type="hidden" value="" id="hfSelectedItemID_checked" name="hfSelectedItemID_checked" />
+
+                <input type="hidden" value="" id="UserSelectRealRate" name="UserSelectRealRate" />
+
+
+
+            </div>
+        </div>
+    </div>
+
+    @*@RenderPage("~/Views/Shared/Foot.cshtml")*@
+
+</form>

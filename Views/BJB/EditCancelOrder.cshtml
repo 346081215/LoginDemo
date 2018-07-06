@@ -1,0 +1,1188 @@
+﻿@using Maxim.Model.BaseModel
+@using System.Data;
+@model CarelableOrderUploadBind
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/css/viewer.min.css" rel="stylesheet" />
+    <script src="~/scripts/ShowImgJS/jquery.min.js"></script>
+    <script src="~/scripts/ShowImgJS/viewer.min.js"></script>
+    <script src="~/scripts/ShowImgJS/viewer-jquery.min.js"></script>
+
+    <title>BJBCareLeabel</title>
+    <style type="text/css">
+        .washTR tr {
+            line-height: 30px;
+        }
+    </style>
+    <script type="text/javascript">
+        var OrderTable = document.getElementById("OrdTable");
+        var orderHeader = OrderTable.children[0];
+        var orderDetail = OrderTable.children[1];
+        $(function () {
+            $("#DDLShipmentType").change(function () {
+                if (this.selectedIndex == 2) {
+                    $("#ExpressCompany").prop("disabled", "")
+                } else {
+                    $("#ExpressCompany").val("")
+                    $("#ExpressCompany").prop("disabled", "disabled")
+                }
+            })
+            $("#BilltoId").change(function () {
+                var data = {
+                    NewBillto: $("select[name='BilltoId']").val()
+                };
+
+                if ($("#BilltoId option:selected").text() == "--Please Select--") {
+                    $("#iBilltoAddress").val("");
+                    $("#iCurrency").val("")
+                    $("#iBilltoAddrContact").val("");
+                    $("#iBilltoAddrTel").val("");
+                }
+                else {
+                    var urlPost = "/OrderCommon/GetBilltoAccountInfobyAccountId?billtoId=" + $("select[name='BilltoId']").val();
+                    $.post(urlPost, data, function (data, status) {
+                        $("#iBilltoAddress").val(data.ContactAddress);
+                        $("#iCurrency").val(data.CurrencyId)
+                        $("#iBilltoAddrContact").val(data.ContactPerson);
+                        $("#iBilltoAddrTel").val(data.ContactTelephone);
+                    });
+                }
+            });
+            $("#ShiptoId").change(function () {
+                var data = {
+                    NewBillto: $("#ShiptoId").val()
+
+                };
+                    $("#ShipAddrId").empty();
+                    $("#ShipAddress").empty();
+                    $("#ShipAddrId").hide();
+                    $("#ShipAddrId").show();
+                    $("#iShipAddrContact").val("");
+                    $("#iShipAddrTel").val("");
+                    $("#iShipAddrCountry").val("");
+                    var urlPost = "/OrderCommon/GetShipAddressInforlistbyShipToId?ShipToId=" + $("select[name='ShiptoId']").val();
+                    $.post(urlPost, data, function (data, status) {
+                        $("#ShipAddrId").empty();
+                        $.each(data, function (i, item) {
+                            $("#ShipAddrId").append("<option value='" + item.ShipToAddressId + "'>" + item.oos_address + "</option>");
+                        });
+                        var _seq = 0;
+                        $.each(data, function (i, item) {
+                            if (_seq == 0) {
+                                $("#ShipAddrId").val(item.ShipToAddressId);
+                                $("#iShipAddrContact").val(item.oos_contactname);
+                                $("#iShipAddrTel").val(item.oos_contacttel);
+                                $("#iShipAddrCountry").val(item.oos_country);
+                                _seq++;
+                            }
+                        });
+                    });
+            })
+            $("#ShipAddrId").change(function () {
+                if ($("#ShipAddrId").val() == "" || $("#ShipAddrId").val() == null) {
+                    $("#iShipAddrContact").val("");
+                    $("#iShipAddrTel").val("");
+                    $("#iShipAddrCountry").val("");
+                } else {
+                    var data = {
+                        _shipaddressId: $(this).val()
+                    };
+                    var urlPost = "/OrderCommon/GetShipAddressInfobyShipAddressId?ShippAddrId=" + $(this).val();
+                    $.post(urlPost, data, function (data, status) {
+                        //$("textarea[name='ShipAddress']").val(data.oos_address);
+                        $("#iShipAddrContact").val(data.oos_contactname);
+                        $("#iShipAddrTel").val(data.oos_contacttel);
+                        $("#iShipAddrCountry").val(data.oos_country);
+                    });
+                }
+            });
+
+            $("#productid").change(function () {
+                if ($("#productid").val() == "BJB001-T503" || $("#productid").val() == "BJB001-T506-Satin" || $("#productid").val() == "BJB001-T506"
+                 || $("#productid").val() == "BJB001-T504" || $("#productid").val() == "BJB001-T507") {
+                    orderHeader.children[0].children[1].innerHTML="Type";
+                    orderHeader.children[0].children[2].innerHTML="Size";
+                    orderHeader.children[1].children[1].innerHTML = "<select id='Type' class='Type' onchange='TypeChange(this)'><option value=''>--Please Select--</option></select>";
+                    orderHeader.children[1].children[2].innerHTML = "<select id='Size' class='Size'><option value=''>--Please Select--</option></select>";
+                    BindTypeSelect()
+
+                } else if ($("#productid").val() == "BJB001-T500" || $("#productid").val() == "BJB001-T505") {
+                    orderHeader.children[0].children[1].innerHTML="Style Name";
+                    orderHeader.children[0].children[2].innerHTML="ART. NO.";
+                    orderHeader.children[1].children[1].innerHTML = "<input  type='text' id='Style'/>";
+                    orderHeader.children[1].children[2].innerHTML = "<input  type='text' id='ArtNo'/>";
+                }
+                orderHeader.children[1].children[3].innerHTML = "<input id='Qty' class='number' type='number' min='0'  value='0' />";
+                orderHeader.children[1].children[4].innerHTML = "<td></td>";
+                orderHeader.children[1].children[5].innerHTML = "<button id='btn' type='button' onclick='AddOrderLine(this)'>ADD</button>";
+
+            })
+
+            $("#SpareRate").change(function () {
+                $(".QTY").trigger("change");
+            })
+
+            $('input[type=number]').keypress(function (e) {
+                if (!String.fromCharCode(e.keyCode).match(/[0-9]/)) {
+                    return false;
+                }
+            });
+
+            $('.select').each(function () {
+                syncDropdown(this, createDropdown(this));
+            });
+            $("#btnReturnToTescoMain").click(function ()
+            {
+                $("#step2").css("display", "none");
+                $("#step_ViewDetail").css("display", "none");
+                $("#step_ViewArtwork").css("display", "none");
+                $("#step_ViewShipOrder").css("display", "none");
+                $("#step_ViewCopyOrder").css("display", "none");
+                $("#Query-order").slideDown();
+                $("#Query-Results").css("display", "none");
+                $("#Results-ViewDetail").css("display", "none");
+                $("#Results-ViewArtwork").css("display", "none");
+                $("#Results-ViewShipOrder").css("display", "none");
+                $('#Results-CopyOrder').css('display', 'none');
+                $("#step1").attr("class", "red-em");
+            });
+
+        })
+
+        var index = 0;
+        var indexCount = 1;
+        //添加和移除订单数据行
+        function AddOrderLine(obj) {
+           // var index = parseInt(obj.parentElement.parentElement.children[0].children[1].value);
+            //var indexCount = parseInt(obj.parentElement.parentElement.children[0].children[0].innerHTML);
+            if (obj.innerHTML == "Remove") {
+                orderDetail.removeChild(obj.parentNode.parentNode);
+                if (orderDetail.childElementCount == 0) {
+                    $("#productid").removeAttr("disabled")
+                } else {
+                    for (var i = 0; i < orderDetail.rows.length; i++) {
+                        orderDetail.children[i].children[0].children[0].innerHTML = i + 1
+                    }
+                }
+                indexCount--;
+                return;
+            }
+
+            //if (orderDetail.childElementCount == 0) {
+            //    $("#labtxt").html("Spare Rate is correct?");
+            //    showDiv2();
+            //    $("#no").bind("click", function () {
+            //        closeDiv();
+            //        return;
+            //    })
+            //    $("#ok").click(function () {
+            //        closeDiv();
+            //        OrderLine();
+            //    })
+            //} else {
+            //    OrderLine();
+            //}
+            OrderLine();
+        }
+
+        function OrderLine() {
+            if ($("#productid").val() == "" || $("#productid").val() == null) {
+                $("#labtxt").html("Please select Item.");
+                showDiv();
+                return;
+            } else {
+                if ($("#productid").val() == "BJB001-T503" || $("#productid").val() == "BJB001-T506" || $("#productid").val() == "BJB001-T506-Satin"
+                 || $("#productid").val() == "BJB001-T504" || $("#productid").val() == "BJB001-T507") {
+                    if ($("#Type").val() == "" || $("#Type").val() == null) {
+                        $("#labtxt").html("Please Select Type.");
+                        showDiv();
+                        return;
+                    }
+                    if ($("#Size").val() == "" || $("#Size").val() == null) {
+                        $("#labtxt").html("Please Select Size.");
+                        showDiv();
+                        return;
+                    }
+                    if ($("#Qty").val() == "" || $("#Qty").val() == "0" || $("#Qty").val() == null) {
+                        $("#labtxt").html("Please Input QTY.");
+                        showDiv();
+                        return;
+                    }
+                    $("#productid").attr("disabled", "disabled")
+                    var html = "<tr>";
+                    html += "<td><font>" + indexCount + "</font><input type='text' value='" + index + "' style='display:none'/></td>";
+                    html += "<td><select id='Type" + index + "' class='Type'><option value='" + $("#Type").val() + "'>" + $("#Type").val() + "</option></select></td>";
+                    html += "<td><select id='Size" + index + "' class='Size'><option value='" + $("#Size").val() + "'>" + $("#Size").val() + "</option></select></td>";
+                    html += "<td><input ID='Qty" + index + "' type='number' class='number QTY' min='0' onchange='FunChange(" + index + ")' /></td>";
+                    html += "<td id='Total" + index + "'>" + Math.ceil(accMul($("#Qty").val(), $("#SpareRate").val())) + "</td>";
+                    html += "<td><button ID='btn" + index + "' type='button' onclick='AddOrderLine(this)'>Remove</button></td>";
+                    html += "</tr>";
+
+                    $("#OrderDetailCareLabel").append(html);
+
+                    $("#Type" + index).attr("disabled", "disabled")
+                    $("#Size" + index).attr("disabled", "disabled")
+                }
+                else if ($("#productid").val() == "BJB001-T500" || $("#productid").val() == "BJB001-T505") {
+                    if ($("#Style").val() == "" || $("#Style").val() == null) {
+                        $("#labtxt").html("Please Input Style Name.");
+                        showDiv();
+                        return;
+                    }
+                    if ($("#ArtNo").val() == "" || $("#Style").val() == null) {
+                        $("#labtxt").html("Please Input ART. NO.");
+                        showDiv();
+                        return;
+                    }
+                    if ($("#Qty").val() == "" || $("#Qty").val() == "0" || $("#Qty").val() == null) {
+                        $("#labtxt").html("Please Input QTY");
+                        showDiv();
+                        return;
+                    }
+                    $("#productid").attr("disabled", "disabled")
+                    var html = "<tr>";
+                    html += "<td><font>" + indexCount + "</font><input type='text' value='" + index + "' style='display:none'/></td>";
+                    html += "<td><input  type='text' id='Style" + index + "'/ value='" + $("#Style").val() + "'></td>";
+                    html += "<td><input  type='text' id='ArtNo" + index + "'/ value='" + $("#ArtNo").val() + "'></td>";
+                    html += "<td><input ID='Qty" + index + "' type='number' min='0' class='number QTY' onchange='FunChange("+index+")' /></td>";
+                    html += "<td id='Total" + index + "'>" + Math.ceil(accMul($("#Qty").val(), $("#SpareRate").val())) + "</td>";
+                    html += "<td><button ID='btn" + index + "' type='button' onclick='AddOrderLine(this)'>Remove</button></td>";
+                    html += "</tr>";
+                    $("#OrderDetailCareLabel").append(html);
+
+                    $("#Style" + index).attr("disabled", "disabled")
+                    $("#ArtNo" + index).attr("disabled", "disabled")
+                }
+
+                $("#Qty" + index).val($("#Qty").val());
+                //$("#Qty" + index).attr("disabled", "disabled")
+                $("#Type").val("")
+                $("#Size").val("")
+                $("#Style").val("")
+                $("#ArtNo").val("")
+                $("#Qty").val("0")
+                index++;
+                indexCount++;
+            }
+        }
+        function FunChange(index) {
+            $("#Total" + index).text(Math.ceil(accMul($("#Qty" + index).val(), $("#SpareRate").val())))
+
+        }
+
+        function accMul(arg1, arg2) {
+            var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+            try { m += s1.split(".")[1].length } catch (e) { }
+            try { m += s2.split(".")[1].length } catch (e) { }
+            return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m)
+        }
+        //绑定Type下拉框
+        function BindTypeSelect(value) {
+            $.ajax({
+                url: "/BJB/BJBTypeSelect",
+                type: "get",
+                dataType: "json",
+                success: function (table) {
+                    var html = "<option value=''>--Please Select--</option>";
+                    $.each(table.Table, function (i,item) {
+                        html += "<option value='" + item.Type + "'>" + item.Type + "</option>";
+                    })
+                    $("#Type").html(html);
+                    $("#Type"+value).html(html);
+                }
+            })
+        }
+
+        //Type下拉框改变事件
+        function TypeChange(obj) {
+           // var index = obj.parentElement.parentElement.children[0].children[1].value
+            if (obj.value=="") {
+                $("#Size").html("<option value=''>--Please Select--</option>")
+                return;
+            }
+            $.ajax({
+                url: "/BJB/BJBChangeType",
+                type: "get",
+                dataType: "json",
+                data: {
+                    Type: $("#Type").val()
+                },
+                success: function (table) {
+                    var html = "<option value=''>--Please Select--</option>";
+                    $.each(table.Table, function (i, item) {
+                        html += "<option value='" + item.Size + "'>" + item.Size + "</option>";
+                    })
+                    $("#Size").html(html)
+                    if (!isNaN(obj)) {
+                        $("#Size" + obj).html(html)
+                    }
+
+                }
+            })
+        }
+
+        //添加FIBER
+        function funAddFiber() {
+            var per = $("#ComPercent").val();
+            var fiber = $("#FiberID").val();
+            var FiberDetail = document.getElementById("FiberDetail");
+            if ($("#FiberDetail").children().length == 5) {
+                var totalPer = 0;
+                for (var j = 0; j < FiberDetail.rows.length; j++) {
+                    totalPer+= parseInt($("#FiberDetail").children().eq(j).children().eq(1).text())
+                }
+                debugger;
+                if (totalPer + parseInt(per) != 100) {
+                    $("#labtxt").html("The total Percent should be 100%");
+                    showDiv();
+                    return;
+                }
+            } else if ($("#FiberDetail").children().length > 5) {
+                $("#labtxt").html("Only 5 Composition for can be add at most.");
+                showDiv();
+                return;
+            }
+            if (per == "" || per == null||per=="0") {
+                $("#labtxt").html("The Number of composition is incorrect");
+                showDiv();
+                return;
+            } else if (fiber == "" || fiber == null) {
+                $("#labtxt").html("Please select Fiber.");
+                showDiv();
+                return;
+            } else {
+                for (var i = 0; i < FiberDetail.rows.length ; i++) {
+                    if (FiberDetail.rows[i].cells[2].innerHTML==fiber) {
+                        $("#labtxt").html(fiber+" Have Existed");
+                        showDiv();
+                        return;
+                    }
+                }
+                var html = "<tr>";
+                html += "<td></td>";
+                html += "<td>"+per+"</td>";
+                html += "<td>" + fiber + "</td>";
+                html += "<td><Button class='btn btn-default' onclick='return Remove(this);'>Remove</Button></td>";
+                html += "</tr>";
+                $("#FiberDetail").append(html);
+                $("#ComPercent").val("");
+                $("#FiberID").val("")
+                changeIndex();
+            }
+        }
+        //移除FIBER后更改序号
+        function changeIndex() {
+            var fiber = document.getElementById("FiberDetail");
+            for (var i = 0; i < fiber.rows.length; i++) {
+                fiber.rows[i].cells[0].innerHTML = i + 1;
+            }
+        }
+
+        //添加洗语  移除洗语
+        function funcAddCommCustUsedClick() {
+            var SelectCommCustUsed = $("#WashcareID").val();
+            if (SelectCommCustUsed == "") {
+                $("#labtxt").html("Please select  Washcare Instructions.");
+                showDiv();
+                return false;
+            }
+
+            var trList = $(".LineWashCare").children("tr")
+
+            var trList_length = $(".LineWashCare").children("tr").length;
+            if (trList_length > 5) {
+
+                $("#labtxt").html("Cannot exceed 6 items.");
+                showDiv();
+                return false;
+
+            }
+            for (var i = 0; i < trList.length; i++) {
+                var tdArr = trList.eq(i).find("td");
+                var history_income_type = tdArr.eq(0).text();
+                if (history_income_type == SelectCommCustUsed) {
+                    $("#labtxt").html("Cannot add repeatedly.");
+                    showDiv();
+                    return false;
+                }
+            }
+
+            var Html = ""
+            Html += "<tr>";
+            Html += "<td class='center'>" + SelectCommCustUsed + "</td>";
+            Html += "<td class='center'><Button class='btn btn-default' onclick='return Remove(this);'>Remove</Button></td>";
+            Html += "</tr>";
+            $("#Item tbody").append(Html);
+            $("#Item").css("display", "block");
+            $("#WashcareID").val("");
+        }
+        function Remove(obj) {
+            $(obj).parent().parent().remove();
+            changeIndex();
+        }
+
+        //添加特殊洗语
+        function funcAddCommCustUsedClick2() {
+            var SelectCommCustUsed = $("#WashcareID2").val();
+            if (SelectCommCustUsed == "") {
+                $("#labtxt").html("Please select Special Washcare Instructions.");
+                showDiv();
+                return false;
+            }
+
+            var trList = $(".LineWashCare2").children("tr")
+
+            var trList_length = $(".LineWashCare2").children("tr").length;
+            if (trList_length > 9) {
+
+                $("#labtxt").html("Cannot exceed 10 items.");
+                showDiv();
+                return false;
+
+            }
+            for (var i = 0; i < trList.length; i++) {
+                var tdArr = trList.eq(i).find("td");
+                var history_income_type = tdArr.eq(0).text();
+                if (history_income_type == SelectCommCustUsed) {
+                    $("#labtxt").html("Cannot add repeatedly.");
+                    showDiv();
+                    return false;
+                }
+            }
+
+            var Html = ""
+            Html += "<tr>";
+            Html += "<td class='center'>" + SelectCommCustUsed + "</td>";
+            Html += "<td class='center'><Button class='btn btn-default' onclick='return Remove(this);'>Remove</Button></td>";
+            Html += "</tr>";
+            $("#Item2 tbody").append(Html);
+            $("#Item2").css("display", "block");
+            $("#WashcareID2").val("");
+        }
+        //洗图点击事件
+        function funclickImg(obj) {
+            debugger;
+            var value = obj.attributes["value"].nodeValue
+            var src = obj.attributes["src"].nodeValue
+            var type = obj.attributes["type"].nodeValue
+            $("#" + type).attr("src", src);
+            $("#" + type).attr("value", value);
+        }
+
+
+        //提交订单
+        function funcSaveOriOrder(obj) {
+            debugger;
+            var side = ["front side", "back side"];
+            var SubmitDetail = {
+                PrintShop: $("#PSID").val(),
+                BillingToID: $("#BilltoId").val(),
+                BillToName: $("#BilltoId option:selected").text(),
+                BillingAddress: $("#iBilltoAddress").val(),
+                BillingContact: $("#iBilltoAddrContact").val(),
+                BillingTel: $("#iBilltoAddrTel").val(),
+
+                Currency: $("#iCurrency").val(),
+                ShipToID: $("#ShiptoId").val(),
+                ShipToName: $("#ShiptoId option:selected").text(),
+                ShipToAddressId: $("#ShipAddrId").val(),
+                ShippingAddress: $("#ShipAddrId option:selected").text(),
+                ShippingContact: $("#iShipAddrContact").val(),
+                ShippingTel: $("#iShipAddrTel").val(),
+                Country: $("#iShipAddrCountry").val(),
+
+                ShipmentType: $("#DDLShipmentType").val(),
+                FreightCompany: "",
+
+                Item: $("#productid option:selected").text(),
+                ProductCode: $("#productid").val(),
+                MadeIn: $("#madein").val(),
+                Comments: $("#Comments").val(),
+
+                OrderStr: "",
+                FiberStr: "",
+                WashStr: "",
+                SpeWashStr: "",
+                symbolsStr: "",
+                Preview: "NoPreview",
+                OriMaximNO: $("#MaximNoEdit").val()
+            }
+            if (!checkdata()) {
+                return;
+            }
+            //得到订单字符串数据
+            debugger;
+            var OrderDetail = document.getElementById("OrderDetailCareLabel");
+            var orderString = "";
+            for (var i = 0; i < OrderDetail.rows.length; i++) {
+                if (OrderDetail.rows[i].cells[1].children[0].value == "" || OrderDetail.rows[i].cells[2].children[0].value == "" || OrderDetail.rows[i].cells[3].children[0].value==""||OrderDetail.rows[i].cells[3].children[0].value=="0") {
+                    $("#labtxt").html("Please Check Order Data.");
+                    showDiv();
+                    return;
+                }
+                debugger;
+                orderString += OrderDetail.rows[i].cells[1].children[0].value + "^" + OrderDetail.rows[i].cells[2].children[0].value + "^" + OrderDetail.rows[i].cells[4].innerText+"ˇ"
+            };
+            if (orderString.length > 0) {
+                SubmitDetail.OrderStr = orderString.substring(0, orderString.length - 1)
+            } else {
+                $("#labtxt").html("Please Check Order Data.");
+                showDiv();
+                return;
+            }
+
+            //得到FIBER字符串数据
+            var fiberDetail = document.getElementById("FiberDetail")
+            var TotalPer = 0;
+            var fiberString = "";
+            if (fiberDetail.rows.length > 0) {
+                for (var i = 0; i < fiberDetail.rows.length; i++) {
+                    TotalPer += parseInt(fiberDetail.rows[i].cells[1].innerHTML)
+                }
+                if (TotalPer != 100) {
+                    $("#labtxt").html("The total Percent should be 100%");
+                    showDiv();
+                    return;
+                } else {
+                    if (fiberDetail.rows.length > 1) {
+                        for (var i = 0; i < fiberDetail.rows.length; i++) {
+                            fiberString += fiberDetail.rows[i].cells[1].innerHTML + "^" + fiberDetail.rows[i].cells[2].innerHTML+"ˇ"
+                        }
+                        SubmitDetail.FiberStr = fiberString.substring(0, fiberString.length-1)
+                    } else {
+                        SubmitDetail.FiberStr = fiberDetail.rows[0].cells[1].innerHTML + "^" + fiberDetail.rows[0].cells[2].innerHTML
+                    }
+                }
+            } else {
+                $("#labtxt").html("Please Select Fiber");
+                showDiv();
+                return;
+            }
+            //洗语
+
+            var WashStr = "";
+            $(".select").each(function () {
+                if (WashStr == "") {
+                    WashStr += $(this.selectedOptions).text()
+                } else {
+                    WashStr += "^"+$(this.selectedOptions).text()
+                }
+            })
+            SubmitDetail.WashStr = WashStr;
+            //洗语 特殊洗语
+            var SpeWashStrDetail = document.getElementById("LineWashCare2").children[1]
+            var SpeWashStr = "";
+            for (var i = 0; i < SpeWashStrDetail.childElementCount; i++) {
+                if (SpeWashStr == "") {
+                    SpeWashStr += SpeWashStrDetail.children[i].children[0].innerHTML;
+                } else {
+                    SpeWashStr += "^" + SpeWashStrDetail.children[i].children[0].innerHTML;
+                }
+            }
+            SubmitDetail.SpeWashStr = SpeWashStr;
+            debugger;
+            //检查是否有洗图
+            $(".Selecting").each(function () {
+                debugger;
+                SubmitDetail.symbolsStr += $(this.selectedOptions).val().split("⊥")[0]
+            })
+            SubmitDetail.Preview = "NoPreview";
+            if (obj.innerHTML == "Preview") {
+                SubmitDetail.Preview = "Preview";
+            }
+            SubmitDetail.RepeatBJBCareLeabel = true;
+            showloading()
+            $.ajax({
+                url: "/BJB/BJBEditSubmitOriOrder",
+                type: "post",
+                dataType: "json",
+                data: SubmitDetail,
+                success: function (data) {
+                    document.body.scrollTop = 0
+                    if (data.Status == "failed") {
+                        hideloading();
+                        if (data.message=="未匹配到合适的区域高度,重选页面") {
+                            $("#labtxt").html("The atrwork is generated in failure,as fiber and Special Instruction you chose is too much,Please re edit or contact local customer service directly.");
+                        } else {
+                            $("#labtxt").html(data.message);
+                        }
+                        showDiv();
+                    }else if (data.Status == "isPreview") {
+                        $("#dowebok").html("");
+                        var imagesList = "";
+                        var imagesList2 = "";
+                        var int = 1;
+                        var is = 0;
+                        $.each(data.images, function (i, item) {
+                            for (var i = 0; i < item.length; i++) {
+                                if (i > 5 &&
+                                      ($("#productid").val() == "BJB001-T503"||$("#productid").val() == "BJB001-T506"||$("#productid").val() == "BJB001-T504"||$("#productid").val() == "BJB001-T507")) {
+                                    is == 1;
+                                    return;
+                                }
+                                var index = (int) % 2 == 1 ? (int+1) / 2 : (int) / 2;
+                                imagesList += "<li style='float:left'><img data-original='" + item[i] + "'' src='" + item[i] + "' style='height:200px;'></br><font style='align-content:center'>" + side[i%2] + index + "</font></li>";
+                                imagesList2 += '<li class="viewer-active"><img src="' + item[i] + '" data-action="view" data-index="' + i + '" data-original-url="' + item[i] + '" alt="' + "图片" + int + '"></li>';
+                                int++;
+                            }
+                        })
+                        if (is == 1) {
+                            hideloading();
+                            $("#labtxt").html(" the Data  goes out of page scope ")
+                            return;
+                        }
+                        $("#dowebok").append(imagesList);
+                        $("#PreviewImg").css("display", "block");
+                        $('#dowebok').viewer({
+                            url: 'data-original',
+                        });
+                        $("#dowebok").viewer('update');
+                        hideloading();
+                    } else if (data.Status == "success") {
+                        $("#labtxt").html(data.MailReturn);
+                        showDiv();
+                        hideloading();
+
+                        $("#OrderNo").html(data.MaximNO);
+                        $("#panSuccess").show();
+                        $("#Carepage-inner").hide();
+                        hideloading();
+
+
+                    }
+
+                }
+            })
+
+        }
+
+        //提交订单成功返回主页面
+        function FunReturnToMainPage()
+        {
+
+
+        }
+
+
+        //提交订单前的数据验证
+        function checkdata() {
+            if ($("#BilltoId").val() == "" || $("#BilltoId option:selected").text() == "") {
+                $("#labtxt").html("The Billing To can not be empty");
+                showDiv();
+                return false;
+            }
+            if ($("#iBilltoAddress").val() == "") {
+                $("#labtxt").html("The Billing Address can not be empty");
+                showDiv();
+                return false;
+            }
+            if ($("#iBilltoAddrContact").val() == "") {
+                $("#labtxt").html("The Billing Contact can not be empty");
+                showDiv();
+                return false;
+            }
+            if ($("#iBilltoAddrTel").val() == "") {
+                $("#labtxt").html("The Billing Tel can not be empty");
+                showDiv();
+                return false;
+            }
+            if ($("#ShiptoId").val() == "") {
+                $("#labtxt").html("The Ship To can not be empty");
+                showDiv();
+                return false;
+            }
+            if ($("#ShipAddrId").val() == "" || $("#ShipAddrId option:selected").text() == "") {
+                $("#labtxt").html("The Shipping Address can not be empty");
+                showDiv();
+                return false;
+            }
+            if ($("#iShipAddrTel").val() == "") {
+                $("#labtxt").html("The Shipping Tel can not be empty");
+                showDiv();
+                return false;
+            }
+            if ($("#iCurrency").val() == "") {
+                $("#labtxt").html("The Currency can not be empty");
+                showDiv();
+                return false;
+            }
+            if ($("#iShipAddrCountry").val() == "") {
+                $("#labtxt").html("The Country can not be empty");
+                showDiv();
+                return false;
+            }
+            if ($("#DDLShipmentType").val() == "") {
+                $("#labtxt").html("Please Select ShipmentType");
+                showDiv();
+                return false;
+            }
+            //else {
+            //    if ($("#ExpressCompany").val() == "" && $("#DDLShipmentType").val() == "Express") {
+            //        $("#labtxt").html("Please Select ExpressCompany");
+            //        showDiv();
+            //        return false;
+            //    }
+            //}
+            if ($("#productid").val() == "") {
+                $("#labtxt").html("The Item can not be empty");
+                showDiv();
+                return false;
+            }
+            if ($("#madein").val() == "") {
+                $("#labtxt").html("The Made in can not be empty");
+                showDiv();
+                return false;
+            }
+            var trList_length = $(".LineWashCare2").children("tr").length;
+            if (trList_length>=10) {
+                $("#labtxt").html("This Washcare Instructions maximum of 10");
+                showDiv();
+                return false;
+            }
+            var FiberDetail = document.getElementById("FiberDetail");
+            var totalPer = 0;
+            for (var j = 0; j < FiberDetail.rows.length; j++) {
+                totalPer += parseInt($("#FiberDetail").children().eq(j).children().eq(1).text())
+            }
+            if (totalPer!=100) {
+                $("#labtxt").html("The total Percent should be 100%");
+                showDiv();
+                return false;
+            }
+            var selectImg = "";
+            $(".select").each(function () {
+                if ($(this.selectedOptions).val() == "" || $(this.selectedOptions).val()==null) {
+                    $("#labtxt").html("Please Select Washing Instruction");
+                    showDiv();
+                    selectImg = "true";
+                }
+            })
+            if (selectImg=="true") {
+                return false;
+            }
+
+            return true;
+        }
+
+        //下拉框显示图片
+        function createDropdown(ele) {
+            if (!ele || !ele.nodeName || ele.nodeName != "SELECT") return;
+            var id = ele.id;
+            var li = '';
+            for (var i = 0; i < ele.options.length; i++) {
+                li += '<li role="presentation">'
+            + '<a role="menuitem" tabindex="-1">'
+            + ele.options[i].text
+            + '</a>'
+            + '</li>';
+            }
+
+            var drop = '<div id="dropdown_show" class="dropdown">'
+            + '<button type="button" class="btn dropdown-toggle" id="btn' + id + '" data-toggle="dropdown" onclick="funcWashClick(this)" style="margin-top:0; width:300px;height:24px;padding:0px;">'
+            + '<span class="text" style="width:300px;">' + ele.options[ele.selectedIndex].text + '</span>'
+            + '</button>'
+            + '<ul class="dropdown-menu" id="BJBWashcareSymbols" style="margin-top:-270px;width:280px;height:230px;overflow-y:scroll"  role="menu" aria-labelledby="' + id + '">'
+            + li
+            + '</ul>'
+            + '</div>';
+
+            var dropdownEle = $(drop);
+            $(ele).after(dropdownEle).hide();
+            return dropdownEle[0];
+        }
+        var a = "";
+        function syncDropdown(selectEle, dropdownEle) {
+            if (!selectEle || !selectEle.nodeName || selectEle.nodeName != "SELECT") return;
+            if (!dropdownEle || !dropdownEle.nodeName || dropdownEle.nodeName != "DIV") return;
+
+            var showtext = $(dropdownEle).find(".text");
+            var lis = $(dropdownEle).find("ul > li");
+
+
+            lis.each(function (index, domEle) {
+                $(domEle).click(function () {
+                    selectEle.selectedIndex = index;
+                    showtext.text($(domEle).text());
+                }).mouseover(function () {
+                    var list = a.split('^');
+                    if (list[index] == null || list[index]=="") {
+                        return;
+                    }
+                    $("#divWashImage").show().find("img").attr('src', '../BJBWashImg/' + list[index].split("⊥")[1] + '.jpg');
+                }).mouseout(function () {
+                    $("#divWashImage").hide();
+                }).mousemove(function (e) {
+                    $("#divWashImage").css({ 'top': e.pageY + 15, 'left': e.pageX + 10 });
+                });
+            });
+        }
+        function funcWashClick(obj) {
+            debugger;
+            var id = obj.getAttribute("id");
+            var values = $("." + id + "").val();
+            a = $("." + id + " option").map(function () { return $(this).val(); }).get().join('^');
+            $("#hfWashCode").val(values);
+        }
+    </script>
+</head>
+<body>
+    <form id="frmOrderQuery" method="post" enctype="multipart/form-data">
+        @RenderPage("~/Views/Shared/PopDiv.cshtml")
+        @RenderPage("~/Views/Shared/loading.cshtml")
+        <input type="hidden" id="MaximNoEdit" name="MaximNoEdit" value="@ViewBag.MaximNoEdit" />
+        <div id="Carepage-inner">
+            <div id="careLabelBody" class="main_body">
+                @* 选择开票客户 出货地址 *@
+                <div class="clearfix main_form" id="CareLabel-step2">
+                    <div id="Body_header" class="clearfix ron">
+
+                        <div class="clearfix order-y" style="border:solid 1px #ec008c">
+                            <ul class="main_left">
+                                <li>
+                                    <span>Print Shop</span>: <select id="PSID">
+                                        @{
+                                            List<SelectListItem> sel = Model.PSlist as List<SelectListItem>;
+                                            foreach (SelectListItem item in sel)
+                                            {
+                                                if (item.Disabled == true)
+                                                {
+                                                    <option value="@item.Value" disabled="disabled">@item.Text</option>
+                                                }
+                                                else
+                                                {
+                                                    if (item.Selected == true)
+                                                    {
+                                                        <option value="@item.Value" style="color:black;font-weight:bold" selected="selected">@item.Text</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Value" style="color:black;font-weight:bold">@item.Text</option>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                    @*@Html.DropDownListFor(x => x.PSID, Model.PSlist)*@
+                                </li>
+                                <li>
+                                    <span>Billing To</span>:
+                                    @Html.DropDownListFor(x => x.BilltoId, Model.BilltoList)
+                                </li>
+                                <li style="width:500px">
+                                    <span>Billing Address</span>:
+                                    <input id="iBilltoAddress" name="iBilltoAddress" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddress " />
+                                </li>
+                                <li>
+                                    <span>Contact</span>:
+                                    <input id="iBilltoAddrContact" name="iBilltoAddrContact" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddrContact " />
+                                </li>
+                                <li>
+                                    <span>Tel</span>:
+                                    <input id="iBilltoAddrTel" name="iBilltoAddrTel" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddrTel " />
+                                </li>
+                                <li>
+                                    <span>Shipment Type<font color="red">*</font></span>:
+                                    @Html.DropDownListFor(x => x._ShipmentType, Model.ShipmentType, new { @id = "DDLShipmentType" })
+                                </li>
+                                @*<li>
+                                        <span>Freight Company<font color="red">*</font></span>:
+                                        @Html.DropDownListFor(x => x._ExpressCompany, Model.ExpressCompany, new { @id = "ExpressCompany", @disabled = "disabled" })
+                                    </li>*@
+                                <li>
+                                    <span style="width:130px;">Comments</span>:
+                                    <input type="text" name="Comments" id="Comments" />
+                                </li>
+                            </ul>
+
+                            <ul class="main_right">
+                                <li>
+                                    <span>Currency</span>:
+                                    <input id="iCurrency" name="iCurrency" class="m-wrap span8" readonly="readonly" type="text" value="@Model.Currency" />
+                                </li>
+                                <li style="width:500px">
+                                    <span>Ship To</span>:
+                                    @Html.DropDownListFor(x => x.ShiptoId, Model.ShiptoList)
+                                </li>
+                                <li>
+                                    <span>Shipping Address</span>:
+                                    @Html.DropDownListFor(x => x.ShipAddrId, Model.ShipAddrList)
+                                </li>
+                                <li>
+                                    <span>Contact</span>:
+                                    <input id="iShipAddrContact" name="iShipAddrContact" class="m-wrap span8" readonly="readonly" type="text" value="@Model.ShipAddrContact" />
+                                </li>
+                                <li>
+                                    <span>Tel</span>:
+                                    <input id="iShipAddrTel" name="iShipAddrTel" class="m-wrap span8" readonly="readonly" type="text" value="@Model.ShipAddrTel" />
+                                </li>
+
+                                <li>
+                                    <span>Country</span>:
+                                    <input id="iShipAddrCountry" name="iShipAddrCountry" class="m-wrap span8" readonly="readonly" type="text" value="@Model.Country" />
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="clearfix order-y" style="margin-top:3px;border:solid 1px #ec008c">
+                            <ul class="fl main_left">
+
+                                <li>
+                                    <span>Item<font color="red">*</font></span>:
+                                    @Html.DropDownListFor(x => x.productid, Model.ProductList)
+                                </li>
+                                <li style="">
+                                    <span>Spare Rate</span>:
+                                    @Html.DropDownListFor(x => x._SpareRate, Model.SpareRate, new { @id = "SpareRate" })
+                                </li>
+                            </ul>
+
+                            <ul class="fl main_right">
+                                <li>
+                                    <span style="width:130px;">Made In</span>:
+                                    @Html.DropDownListFor(x => x.madein, Model.MadeInList)
+                                </li>
+
+
+                            </ul>
+
+                        </div>
+                        @* Original Query Result *@
+                        <div class="clearfix main_table" id="page-inner2">
+                            <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                                <table id="OrdTable" class="table table-striped table-responsive">
+                                    <thead>
+                                        <tr class="head">
+                                            <th>Line</th>
+                                            <th>Type</th>
+                                            <th>Size</th>
+                                            <th>QTY</th>
+                                            <th>Total QTY</th>
+                                            <th></th>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><select id="Type" class="Type" onchange="TypeChange('')"><option value=''>--Please Select--</option></select></td>
+                                            <td><select id="Size" class="Size"><option value=''>--Please Select--</option></select></td>
+                                            <td><input id="Qty" class="number" name="number" type="number" min="0" /></td>
+                                            <td></td>
+                                            <td><button id="btn" type="button" onclick="AddOrderLine(this)">ADD</button></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="OrderDetail" id="OrderDetailCareLabel"></tbody>
+
+
+                                </table>
+                            </div>
+                        </div>
+                        <hr style="height:1px;border:none;border-top:1px solid #ec008c;width:100%" />
+                    </div>
+
+                </div>
+
+
+                <div class="ron" id="EditFiberCareInstr">
+                    <div class="page-inner" style="background-color:white">
+                        <div class="main_body">
+                            @* 洗标选择成分  *@
+                            <div id="divMadeInFiber" class="clearfix main_form">
+                                <div class="clearfix main_form">
+                                    <div class="clearfix">
+                                        @*<ul class="fl main_left">
+                                                <li>
+                                                </li>
+                                                <li>
+                                                    <span style="margin-top:10px;">Composition for</span>:
+                                                    @Html.DropDownListFor(x => x.CategoryId, Model.CategoryList)
+                                                </li>
+                                            </ul>*@
+
+                                        <ul class="fl main_right">
+                                            <li></li>
+                                            <li>
+                                                <span style="margin-top:10px !important">Fiber:</span>
+                                                <input id="ComPercent" class="number" value="" type="number" min="0" max="100" onkeyup="if (this.value > 100) this.value = this.value.slice(0,2);" style="margin-left:-90px !important;width:50px;">%
+                                                @Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList)
+                                                <button type="button" id="btnAdd" class="btn btn-default" value="Add" style="padding:5px 12px; margin-top:-10px;" onclick="return funAddFiber();">Add</button>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                    <div class="col-sm-6 col-xs-12" id="Items" style="width:50%;">
+                                        <div class="clearfix main_table">
+                                            <table id="LineFiberComposition" class="table table-striped table-responsive" style="border: 1px solid #c6c6c6;">
+                                                <thead>
+                                                    <tr class="head">
+                                                        <th class="center">ID</th>
+                                                        @*<th class="center">Composition for(Category)</th>*@
+                                                        <th class="center">%</th>
+                                                        <th class="center">Fiber</th>
+                                                        <th class="center" style="width: 1px;"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="fiberDetailCareLabel" id="FiberDetail"></tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                    <hr style="height:1px;border:none;border-top:1px solid #ec008c;width:100%" />
+                                    <div class="clearfix" style="width:60%;padding-left:25px;">
+                                        <span style="font-size:14px;">Special Instruction:</span>
+                                        @Html.DropDownListFor(x => x.WashcareID, Model.WashcareList, new { @id = "WashcareID2" })
+                                        <button type="button" id="btnAddCommCustUsed2" class="btn btn-default" value="Add" style="padding:5px 12px;margin-top:-10px;" onclick="return funcAddCommCustUsedClick2();">Add</button>
+                                    </div>
+                                    <div class="col-sm-6 col-xs-12" id="Item2" style="display:none;">
+                                        <div class="clearfix main_table">
+                                            <table id="LineWashCare2" class="table table-striped table-responsive">
+                                                <thead>
+                                                    <tr class="head2">
+                                                        <th class="center">Special Instruction:</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="LineWashCare2"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <hr style="height:1px;border:none;border-top:1px solid #ec008c;width:100%" />
+                                    @*洗标选择Washing Instructions  *@
+                                    <div id="divWashCare" class="clearfix main_form">
+
+                                        <div class="clearfix" style="height:40px;">
+                                            <b style="font-size:14px;">Washing Instruction</b>
+                                        </div>
+                                        <div class="clearfix table-bordered" style="margin-bottom:10px;">
+                                            <table border="1" style="border:1px inset #ec008c" class="table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Type</th>
+                                                        <th style="width:300px;">Selecting</th>
+                                                    </tr>
+                                                <tbody class="washTR">
+                                                    <tr>
+                                                        <td><span>Washing</span></td>
+                                                        <td align="center">@Html.DropDownListFor(x => x.WashingID, Model.WashingList, new { @class = "select btnWashingID Selecting" })</td>
+                                                        <td id="tdwash"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Bleaching</td>
+                                                        <td align="center">@Html.DropDownListFor(x => x.BleachingID, Model.BleachingList, new { @class = "select btnBleachingID Selecting" })</td>
+                                                        <td id="tdbleach"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Special washcare instruction</td>
+                                                        <td align="center">@Html.DropDownListFor(x => x.SpecialID, Model.SpecialList, new { @class = "select" })</td>
+                                                        <td id="tdbleach"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Drying</td>
+                                                        <td align="center">@Html.DropDownListFor(x => x.DryingID, Model.DryingList, new { @class = "select btnDryingID Selecting" })</td>
+                                                        <td id="tddry"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>lroning</td>
+                                                        <td align="center">@Html.DropDownListFor(x => x.IroningID, Model.IroningList, new { @class = "select btnIroningID Selecting" })</td>
+                                                        <td id="tdlron"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Professional cleaning</td>
+                                                        <td align="center">@Html.DropDownListFor(x => x.ProCleanID, Model.ProCleanList, new { @class = "select btnProCleanID Selecting" })</td>
+                                                        <td id="tdpro"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                        @*<div class="clearfix main_submit">
+
+                                                <button type="button" id="btnBackToFiber" class="btn btn-default" value="Back" onclick="return funcBackToShowFiber();">Back</button>
+                                            </div>*@
+                                    </div>
+
+
+                                    <div class="clearfix main_submit">
+                                        <button type="button" id="btnPreview" class="btn" value="Preview" style="border: 1px solid #D6D6D6;" onclick="return funcSaveOriOrder(this);">Preview</button>
+                                        <button type="button" id="btnSaveFiberAndCare" class="btn btn-default" value="Save" onclick="return funcSaveOriOrder(this);">Submit</button>
+                                        @*<button type="button" id="btnBackToUpload" class="btn btn-default" value="Back" onclick="return funcBackToMain();">Back</button>*@
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="hfWashCode" name="hfWashCode" type="hidden" value="">
+                            <div id="divWashImage" style="display:none;position:absolute;z-index:1001"><img src="#" alt="" style="height:auto;width:auto;" /></div>
+
+                            <div id="PreviewImg" style="display:none;">
+                                <ul id="dowebok"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        @* 提交成功  *@
+        <div id="panSuccess" style="display:none;">
+            <div style="border: #ec008c solid 1px;">
+                <span id="lblRemark" style="margin-left: 25px;"> <i>Repeat Order successfully! Your Maxim No. is:</i><b id="OrderNo" style="top:0;font-size: 20px;color: #ff0015;"></b> </span>
+                <span id="lblOrderNO"></span>
+                <br>
+                <br>
+                <div>
+                    <div id="pan_en">
+
+                        <ul>
+                            <li style="color:red"><em style="font-size:24px;">Important! </em>Currently system is uploading your data. Click "Confirm Order" icon afterward to submit the order.</li>
+                            <li>
+                                1.For barcode items, please confirm artwork before submitting the order.Once submitted,
+                                the order will be received by our factory and processed immediately.
+                            </li>
+                            <li>**Processed orders cannot be cancelled or changed** </li>
+                            <li>
+                                2. Payment Terms are ship upon payment. Goods will be delivered after we receive
+                                your payment.
+                            </li>
+                            <li>
+                                3. If you have any complaints regarding our customer service, delays or product
+                                quality, please contact us at:<a href="mailto: fo27.dept2@maxim-group.com" style="color:blue">
+                                    fo27.dept2@maxim-group.com
+                                </a>. Your feedback is very important to us.
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <div id="pan_zh" style="display: none;">
+                        <ul style="list-style: none; width: 960px; padding: 0px; margin: 0px;">
+                            <li>1.关于barcode产品，请确认画稿无误后再提交订单。我司车间会在您提交订单之后收到订单并会直接安排生产。 </li>
+                            <li>&nbsp;&nbsp; 若订单已生产是无法取消或做任何更改。 </li>
+                            <li>2.付款方式：款到发货。收到您的货款后，我司会尽快为您发货。</li>
+                            <li>
+                                3.若您对我们业务人员的服务有任何意见或建议，或对我司产品有任何疑问，请联系我们：<a href="mailto: fo27.dept2@maxim-group.com" style="color:blue">
+                                    fo27.dept2@maxim-group.com
+                                </a>. 您的反馈对我们来说至关重要！
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+                <br>
+
+                <button id="btnReturnToTescoMain" type="button" class="btn btn-default" name="Cancel" style="margin:10px;">Return</button>
+            </div>
+
+        </div>
+
+    </form>
+
+</body>
+</html>
+<script src="~/scripts/BJB/BJBCareLeabelloadByMaximNo.js"></script>

@@ -1,0 +1,221 @@
+﻿@using System.Data;
+@using Maxim.Model.BaseModel
+@model SalesEmailInfo
+@{
+    ViewBag.Title = "SalesEmail";
+    Layout = null;
+}
+<script src="~/scripts/Maintain/SalesEmail.js"></script>
+<div id="all">
+    <div id="text">
+        @*第一行*@
+        <div class="row-fluid">
+            <div class="span2 span2_hide">
+                <div class="control-group">
+                    <label class="control-label" for="firstName"></label>
+                    <div class="controls">
+                    </div>
+                </div>
+            </div>
+            <div class="span4 ">
+                <span>Brand:</span>
+                @Html.DropDownListFor(x => x.BrandId, Model.BrandList, new { @class = "m-wrap span8" })
+            </div>
+            <div class="span4 ">
+                <span>PrintShop:</span>
+                @Html.DropDownListFor(x => x.PrintShop, Model.PrintShopList, new { @class = "m-wrap span8" })
+            </div>
+        </div>
+        @*第二行*@
+        <div class="row-fluid">
+            <div class="span2 span2_hide">
+                <div class="control-group">
+                    <label class="control-label" for="firstName"></label>
+                    <div class="controls">
+                    </div>
+                </div>
+            </div>
+            <div class="span4 ">
+                <span>SalesMailTypeList:</span>
+                @Html.DropDownListFor(x => x.SalesMailType, Model.SalesMailTypeList, new { @class = "m-wrap span8" })
+            </div>
+            <div class="span4 ">
+                <span>OOS_name:</span>
+                <input type="text" id="inputOOS_name" class="m-wrap span8" style="background-color:#ffffff;" />
+            </div>
+        </div>
+        @*第三行*@
+        <div class="row-fluid">
+            <div class="span2 span2_hide">
+                <div class="control-group">
+                    <label class="control-label" for="firstName"></label>
+                    <div class="controls">
+                    </div>
+                </div>
+            </div>
+            <div class="span4 ">
+                <span>SalesEmailAddress:</span>
+                <input type="text" id="inputOOS_SalesEmailAddress" class="m-wrap span8" style="background-color:#ffffff;" />
+            </div>
+            <div class="span4 ">
+                @*<span>SalesEmailAddress:</span>*@
+                <button type="submit" class="btn" id="btnQuery" style="border: 1px solid ;width: 170px;margin-left:0;" onclick="SerachPrintShop()">Query</button>
+                <button type="button" class="btn" id="newPrintShop" name="newPrintShop" onclick="return CreatenewPrintShop();">NewPrintShop</button>
+            </div>
+        </div>
+    </div>
+    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+        <table id="ShowDetailShowDataSetting" class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+            <thead>
+                <tr class="head">
+                    <th class="center">OOS_name</th>
+                    <th class="center">OOS_SalesEmailAddress</th>
+                    <th class="center">PrintShop</th>
+                    <th class="center">SalesMailType</th>
+                    <th class="center">操作</th>
+                </tr>
+            </thead>
+            <tbody id="PrintShopDetail"></tbody>
+        </table>
+        @*分页*@
+        <div class="span4">
+            <div class="mypage">
+                <ul>
+                    <li id="PageIndex"><<</li>
+                    <li id="Pageup"><</li>
+                    <li><input type="text" id="nowpage" value="1" /></li>
+                    <li>/</li>
+                    <li><i id="TotalPageCount">0</i></li>
+                    <li id="Pagewown">></li>
+                    <li id="PageLast">>></li>
+                    <li id="PageGO">GO</li>
+                    <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="insertPrintShop" style="display:none">
+    @*第一行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>Brand:</span>
+            @Html.DropDownListFor(x => x.BrandId_sel, Model.BrandList, new { @class = "m-wrap span8" })
+        </div>
+        <div class="span4 ">
+            <span>PrintShop:</span>
+            @Html.DropDownListFor(x => x.PrintShop_sel, Model.PrintShopList, new { @class = "m-wrap span8" })
+        </div>
+    </div>
+    @*第二行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>SalesMailType:</span>
+            @Html.DropDownListFor(x => x.SalesMailType_sel, Model.SalesMailTypeList, new { @class = "m-wrap span8" })
+        </div>
+        <div class="span4 ">
+            <span>OOS_name:</span>
+            <input type="text" id="OOS_name" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第三行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+       <div class="span4 ">
+            <span>SalesEmailAddress:</span>
+            <input type="text" id="OOS_SalesEmailAddress" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*保存和返回按钮*@
+    <div class="row-fluid" id="SaveAt">
+        <div class="span3 span2_hide">
+        </div>
+        <div class="span3">
+            <button type="submit" id="SaveAccount" name="SaveAccount" class="btn btn-default" value="Save" onclick="funSavePrintShop()">Save</button>
+            <button type="button" id="ReturnIndex" onclick="ReturnIndex()" name="ReturnIndex" class="btn btn-default" value="Query">Return</button>
+        </div>
+    </div>
+</div>
+<div id="updatePrintShop" style="display:none;">
+    @*第一行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>Brand:</span>
+            @Html.DropDownListFor(x => x.BrandId_u, Model.BrandList, new { @class = "m-wrap span8" })
+        </div>
+        <div class="span4 ">
+            <span>PrintShop:</span>
+            @Html.DropDownListFor(x => x.PrintShop_u, Model.PrintShopList, new { @class = "m-wrap span8" })
+        </div>
+    </div>
+    @*第二行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>SalesMailType:</span>
+            @Html.DropDownListFor(x => x.SalesMailType_u, Model.SalesMailTypeList, new { @class = "m-wrap span8" })
+        </div>
+        <div class="span4 ">
+            <span>OOS_name:</span>
+            <input type="text" id="OOS_name_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第一行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>SalesEmailAddress:</span>
+            <input type="text" id="OOS_SalesEmailAddress_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*保存和返回按钮*@
+    <div class="row-fluid" id="SaveAt">
+        <div class="span3 span2_hide">
+        </div>
+        <div class="span3">
+            <button type="submit" id="SaveAccount_u" name="SaveAccount_u" class="btn btn-default" value="Save" onclick="funUpdatePrintShop()">Save</button>
+            <button type="button" id="ReturnIndex_u" onclick="ReturnIndex()" name="ReturnIndex_u" class="btn btn-default" value="Query">Return</button>
+            <input id="EditDetailID_U" name="EditDetailID_U" type="hidden" />
+        </div>
+    </div>
+</div>

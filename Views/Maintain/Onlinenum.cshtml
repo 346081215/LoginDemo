@@ -1,0 +1,95 @@
+﻿@using System.Data;
+@{
+    ViewBag.Title = "Onlinenum";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Onlinenum</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .errmsg {
+            color: red;
+            font-size: 5px;
+        }
+    </style>   
+    <script src="~/scripts/Maintain/Onlinenum.js" type="text/javascript"></script>
+</head>
+<body>
+    <div class="portlet box " id="form_wizard_1">
+        <div class="portlet-title">
+            <div class="caption">
+                <em class="red-em" id="step1">Onlinenum</em>
+            </div>
+        </div>
+        <div>
+            <p>
+                <span>Username:</span> <input type="text" id="inputusername" value="@ViewBag.username" placeholder="登陆帐号 " />
+                <button type="button" class="btn" id="btnQuery" style="border: 1px solid ;width: 170px;margin-left:0;" onclick="Serach()">Query</button>
+            </p>
+
+        </div>
+        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                <thead>
+                    <tr role="row">
+                        <th>ID</th>
+                        <th>UserName</th>
+                        <th>Action</th>
+                        <th>LoginTime</th>
+                        <th>RefreshTime</th>
+                        <th>IP</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all">
+                    @{
+                        DataTable dt = ViewBag.currenUsers as DataTable;
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            <tr>
+                                <td>@dt.Rows[i]["ID"]</td>
+                                <td>@dt.Rows[i]["UserName"]</td>
+                                <td>@dt.Rows[i]["Action"].ToString()</td>
+                                <td>@dt.Rows[i]["LoginTime"].ToString()</td>
+                                <td>@dt.Rows[i]["RefreshTime"].ToString()</td>
+                                <td>@dt.Rows[i]["IP"].ToString()</td>
+                                <td><input type="button" name="DeleteLogin" style="width:80px;" value="强制下线" class="btn" UserID="@dt.Rows[i]["UserID"]" onclick="deleteLogin(this)"/></td>
+
+</tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <div class="span4">
+                <div class="mypage">
+                    <ul>
+                        <li id="PageIndex" onclick="ChagePage(1)"><<</li>
+                        <li id="Pageup" onclick="ChagePage(@ViewBag.PageIndex-1==0?1:@ViewBag.PageIndex-1 )"><</li>
+                        <li>
+                            <input type="text" id="nowpage" value="@ViewBag.PageIndex" onkeyup="showValue()" />
+                            <span id="OriNowPage" hidden>@ViewBag.PageIndex</span>
+                        </li>
+                        <li>/</li>
+                        <li><i id="TotalPageCount">@ViewBag.PageCount</i></li>
+                        <li id="Pagewown" onclick="ChagePage(@ViewBag.PageIndex+1 >= @ViewBag.PageCount?@ViewBag.PageCount:@ViewBag.PageIndex+1) ">></li>
+                        <li id="PageLast" onclick="ChagePage(@ViewBag.PageCount==0?1:@ViewBag.PageCount)">>></li>
+                        <li id="PageGO" onclick="Go()">GO</li>
+                        <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+   
+</body>
+</html>

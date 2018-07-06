@@ -1,0 +1,122 @@
+﻿@model Maxim.Model.BaseModel.EPCDonwloadMode
+@{
+    ViewBag.Title = "EPCDownload";
+    Layout = null;
+}
+<script src="~/scripts/jquery-1.10.2.min.js" ></script>
+<script type="text/javascript">
+
+    function Query() {
+        $("#step2").removeAttr("style");
+        GetOrder();
+    }
+
+    function GetOrder() {
+        var oos_orderno = $("#txtoosorderno").val();
+        var StrHtml = "";
+        var url = "/Adolfo/EPCDownloadData?oos_orderno=" + oos_orderno;
+        $.get(url, null, function (data) {
+            $.each(data, function (i, item) {
+                var va = item.MaximNo + "^" + item.Item;
+                StrHtml += "<tr>";
+                StrHtml += "<td>" + item.MaximNo + "</td>";
+                StrHtml += "<td>" + item.Item + "</td>";
+                StrHtml += "<td>" + item.Qty + "</td>";
+                StrHtml += "<td>" + "<button type='button' id='DownLoadEPC' name='DownLoadEPC' class='btn btn-default' onclick='DownEPC(this)' value='"+va+"' >DownLoadEPC</button>" + "</td>";
+                StrHtml += "</tr>";
+
+            });
+            $("#OrderDetail tbody").html(StrHtml);
+            if (StrHtml == "") {
+                $("#labtxt").html("No Data.");
+                showDiv();
+                $("#OrderDetail tbody").html("None");
+                $("#GridViewPage").css("display", "none");
+            } else {
+                $("#GridViewPage").removeAttr("style");
+                $("#Query-order").css("display", "none");
+                $("#Query-Results").slideDown();
+                $("#step2").removeAttr("style");
+                $("#step1").attr("class", "gray-em");
+                $("#step2").attr("class", "red-em");
+            }
+
+        });
+    }
+    function DownEPC(values) {      
+        var data = { val: values.value }
+        $.post("/Adolfo/EPCDownloadDataExcel", data, function (data) {
+            if (data.SessionStaus == "true") {
+                downLoad(data.value);
+            }
+        })
+    }
+
+    function downLoad(va){  
+        var elemIF = document.createElement("iframe");     
+        elemIF.src = va;
+        elemIF.style.display = "none";     
+        document.body.appendChild(elemIF);  
+          
+    }
+</script>
+@using (Html.BeginForm())
+{
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box " id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <em class="red-em" id="step1">EPCDownload</em>
+                        <em class="gray-em" id="step2" style="display:none;">Query Results</em>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div id="Query-order">
+                        <h3 class="form-section" style="text-align:center"></h3>
+                        @*第二行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+
+                                <div class="control-group">
+
+                                    <label class="control-label" for="firstName"></label>
+
+                                    <div class="controls">
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="span4">
+                                <span>Maxim OOS NO:</span>
+                                <input type="text" id="txtoosorderno" name="txtoosorderno" class="m-wrap span8" />
+                            </div>
+                        </div>
+                        @*Query*@
+                        <div class="row-fluid">
+                            <p style="text-align:center">
+                                <button type="button" id="btnQuery" name="btnQuery" class="btn btn-default" onclick="Query()" value="Query" style="border: 1px solid #D6D6D6;width: 170px;margin-left:0;">Query</button>
+                            </p>
+                        </div>
+                    </div>
+                    @*Table*@
+                    <div class="portlet-body" id="Query-Results" style="display:none;">
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="center">MaximNO</th>
+                                        <th class="center">Item</th>
+                                        <th class="center">Qty</th>
+                                        <th class="center"></th>
+                                </thead>
+                                <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

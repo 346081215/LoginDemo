@@ -1,0 +1,240 @@
+﻿@using System.Data;
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GetOrderDetailByMaixmNo</title>
+    <script type="text/javascript">
+        $(function () {
+            $("#back").click(function () {
+                $("#OrderDetail").show();
+                $("#Page2").hide()
+                $("#step_Detail").hide()
+                $("#step2").addClass("red-em").removeClass("gray-em");
+                $("#step_Detail").addClass("gray-em").removeClass("red-em");
+            })
+
+            $("#btnSubmit").click(function () {
+                var isArt = 0;
+                $("#OrderConfirmView tr").each(function(){
+                    if (this.children[3].innerHTML == "No") {
+                        isArt = 1;
+                        return;
+                    }
+                })
+                if (isArt == 1) {
+                    $("#labtxt").html("Please Submit Order After Check ArtWork");
+                    showDiv();
+                    return;
+                }
+                showloading();
+                $.ajax({
+                    url: "/SMT/ConfirmOrder_SubmintOrder",
+                    type:"post",
+                    dataType: "json",
+                    data: {
+                        MaxmimNo: $("#Page2-MaximNo").html()
+                    },
+                    success: function (result) {
+                        debugger;
+                        if (result.FunStatus == "success") {
+                            $("#OK").show();
+                            $("#step_Detail").addClass("gray-em").removeClass("red-em")
+                            $("#OK").addClass("red-em").removeClass("gray-em")
+                            $("#SubmitSuccess").show();
+                            $("#page2").hide();
+                            $("#SuccessOrder").html(result.MaximNO)
+                        } else {
+                            $("#labtxt").html(result.ErrorCode)
+                            showDiv();
+                        }
+                        hideloading();
+                    }
+                })
+            })
+
+            $("#btnEdit").click(function () { $("#ShoeImg").show(); })
+
+            $("#SubmitImg").click(function () {
+                var id = "";
+                $("input [name='rad']").each(function () {
+                    if (this.checked) {
+                        id = $(this).attr("data-id");
+                        return;
+                    }
+                })
+                showloading();
+                $.ajax({
+                    url: "/SMT/UpdateShoeImg",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        MaximNo: $("#Page2-MaximNo").html(),
+                        Url:$("#Img"+id).attr("src")
+                    },
+                    success: function (result) {
+                        if (result.Status == "Success") {
+                            $("#labtxt").html("Update Img Success");
+                            $("#ShoeImg").hide()
+                        } else {
+                            $("#labtxt").html("Update Img Fail");
+                        }
+                        hideloading();
+                        showDiv();
+                    }
+                })
+
+                $("#ShoeImg").show();
+            })
+
+            $("#btnCancel").click(function () {
+                if (!window.confirm("Are you sure you want to cancel this order?")) {
+                    return;
+                }
+                showloading();
+                $.ajax({
+                    url: "/SMT/CancelOrder",
+                    type:"post",
+                    dataType: "json",
+                    data: {
+                        MaximNo: $("#Page2-MaximNo").html()
+                    },
+                    success: function (result) {
+                        debugger;
+                        if (result.Status== "Success") {
+                            $("#labtxt").html("Order Cancel Success");
+                            showDiv();
+                            $("#Page2").hide();
+                            $("#OrderDetail").show();
+                            $("#btnQuery").trigger("click");
+                        } else {
+                            $("#labtxt").html(result.ErrorCode);
+                            showDiv();
+                        }
+                        hideloading();
+                    }
+                })
+
+            })
+        })
+
+        function FunViewArtwork(OrdProdSeqNO){
+            $.ajax({
+                url: "/SMT/CheckArtWork",
+                type:"post",
+                dataType: "json",
+                data: {
+                    MaximNO: $("#Page2-MaximNo").html(),
+                    OrdProdSeqNO:OrdProdSeqNO
+                },
+                success: function (result) {
+                    FunViewDetail($("#Page2-MaximNo").html(), $("#Page2-OrderNo").html())
+                }
+            })
+            window.open($(this).attr("data-Url"), "_bank");
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <div>
+            <span>Order No.=[<font id="Page2-OrderNo">@ViewBag.OrderNo</font>]</span>,<span>Maixm No.=[<font id="Page2-MaximNo">@ViewBag.Maximno</font>]</span>
+        </div>
+        <div class="table table-bordered dataTable table-striped">
+            <table class="table table-responsive table-bordered">
+                <thead>
+                    <tr>
+                        <th>Seq</th>
+                        <th style="display:none">OrdProdSeqNO</th>
+                        <th>Item</th>
+                        <th>Artwork Viewed</th>
+                        <th>View Artwork</th>
+                    </tr>
+                </thead>
+                <tbody id="OrderConfirmView">
+                    @{ 
+                        DataTable table = ViewBag.DetailTable as DataTable;
+                        for (int i = 0; i < table.Rows.Count; i++)
+                        {
+                            string YesNo = "";
+                            if (table.Rows[i]["ArtworkIsConfirmed"].ToString() == "True")
+                            {
+                                YesNo = "Yes";
+                            }
+                            else
+                            {
+                                YesNo = "No";
+                            }
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>@table.Rows[i]["OrdProdSeqNO"].ToString()</td>
+                                <td>@table.Rows[i]["ProductCustNO"].ToString()</td>
+                                <td>@YesNo</td>
+                                @if (table.Rows[i]["CustArtWork_PDF"].ToString() != "" && table.Rows[i]["CustArtWork_PDF"].ToString() != null)
+                                {
+                                 <td><button id="BtnView" type="button" class="btn btn-default" data-Url="@table.Rows[i]["CustArtWork_PDF"].ToString()" onclick="FunViewArtwork(@table.Rows[i]["OrdProdSeqNO"].ToString())">View</button></td>
+                                }
+                                else
+                                {
+                                    <td><button id="BtnView" type="button" class="btn btn-default" disabled="disabled">View</button></td>
+                                }
+                            </tr>
+
+                        }
+                    }
+                </tbody>
+
+            </table>
+
+
+        </div>
+        <button id="back" type="button" class="btn btn-default">Back</button>
+        <button id="btnSubmit" type="button" class="btn btn-default">Submit Order</button>
+        @{
+            if (ViewBag.Fun == "shoe")
+            {
+                <button id="btnEdit" type="button" class="btn btn-default">Edit</button>
+            }
+
+        }
+        <button id="btnCancel" type="button" class="btn btn-default">Cancel Order</button>
+    </div>
+    <div id="ShoeImg" style="display:none">
+        <div class="table-bordered table dataTable table-striped">
+            <table>
+                @*<caption>Style Name <input id="Styname" class="m-warp span6" type="button"/>Search</caption>*@
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Style Name</th>
+                        <th>Shoe Photo</th>
+                    </tr>
+                </thead>
+
+                <tbody id="ShoeImgBody">
+                    @{
+                        DataTable Shoedt = ViewBag.ShoeTable as DataTable;
+                        for (int i = 0; i < Shoedt.Rows.Count; i++)
+                        {
+                            string imgid = "iMG" + i;
+                            <tr>
+                                <td><input name="rad" type="radio" data-id="@i" /></td>
+                                <td>@Shoedt.Rows[i]["StyleName"].ToString()</td>
+                                <td><img id="@imgid" src="@Shoedt.Rows[i]["ShoePhotoUrl"].ToString()" /></td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        <button id="SubmitImg" type="button" class="btn btn-default">Update ShoeImg</button>
+    </div>
+</body>
+</html>

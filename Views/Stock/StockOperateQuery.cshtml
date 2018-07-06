@@ -1,0 +1,103 @@
+﻿@using System.Data;
+@using Maxim.Model.BaseModel
+@model StockOperateQuery
+@{
+    ViewBag.Title = "StockOperateQuery";
+    Layout = null;
+}
+<script src="~/scripts/Stock/StockOperateQuery.js"></script>
+<div id="all">
+    <div class="span12">
+        <div class="portlet box " id="xm">
+            <div class="portlet-title">
+                <div class="caption">
+                    <em class="red-em" id="step1">StockOperateQuery</em>
+                </div>
+            </div>
+        </div>
+    </div>
+    PrintShop:@Html.DropDownListFor(x => x.PrintShopId, Model.PrintShopIdList, new { @class = "m-wrap span3" })
+    ProductCode:@Html.DropDownListFor(x => x.ProductCode, Model.ProductCodeList, new { @class = "m-wrap span3" })
+
+    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+        <table id="ShowDetailShowDataSetting" class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+            <thead>
+                <tr class="head">
+                    <th class="center">PrintShop</th>
+                    <th class="center">ProductCode</th>
+                    <th class="center">ProductERPNO</th>
+                    <th class="center">ProductCustNO</th>
+                    <th class="center">BasePaperCode</th>
+                    <th class="center">BasePaperERPNO</th>
+                    <th class="center">BasePaperCustNO</th>
+                    <th class="center">StockStartQty</th>
+                    <th class="center">StockCurrentQty</th>
+                    <th class="center">UpdateTime</th>
+                    <th class="center">Notes</th>
+                    <th class="center">StockDesc</th>
+                    <td class="center"></td>
+                </tr>
+            </thead>
+            <tbody id="DetailStockOperateQuery"></tbody>
+        </table>
+        @*分页*@
+        <div class="span4">
+            <div class="mypage">
+                <ul>
+                    <li id="PageIndex"><<</li>
+                    <li id="Pageup"><</li>
+                    <li><input type="text" id="nowpage" value="1" /></li>
+                    <li>/</li>
+                    <li><i id="TotalPageCount">0</i></li>
+                    <li id="Pagewown">></li>
+                    <li id="PageLast">>></li>
+                    <li id="PageGO">GO</li>
+                    <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="DetailStockOperate" style="display:none;">
+    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+        <table id="ShowDetailShowDataSetting" class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+            <thead>
+                @* ProductCode,RefOrderNO ,
+                    OperateType, OperateDate, OperateQty, OperateNotes, OperatedUser, OtherNotes,
+                     PrintShopId, BrandId*@
+                <tr class="head">
+                    <th class="center">PrintShop</th>
+                    <th class="center">ProductCode</th>
+                    <th class="center">RefOrderNO</th>
+                    <th class="center">OperateType</th>
+                    <th class="center">OperateDate</th>
+                    <th class="center">OperateQty</th>
+                    <th class="center">OperateNotes</th>
+                    <th class="center">OperatedUser</th>
+                    <th class="center">OtherNotes</th>
+                    <td class="center"></td>
+                </tr>
+            </thead>
+            <tbody id="DetailStockOperateInfo"></tbody>
+        </table>
+        @*分页*@
+        <div class="span4">
+            <div class="mypage">
+                <ul>
+                    <li id="PageIndex1"><<</li>
+                    <li id="Pageup1"><</li>
+                    <li><input type="text" id="nowpage1" value="1" /></li>
+                    <li>/</li>
+                    <li><i id="TotalPageCount1">0</i></li>
+                    <li id="Pagewown1">></li>
+                    <li id="PageLast1">>></li>
+                    <li id="PageGO1">GO</li>
+                    <li><input id="pc1" name="pc1" type="hidden" value=1><input id="PageTotalCount1" name="PageTotalCount1" type="hidden" value=1></li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <button type="button" id="ReturnIndex" onclick="ReturnIndex()" name="ReturnIndex" class="btn btn-default" value="Query">Return</button>
+        </div>
+    </div>

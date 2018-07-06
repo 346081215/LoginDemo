@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="../Content/js/jquery-1.10.1.min.js"></script>
+</head>
+<body>
+    <div>
+        <select id="action"></select>
+    </div>
+    <form action="/Test/ConfirmOrder" method="post" target="_blank" id="form">
+        <div>
+            <input type="text" name="MaximNo" />
+        </div>
+        <div>
+            <button type="button">Confirm</button>
+        </div>
+        <div id="result"></div>
+    </form>
+    <script>
+        $(document).ready(function () {
+            var list = [
+            {
+                "Name": "Confirm Order",
+                "Action": "/Test/ConfirmOrder"
+            },
+            {
+                "Name": "Create Artwork",
+                "Action": "/Test/CreateArtwork"
+            }
+            ];
+
+            var select = document.getElementById('action');
+            var form = document.getElementById('form');
+            for (var i = 0; i < list.length; i++) {
+                select.options.add(new Option(list[i].Name, list[i].Action));
+            }
+            select.onchange = function () {
+                form.action = this.options[this.selectedIndex].value;
+            }
+
+
+
+            $("button").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: {
+                        "MaximNo": form.MaximNo.value
+                    },
+                    complete: function (XMLHttpRequest, textStatus) {
+                        $('#result').html(XMLHttpRequest.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

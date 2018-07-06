@@ -1,0 +1,114 @@
+﻿@using Maxim.Model.BaseModel
+@using System.Data
+@{
+    Layout = null;
+}
+
+
+@*<script src="~/scripts/HydroFlask/ViewDetail.js?V=1"></script>*@
+<div class="row-fluid">
+    <p class="select" style="font-size: 15px;">
+        Order No. = [ @Model.Custorderno ],  Maxim No. = [ @Model.oos_orderno ].
+    </p>
+    <div class="clearfix rov">
+        <input type="hidden" id="Salesorderid" name="Salesorderid" value=@ViewBag.Salesorderid />
+        <ul class="fl main_left">
+            <li>
+                <span>Print Shop</span>:
+                @Model.Printshop
+            </li>
+            <li>
+                <span>Bill To</span>:
+                @Model.billto
+            </li>
+            <li>
+                <span>Billing Address </span>:
+                @Model.billingaddress
+            </li>
+            <li>
+                <span>Contact </span>:
+                @Model.billcontact
+            </li>
+            <li>
+                <span>Tel</span>:
+                @Model.billcontacttel
+            </li>
+            <li>
+                <span>Order No.</span>:
+                @Model.Custorderno
+            </li>
+            <li>
+                <span>Add Comments </span>:
+                @Model.oos_notes
+            </li>
+        </ul>
+        <ul class="fl main_right">
+            <li>
+                <span>Currency </span>:
+                @Model.Currency
+            </li>
+            <li>
+                <span>Ship To</span>:
+                @Model.shipto
+            </li>
+            <li>
+                <span>Shipping Address</span>:
+                @Model.shippingaddress
+            </li>
+            <li>
+                <span>Contact </span>:
+                @Model.shipcontact
+            </li>
+            <li>
+                <span>Tel</span>:
+                @Model.shipcontacttel
+            </li>
+            <li>
+                <span>Country</span>:
+                @Model.country
+            </li>
+            <li>
+                <span>Shipment Type</span>:
+                @Model.shipmenttype
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+    <table id="detail" class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+        <thead>
+            <tr class="head">
+                @{
+                    var dt = Model.OrderDetails as DataTable;
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                    {
+                        var columname = dt.Columns[i].ColumnName;
+                        <th class="center">@columname</th>
+                    }
+                }
+            </tr>
+        </thead>
+        <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all">
+            @{
+                var totalqty = 0;
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    totalqty += int.Parse(dt.Rows[i]["oos_orderqty"].ToString());
+                    <tr>
+                        @for (int j = 0; j < dt.Columns.Count; j++)
+                        {
+                            var data = dt.Rows[i][j].ToString();
+
+                            <td class="center">@data</td>
+                        }
+                    </tr>
+                }
+                <tr>
+                    <td>Totals:</td>
+                    <td>@totalqty</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

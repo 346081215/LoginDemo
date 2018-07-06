@@ -1,0 +1,414 @@
+﻿@using Resources
+@{
+    ViewBag.Title = " Maxim,Welcome";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<head>
+    <title>Maxim,Welcome</title>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Maxim" name="description">
+    <meta content="" name="author">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+
+
+
+
+    <link href="/Content/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/Content/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css">
+    <link href="/Content/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/Content/css/style-metro.css" rel="stylesheet" type="text/css">
+    <link href="/Content/css/style.css" rel="stylesheet">
+    <link href="/Content/css/style-responsive.css" rel="stylesheet" type="text/css">
+    <link href="/Content/css/default.css" rel="stylesheet" type="text/css" id="style_color">
+    <link href="/Content/css/uniform.default.css" rel="stylesheet" type="text/css">
+    <link href="/Content/css/daterangepicker.css" rel="stylesheet" type="text/css">
+    <link href="/Content/css/fullcalendar.css" rel="stylesheet" type="text/css">
+    <link href="/Content/css/left.css" rel="stylesheet" type="text/css">
+    <link href="/Content/css/nav_top.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/Content/image/maxim.ico">
+
+
+
+    <link href="~/Content/css/datepicker.css" rel="stylesheet" type="text/css" />
+    <script src="~/Content/js/respond.js"></script>
+    @*<script src="~/Content/js/jquery.js"></script>*@
+    <script src="../scripts/jquery-1.10.2.js"></script>
+    @*<script src="~/Content/js/jquery-1.10.1.min.js"></script>*@
+    <script src="~/Content/js/app.js"></script>
+    <script src="~/Content/js/bootstrap.min.js"></script>
+    <script src="~/Content/js/date.js"></script>
+    <script src="~/Content/js/index.js"></script>
+    <script src="~/Content/js/jquery-ui-1.10.1.custom.min.js"></script>
+    <script src="~/Content/js/jquery.flot.js"></script>
+    <script src="~/Content/js/jquery.flot.resize.js"></script>
+    <script src="~/Content/js/jquery.uniform.min.js"></script>
+    <script src="~/Content/js/bootstrap-datepicker.js"></script>
+    <script src="~/Content/js/form-components.js"></script>
+    <script src="../scripts/knockout-2.3.0.js"></script>
+</head>
+<input id="hfMenuHtml" name="hfMenuHtml" type="hidden" value='@ViewBag.MenuTreeHtml' />
+
+<input id="BrandLogoUrl" name="BrandLogoUrl" type="hidden" value="@ViewBag.BrandLogoUrl" />
+
+<body onresize="myFunction()">
+    <div class="navbar" style="display:none">
+        <!-- BEGIN TOP NAVIGATION BAR -->
+        <!-- END TOP NAVIGATION BAR -->
+        <a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+            <img src="~/Content/image/menu-toggler.png" alt="">
+        </a>
+    </div>
+    <div class="page-container">
+        <div class="page-sidebar nav-collapse collapse">
+            <!-- BEGIN SIDEBAR MENU -->
+            <ul class="page-sidebar-menu">
+                <li>
+                    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                    <div class="sidebar-toggler hidden-phone"></div>
+                    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                </li>
+                <div class="User_photos show">
+                    <img id="BrandLogoImg" src="/Content/image/logo.jpg" />@*<h1>@ViewBag.UserName</h1>*@
+                </div>
+                <li>
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <form name="sidebarr" class="sidebar-search">
+                        @*<div class="input-box">
+                                <a href="javascript:;" class="remove"></a>
+                                <input type="text" placeholder="Search...">
+                                <input type="button" class="submit" value=" ">
+                            </div>*@
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+
+                <li class="start active ">
+                    <a href="/Maxim/Welcome1">
+                        <span class="title" style="color:#C1C1C1">@Welcome.MENU</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+
+
+                <li class="start active ">
+                    <a href="javascript:;">
+                        <span class="title" style="color:#C1C1C1">@Welcome.ACCOUNT</span>
+
+                    </a>
+                </li>
+
+                <li class="last ">
+                    <a href="/Maxim/SignChangePwd">
+                        <i class="icon-cogs" style="color: #C1C1C1;"></i>
+                        <span class="title" style="color:#C1C1C1">@Welcome.Settings</span>
+                    </a>
+                </li>
+                <li class="last ">
+                    <a href="/Maxim/Help">
+                        <i class="icon-comments" style="color: #C1C1C1;"></i>
+                        <span class="title" style="color:#C1C1C1">@Welcome.Help</span>
+                    </a>
+                </li>
+
+
+
+                <p class="line"></p>
+                <li class="start active ">
+                    <span class="title" style="color:#C1C1C1;font-size: 19px;margin-left:12px;">@Welcome.ANNOUNCEMENTS</span>
+                </li>
+                <li class="last ">
+
+                    <span class="title" style="display: block;position: relative;margin: 0;border: 0px;padding: 10px 15px;text-decoration: none;font-size: 14px;font-weight: 300;color: #FFFFFF;font-size: 15px;margin-left: 12px;"></span> @*Our L.A.Maxim will go*@
+                    <span class="title" style="display: block;position: relative;margin: 0;border: 0px;padding: 10px 15px;text-decoration: none;font-size: 14px;font-weight: 300;color: #FFFFFF;font-size: 15px;margin-left: 12px;margin-top:-15px;">@*live soon.*@</span>
+
+                </li>
+                <p class="line"></p>
+                <li class="last ">
+
+                    <span class="title" style="display: block;position: relative;margin: 0;border: 0px;padding: 10px 15px;text-decoration: none;font-size: 14px;font-weight: 300;color: #FFFFFF;font-size: 12px;margin-left: 10px;">Copyright© 2017 MAXIM GARMENT</span>
+                    <span class="title" style="display: block;position: relative;margin: 0;border: 0px;padding: 10px 15px;text-decoration: none;font-size: 14px;font-weight: 300;color: #FFFFFF;font-size: 12px;margin-left: 10px;margin-top: -15px;">ACCESSORIES CO.LTD.All rights reserved.  </span> @*( @ViewBag.eMax_Version )*@
+
+                </li>
+
+            </ul>
+            <!-- END SIDEBAR MENU -->
+        </div>
+
+        <div class="page-content" style="min-height:950px !important">
+
+            <div style="width: 47px;height: 74px; padding-top:1px;padding-left:30px" class="nav_div">
+                <div class="nav_top">
+                    <ul>
+                        <li style="cursor:default;display:none"><i class="icon-user"></i>OnlineUsers:<span id="UsersCount" style="color:red"></span></li>
+                        <li><i class="icon-user "></i>@ViewBag.UserName</li>
+                        <li id="Help"><i class="icon-comments" style="color: #000000;"></i>@Welcome.Help</li>
+                        <li id="Logout"><i class="icon-signout"></i>@Welcome.Logout</li>
+
+                    </ul>
+                </div>
+                <h3 class="logo">
+
+                    <!--Dashboard <small>statistics and more</small>-->
+                    <img src="~/Content/image/logo_1.gif">
+
+                </h3>
+            </div>
+            <div class="container-fluid">
+
+                <div id="content" class="row-fluid">
+
+                    <div style="display:none;">@Welcome.WelcomeSpeech</div>
+
+                    <div class="welcome" style="display: block;">
+                        <h2 class="come">@Welcome.Welcome_1&nbsp;  <span>@ViewBag.UserFullName</span><marquee scrollamount="5"></marquee></h2> @*Our L.A. Maxim will go live soon*@
+                        <p class="salutation">Hello!<br><br>@Welcome.WelcomeSpeech</p>
+                        <p class="tac">©CopyRight Maxim Inc.All Rights Reserved.</p>
+                        @if (@ViewBag.ManulUrl == "" && @ViewBag.PriceListUrl == "")
+                        {
+                            //admin和Brand没有手册
+
+                        }
+                        else if (ViewBag.BrandId == "ADO001")
+                        {
+                            <a  href="@ViewBag.ManulUrl" target="_blank">@Welcome.Manual</a>
+                            <a href="@ViewBag.PriceListUrl" target="_blank">@Welcome.PriceList</a>
+                        }
+                        else if (ViewBag.BrandId == "BJB001")
+                        {
+                            <a href="@ViewBag.ManulUrl" target="_blank">CATALOGUE</a>
+                        }
+
+                    </div>
+
+
+                </div>
+
+                <div class="row-fluid">
+                    @if (ViewBag.DispalyFoot == "NO")
+                    {
+                        //AD不显示页脚
+                    }
+                    else
+                    {
+                        <div class="span12" id="FootFixing" @*style="position: fixed;bottom:-5px;"*@>
+                            <div class="portlet-body form foot" style="background: #1a1a1a;width:1605px">
+                                <div action="#" class="horizontal-form">
+                                    <h3 class="block" style="height:50px;">
+                                        <ul>
+                                            <li>@Welcome.Information</li>
+                                            <li><i class="icon-envelope-alt email"></i>@Welcome.Email:support@maxim-group.com</li>
+                                            <li><i class="icon-phone-sign"></i>@Welcome.Tel: +86(0)21 64064228</li>
+                                            <li style="font-size:x-small">(@ViewBag.eMax_Version)</li>
+                                        </ul>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    
+                </div>
+                <div class="actGotop"><a href="javascript:;" title="返回顶部"></a></div>
+            </div>
+        </div>
+
+    </div>
+    <h1 id="ReportUrl" style="display:none;"></h1>
+</body>
+<script>
+    jQuery(document).ready(function () {
+
+        App.init(); // initlayout and core plugins
+
+
+        //FormWizard.init();
+
+        //FormComponents.init();
+
+        //Index.init();
+
+        //Index.initJQVMAP(); // init index page's custom scripts
+
+        //Index.initCalendar(); // init index page's custom scripts
+
+        //Index.initCharts(); // init index page's custom scripts
+
+        //Index.initChat();
+
+        //Index.initMiniCharts();
+
+        //Index.initDashboardDaterange();
+
+        //Index.initIntro();
+
+    })
+</script>
+<script type="text/javascript">
+    //window.setInterval(ChangeUsersCount, 2000);
+    $(document).ready(function () {
+        $($("#hfMenuHtml").val()).insertAfter($(".page-sidebar ul li:eq(2)"));
+        $("#BrandLogoImg").attr("src", $("#BrandLogoUrl").val())
+
+        $(".page-sidebar a").click(function (event) {
+            event.preventDefault();
+        });
+        //var b = Math.random() * 40
+
+        //var url = "http://www.jq22.com/tx/" + parseInt(b) + ".png";
+        //console.log(url);
+        //$(".User_photos img").attr("src", url);
+        //alert(document.body.scrollHeight);窗体高度
+
+    });
+    //function ChangeUsersCount() {
+    //    $.ajax({
+    //        url: '/Maxim/GetAllUsersCount',
+    //        type: 'post',
+    //        dataType: "json",
+    //        traditional: true,
+    //        success: function (data) {
+    //            $("#UsersCount").html(data);
+    //        }
+    //    })
+    //}
+
+    function myFunction() {
+        var w = window.outerWidth;
+        var h = window.outerHeight;
+
+        if ($(".User_photos").hasClass("hide")) {
+            if (w < 980) {
+                //$(".page-sidebar").css("display", "none")
+                $(".User_photos").removeClass("hide");
+                $(".User_photos").addClass("show");
+                $(".page-sidebar-menu li:first").siblings("li").css("display", "block")
+            }
+            else {
+                //$(".page-sidebar").css("display", "block")
+                $(".User_photos").removeClass("show");
+                $(".User_photos").addClass("hide");
+                $(".page-sidebar-menu li:first").siblings("li").css("display", "none")
+                //$(".page-sidebar-menu li").css("display", "block");
+            }
+
+        }
+
+        if (w < 980) {
+            $(".page-sidebar-menu i:first").siblings("li").css("display", "none");
+        }
+        else {
+
+            $(".page-sidebar-menu i:first").siblings("li").css("display", "block")
+        }
+        var width = $("#form_wizard_1").width();
+        $(".foot").width(width + "px");
+        var width = $("#content").width();
+        $(".foot").width(width + "px");
+    }
+
+</script>
+<script src="~/Content/js/Popup.js"></script>
+<script src="~/Content/js/loading.js"></script>
+@RenderPage("~/Views/Shared/loading.cshtml")
+@RenderPage("~/Views/Shared/PopDiv.cshtml")
+@RenderPage("~/Views/Maxim/Language.cshtml")
+<script>
+    $(function () {
+        //菜单导航
+        $(".page-sidebar a").click(function () {
+
+            var url_ = $(this).attr("href");
+            //alert(url_);
+
+            var y = $(this).offset().top + 8;
+            //alert(y);
+            //var divOffset = { top: top };
+            //var yy=$(".selected").height(y)
+            $(".selected").offset({ top: y })
+
+            if (url_ != "javascript:;") {
+                $("#ReportUrl").html(url_);
+                showloading();
+                $.ajax({
+                    url: url_,
+                    cache: false
+                }).success(function (html) {
+                    setTimeout(function () {
+                        $("#content").html(html)
+
+
+                        hideloading();
+                        var width = $("#form_wizard_1").width();
+                        ($(".foot").width(width + "px"));
+                    }, 500);
+                }).fail(function (data) {
+                    window.location.href = '/Home/Login';
+                });
+
+            }
+        });
+        //退出登录
+        $("#Logout").click(function () {
+            $.ajax({
+                url: "/Home/Logout",
+                type: "POST",
+                cache: false,
+                dataType: "json"
+            }).success(function (data) {
+                if (data.Status == "OK") {
+                    window.location.href = "/Home/Login"
+                }
+            }).error(function (data) {
+                $("h1").html(data.str);
+            })
+        })
+
+
+        $("#Help").click(function () {
+            showloading();
+            $.ajax({
+                url: "/Maxim/Help",
+                cache: false
+            }).success(function (html) {
+                setTimeout(function () {
+                    $("#content").html(html)
+                    hideloading();
+                }, 500);
+            }).fail(function (data) {
+                window.location.href = '/Home/Login';
+            });
+
+
+        })
+
+        $(window).scroll(function () {
+
+            if ($(window).scrollTop() >= 60) {
+
+                $('.actGotop').fadeIn(400);
+
+            } else {
+
+                $('.actGotop').fadeOut(400);
+
+            }
+
+        });
+        //滚动条回到顶部
+        $('.actGotop').click(function () {
+
+            $('html,body').animate({ scrollTop: '0px' }, 800);
+        });
+
+
+    })
+</script>
+<script>
+    $(function () {
+        var width = $("#content").width();
+        ($(".foot").width(width + "px"));
+    });
+</script>
+

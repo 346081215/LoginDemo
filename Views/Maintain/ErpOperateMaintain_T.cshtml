@@ -1,0 +1,230 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/Maintain/ErpOperate_T.js"></script>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ErpOperateMaintain_T</title>
+    <style type="text/css">
+        #cha_num {
+            width: 1080px;
+            height: 50px;
+            /*border: 1px solid black;*/
+        }
+
+        .cha_ti {
+            width: 80px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            /*border: 1px solid black;*/
+        }
+
+        .cha_shi {
+            width: 200px;
+            height: 50px;
+            line-height: 50px;
+            /*border: 1px solid black;*/
+        }
+
+        #Code_Table {
+            border: 1px solid black;
+        }
+
+        .center {
+            border: 1px solid black;
+        }
+
+        #Insert {
+            height: 260px;
+            width: 1020px;
+            /*border: 1px solid black;*/
+        }
+
+        #left, #right {
+            float: left;
+            width: 500px;
+            height: 260px;
+            /*border: 1px solid black;*/
+        }
+
+        .spanAdd {
+            width: 80px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            /*border: 1px solid black;*/
+        }
+
+        /*.ErpOperate_T {
+            width: 200px;
+            height: 50px;
+            line-height: 50px;
+        }*/
+    </style>
+</head>
+<body>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box " id="form_wizard_1">
+                @*页眉*@
+                <div class="portlet-title">
+                    <div class="caption">
+                        <em class="red-em" id="step1">ErpOperate_T</em>
+                    </div>
+                </div>
+
+                @*条件*@
+                <div id="cha" style="margin-top:10px;">
+                    <table id="cha_num">
+                        <tr>
+                            <td class="cha_ti">Brand:</td>
+                            <td class="cha_shi"><select id="ddlBrand" name="ddlBrand" class="ErpOperate_T"></select></td>
+                            <td class="cha_ti">Category:</td>
+                            <td class="cha_shi"><select id="ddlCategory" name="ddlCategory" class="ErpOperate_T"></select></td>
+                            <td class="cha_ti">Erp录入人员:</td>
+                            <td class="cha_shi"><input type="text" id="ErpOperate_T" name="ErpOperate_T" class="ErpOperate_T" /></td>
+                            <td>
+                                <input type="button" id="ErpOperate_T_Select" name="=ErpOperate_T_Select" class="btn btn-default" value="Search" style="width:80px;height:35px;margin-left:10px;float:left;" />
+                                <input type="button" id="ErpOperate_T_Add" name="=ErpOperate_T_Add" class="btn btn-default" value="Add" style="width:80px;height:35px;float:left;" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                @*查询*@
+                <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                    <div id="Code">
+                        <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="Code_Table" aria-describedby="sample_2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th class="center">操作列</th>
+                                    <th class="center">Brand</th>
+                                    <th class="center">Category</th>
+                                    <th class="center">Erp录入人员</th>
+                                    <th class="center">其它费用料号</th>
+                                    <th class="center">中文购销合同模板代号</th>
+                                    <th class="center">英文购销合同模板代号</th>
+                                    <th class="center">欧元购销合同模板代号</th>
+                                    <th class="center">LC购销合同模板代号</th>
+                                    <th class="center">生产通知书模板代号</th>
+                                    <th class="center">经办业务</th>
+                                    <th class="center">业务签名</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                @* 分页 *@
+                <div class="row-fluid" id="paging">
+                    <div class="span4">
+                        <div class="mypage">
+                            <ul>
+                                <li id="PageIndex"><<</li>
+                                <li id="Pageup"><</li>
+                                <li><input type="text" id="nowpage" value="1" /></li>
+                                <li>/</li>
+                                <li><i id="TotalPageCount">0</i></li>
+                                <li id="Pagewown">></li>
+                                <li id="PageLast">>></li>
+                                <li id="PageGO">GO</li>
+                                <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                @*<li><button type="button" id="CreateNewAccount" name="CreateNewAccount" class="btn btn-default" onclick="funAdd();">Create</button></li>*@
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                @*添加,修改*@
+                <div id="Insert" style="margin-top:10px;">
+                    <div id="left">
+                        <table class="Add">
+                            <tr>
+                                <td class="spanAdd">Brand:</td>
+                                <td><select id="Brand" class="ErpOperate_T"></select></td>
+                            </tr>
+
+                            <tr>
+                                <td class="spanAdd">Erp录入人员：</td>
+                                <td><input type="text" id="ErpOperate" name="ErpOperate" class="ErpOperate_T" /></td>
+                            </tr>
+
+                            <tr>
+                                <td class="spanAdd">中文购销合同模板代号:</td>
+                                <td><input type="text" id="PsTplCode_Cn" name="PsTplCode_Cn" class="ErpOperate_T" /></td>
+                            </tr>
+
+                            <tr>
+                                <td class="spanAdd">生产通知书模板代号:</td>
+                                <td><input type="text" id="ProductionTblCode" name="ProductionTblCode" class="ErpOperate_T" /></td>
+                            </tr>
+
+                            <tr>
+                                <td class="spanAdd">经办业务:</td>
+                                <td><input type="text" id="Business_People" name="Business_People" class="ErpOperate_T" /></td>
+                            </tr>
+
+                            <tr>
+                                <td class="spanAdd">欧元购销合同模板代码:</td>
+                                <td><input type="text" id="PsTplCode_EUR" name="PsTplCode_EUR" class="ErpOperate_T" /></td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                    @*右边*@
+                    <div id="right">
+                        <table class="Add">
+                            <tr>
+                                <td class="spanAdd">Category:</td>
+                                <td id="selectPar">
+                                    <select id="OOS_maxprodcat" name="OOS_maxprodcat" class="ErpOperate_T"></select>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="spanAdd">其他费用料号:</td>
+                                <td><input type="text" id="OtherErpNo" name="OtherErpNo" class="ErpOperate_T" /></td>
+                            </tr>
+
+                            <tr>
+                                <td class="spanAdd">英文购销合同模板代号:</td>
+                                <td><input type="text" id="PsTplCode_En" name="PsTplCode_En" class="ErpOperate_T" /></td>
+                            </tr>
+
+                            <tr>
+                                <td class="spanAdd">LC购销合同模板代号:</td>
+                                <td><input type="text" id="PsTplCode_LC" name="PsTplCode_LC" class="ErpOperate_T" /></td>
+                            </tr>
+
+                            <tr>
+                                <td class="spanAdd">签名图片路径:</td>
+                                <td><input type="text" id="path" name="path" class="ErpOperate_T" /></td>
+                            </tr>
+
+                            <tr>
+                                <td class="spanAdd" colspan="2">
+                                    <input type="button" id="ErpOperate_Add" name="=Stock_Add" class="btn btn-default" value="Save" style="width:80px;height:35px;float:left;margin-left:30px;" />
+                                    <input type="button" id="ErpOperate_Edit" name="=Stock_Edit" class="btn btn-default" value="Update" style="width:80px;height:35px;float:left;" />
+                                    <input type="button" id="ErpOperate_Cancel" name="=Stock_Cancel" class="btn btn-default" value="Cancel" style="width:80px;height:35px;float:left;" />
+                                    <input type="hidden" id="UpdateId" />
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

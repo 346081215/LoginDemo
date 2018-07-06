@@ -1,0 +1,74 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+
+
+
+</head>
+<body>
+
+    <form action="/Basicxx/VendorOrderTracking?_=1492414248739" method="post">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box " id="form_wizard_1">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <em class="red-em" id="step1">Order Tracking</em>
+                            <em class="gray-em" id="step2" style="display:none;">Query Results</em>
+                            <em class="gray-em" id="step_ViewDetail" style="display:none;">View Detail</em>
+                            <em class="gray-em" id="step_ViewArtwork" style="display:none;">View Artwork</em>
+                            <em class="gray-em" id="step_ViewShipOrder" style="display:none;">View Shipment</em>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div id="viewer" style="width:1490px;height:768px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <script type="text/javascript">
+     $(function () {
+
+
+
+         console.log(searchURL);
+         var searchURL = $("#ReportUrl").html();
+         console.log(searchURL);
+        searchURL = searchURL.substring(1, searchURL.length);
+        var ReportUrl = searchURL.split("&")[0].split("=")[1];
+
+        var viewer = GrapeCity.ActiveReports.Viewer(
+        {
+            element: '#viewer',
+            report: {
+                id: "WebDocuments/OOSRptTpl/" + ReportUrl
+            },
+            selectedReportIndex: 0,
+            reportService: {
+                url: '/ActiveReports.ReportService.asmx'
+            },
+            uiType: 'desktop',
+            documentLoaded: function reportLoaded() {
+                console.log(viewer.pageCount);
+            },
+            reportLoaded: function (reportInfo) {
+                console.log(reportInfo.parameters);
+            },
+            error: function (error) {
+                console.log("error");
+            }
+        });
+    });
+    </script>
+
+
+
+</body>
+</html>

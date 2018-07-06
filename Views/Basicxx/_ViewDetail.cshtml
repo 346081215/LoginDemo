@@ -1,0 +1,121 @@
+﻿@using Maxim.Model.BaseModel
+@using System.Data
+@using Resources
+<div class="row-fluid">
+    <p class="select" style="font-size: 15px;">
+       @OrderQuery.OrderNo = [ @Model.Custorderno ],  @OrderQuery.MaximNo = [ @Model.oos_orderno ].
+    </p>
+    <div class="clearfix rov">
+
+        <ul class="fl main_left">
+            <li>
+                <span>@OrderQuery.PrintShop</span>:
+                @Model.Printshop
+            </li>
+            <li>
+                <span>@OrderQuery.BillTo</span>:
+                @Model.billto
+            </li>
+            <li>
+                <span>@OrderQuery.Billing_Address</span>:
+                @Model.billingaddress
+            </li>
+            <li>
+                <span>@OrderQuery.Contact</span>:
+                @Model.billcontact
+            </li>
+            <li>
+                <span>@OrderQuery.Tel</span>:
+                @Model.billcontacttel
+            </li>
+            <li>
+                <span>@OrderQuery.Order_No</span>:
+                @Model.Custorderno
+            </li>
+            <li>
+                <span>@OrderQuery.Add_Comments</span>:
+                @Model.oos_notes
+            </li>
+        </ul>
+        <ul class="fl main_right">
+            <li>
+                <span>@OrderQuery.Currency</span>:
+                @Model.Currency
+            </li>
+            <li>
+                <span>@OrderQuery.Ship_To</span>:
+                @Model.shipto
+            </li>
+            <li>
+                <span>@OrderQuery.Shipping_Address</span>:
+                @Model.shippingaddress
+            </li>
+            <li>
+                <span>@OrderQuery.Contact</span>:
+                @Model.shipcontact
+            </li>
+            <li>
+                <span>@OrderQuery.Tel</span>:
+                @Model.shipcontacttel
+            </li>
+            <li>
+                <span>@OrderQuery.Country</span>:
+                @Model.country
+            </li>
+            <li>
+                <span>@OrderQuery.Shipment_Type</span>:
+                @Model.shipmenttype
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+    <table class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+        <thead>
+            <tr class="head">
+                @{
+                    var dt = Model.OrderDetails as DataTable;
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                    {
+                        var columname = dt.Columns[i].ColumnName;
+                        <th class="center">@columname</th>
+                    }
+                }
+            </tr>
+        </thead>
+        <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all">
+            @{
+                var totalqty = 0;
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+
+                    if (Model.language == "en")
+                    {
+                        totalqty += int.Parse(dt.Rows[i]["Order Qty"].ToString());
+                    }
+                    else
+                    {
+                        totalqty += int.Parse(dt.Rows[i]["订单数量"].ToString());
+                    }
+                    <tr>
+                        @for (int j = 0; j < dt.Columns.Count; j++)
+                        {
+                            var data = dt.Rows[i][j].ToString();
+
+                            <td class="center">@data</td>
+                        }
+                    </tr>
+                }
+                <tr>
+                    <td>@OrderQuery.Totals:</td>
+                    <td>@totalqty</td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+

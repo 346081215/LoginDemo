@@ -1,0 +1,17 @@
+{
+    "brand":"品牌名称: VOE",
+    "Data":[
+        {"id": 1,"ModuleName":"原始订单导入log","ModulePath": "C:/Log/VOEOrder/Logfile"},
+        {"id": 2,"ModuleName":"建立订单log","ModulePath": "C:/Log/VOEOrder/ParseLog"},
+        {"id": 3,"ModuleName": "OrderConfirmlog","ModulePath": "C:/Log/OnlineOrder"},
+        {"id": 4,"ModuleName":"订单取消log","ModulePath": "C:/Log/OnlineOrder"},
+        {"id": 5,"ModuleName":"UrgenOrderReqlog","ModulePath": "C:/Log/xxx/"},
+        {"id": 6,"ModuleName":"基础资料log","ModulePath": "C:/Log/xxx/"},
+        {"id": 7,"ModuleName":"账号登陆Log","ModulePath": "C:/Log/xxx/"},
+        {"id": 8,"ModuleName":"提交T100订单Log","ModulePath": "C:/Log/T100PILog"},
+        {"id": 9,"ModuleName":"状态回传Log","ModulePath": "C:/Log/xxx/"},
+        {"id": 10,"ModuleName":"Pi邮发送成功Log","ModulePath": "C:/Log/Mail_SendWebSvc"},
+        {"id": 11,"ModuleName":"订单打包Log","ModulePath": "订单打包Log"},
+        {"id": 12,"ModuleName": "PI邮件service服务log","ModulePath": "C:/Log/T100PILog"}
+    ]
+ }

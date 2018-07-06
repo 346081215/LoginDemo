@@ -1,0 +1,99 @@
+﻿ 
+@{
+    ViewBag.Title = "View log";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>View Log</title>
+    <script src="~/scripts/Maxim/ViewLog.js"></script>
+    <style>
+        #test{min-height:initial;overflow-y:auto;max-height:600px;}
+        #test2{min-height:initial;overflow-y:auto;max-height:600px;}
+        #table0,#table1 {
+        width:87%;
+        }
+    </style>
+</head>
+<body>
+    <div class="row-fluid">
+        <div class="span12">
+        </div>
+        <div class="portlet box " id="form_wizard_1">
+            @*页眉*@
+            <div class="portlet-title">
+                <div class="caption">
+                    <em class="red-em" id="step1">View Log</em>
+                </div>
+            </div>
+
+            @*页面*@
+            <div class="portlet-body form">
+                @*查询*@
+                <div class="portlet-body" id="Gridview">
+                    <div id="Code" class="dataTables_wrapper form-inline" role="grid">
+                        <div class="span4">
+                            <span id="brand_span"></span>
+                            <select id="modelName_SELE" name="modelName_SELE" class="m-wrap span8">
+                                <option value="0">选择</option>
+                            </select>
+                        </div>
+                        <table class="table tab-content" id="table0">
+                            <thead>
+                                <tr>
+                                    <th>路径</th>
+                                    <th>文件夹</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodytb"></tbody>
+                        </table>
+
+                        <table class="table tab-content" id="table1">
+                            <thead>
+                                <tr>
+                                    <th>模块路径</th>
+                                    <th>文件夹</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodytb1"></tbody>
+                        </table>
+
+                        <div id="test2">
+                            <table class="table tab-content" id="table2">
+                                <thead>
+                                    <tr>
+                                        <th>模块名称</th>
+                                        <th>文件</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bodytb2"></tbody>
+                            </table>
+                        </div>
+                        <table class="table tab-content" id="table3">
+                            <thead>
+                                <tr>
+                                    <th>模块名称</th>
+                                    <th>文件</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodytb3"></tbody>
+                        </table>
+                        <br />
+                            <div id="test">
+                                <p>日志文件描述：</p>
+                                <p style="width:90%;text-align:center" id="text"> </p>
+                            </div>
+                            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

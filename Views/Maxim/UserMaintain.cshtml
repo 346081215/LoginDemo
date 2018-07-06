@@ -1,0 +1,344 @@
+﻿@using System.Data;
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UserMaintain</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }        
+        .errmsg {
+            color:red;
+            font-size:5px;
+        }
+        li {
+        cursor:pointer;
+        }
+    </style>
+    <script src="~/scripts/Maxim/UserMaintain.js"></script>
+
+
+</head>
+<body>
+    <div>
+        <div>
+            <p>
+                <span>Username:</span> <input type="text" id="inputusername" value="@ViewBag.username" placeholder="登陆帐号 " />
+                @*<span>是否有下级客户:</span> <select type="text" id="IsHaveSubCustomer">
+                <option value="">--Please Select--</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                </select>*@
+                 <button type="button" class="btn" id="btnQuery" style="border: 1px solid ;width: 170px;margin-left:0;" onclick="Serach()">Query</button>
+                <button type="button" class="btn" id="newUser" name="newUser" onclick="CreatenewUser()">NewUser</button>
+            </p>
+            
+        </div>
+        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                <thead>
+                    <tr role="row">
+                        <th>Seq</th>
+                        <th>UserName</th>
+                        <th>Pwd</th>
+                        <th>GroupName</th>
+                        <th>RoleName</th>
+                        <th>CustomerCode</th>
+                        <th>IsHaveSubCustomer</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all">
+                    @{
+                        DataTable dt = ViewBag.UserData as DataTable;
+                        int pagesize = Convert.ToInt32(ViewBag.PageSize);
+                        int PageIndex = Convert.ToInt32(ViewBag.PageIndex);
+                        int needAddSeq = (PageIndex - 1) * pagesize;
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            <tr>   
+                                <td>@((i + 1) + @needAddSeq)</td>
+                                <td>@dt.Rows[i]["OOS_username"]</td>
+                                <td>@dt.Rows[i]["OOS_password"].ToString()</td>
+                                <td>@dt.Rows[i]["GroupName"].ToString()</td>
+                                <td>@dt.Rows[i]["Rolename"].ToString()</td>
+                                <td>@dt.Rows[i]["CustomerCode"].ToString()</td>
+                                <td>@dt.Rows[i]["ParentCustomerId"].ToString()</td>
+                                <td>
+                                    @*@dt.Rows[i]["OOS_username"],@dt.Rows[i]["RoleGroupId"]*@                             
+                                    <input type="button" name="ViewPassWord" id="ViewPassWord" style="width:80px;" value="修改"
+                                            hidOOS_username="@dt.Rows[i]["OOS_username"]" class="btn" 
+                                            hidCustomerId="@dt.Rows[i]["CustomerId"]"
+                                            hidBrandId="@dt.Rows[i]["BrandId"]"                                
+                                            hidRoleGroupId="@dt.Rows[i]["RoleGroupId"]"
+                                            @*hidEmail="@dt.Rows[i]["ContactPerson"]"*@
+                                           hidEmail="@dt.Rows[i]["InternalEMailAddress"]"
+                                            onclick="ChangePwd(this)"/>
+                                 
+                                </td>
+                                <td>
+                                    
+                                    @*@dt.Rows[i]["OOS_username"],@dt.Rows[i]["RoleGroupId"]*@
+                                    <input type="button" name="SelectLogin" id="SelectLogin" style="width:80px;" value="登录记录" class="btn" SystemUserId="@dt.Rows[i]["SystemUserId"]" onclick="SelectLoginUsers(this)" />
+
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+            </table>
+            <div class="span4">
+                <div class="mypage">
+                    <ul>
+                        <li id="PageIndex" onclick="ChagePage(1)"><<</li>
+                        <li id="Pageup" onclick="ChagePage(@ViewBag.PageIndex-1==0?1:@ViewBag.PageIndex-1 )"><</li>
+                        <li>
+                            <input type="text" id="nowpage" value="@ViewBag.PageIndex" @*onkeyup="showValue()"*@ />
+                            <span id="OriNowPage" hidden>@ViewBag.PageIndex</span>
+                        </li>
+                        <li>/</li>
+                        <li><i id="TotalPageCount">@ViewBag.PageCount</i></li>
+                        <li id="Pagewown" onclick="ChagePage(@ViewBag.PageIndex+1 >= @ViewBag.PageCount?@ViewBag.PageCount:@ViewBag.PageIndex+1) ">></li>
+                        <li id="PageLast" onclick="ChagePage(@ViewBag.PageCount==0?1:@ViewBag.PageCount)">>></li>
+                        <li id="PageGO" onclick="Go()">GO</li>
+                        <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                    </ul>
+                </div>
+
+            </div>        
+        </div>
+    </div>
+    @*style="position: absolute;width:400px;height:200px;left:50%;top:50%;
+        margin-left:-200px;margin-top:-100px;border:1px solid #00F"*@
+    <!-- 修改密码 -->
+    <div id="UpdatePassword" style="display:none;">
+        @*第一行*@
+        <div class="row-fluid">
+            <div class="span2 span2_hide">
+                <div class="control-group">
+                    <label class="control-label" for="firstName"></label>
+                    <div class="controls">
+                    </div>
+                </div>
+            </div>
+            <div class="span4 ">
+                <span>UserName:</span>
+                <input type="text" name="user" id="user" style="width:290px;" readonly="readonly" />
+            </div><div class="span4 ">
+                <span>PassWord:</span>
+                      <input type="text" name="passw" id="passw" style="width:290px;" />
+            </div>
+        </div>
+        @*第二行*@
+        <div class="row-fluid">
+            <div class="span2 span2_hide">
+                <div class="control-group">
+                    <label class="control-label" for="firstName"></label>
+                    <div class="controls">
+                    </div>
+                </div>
+            </div>
+            <div class="span4 ">
+                <span>Brand Code:</span>
+                <select id="newBrandId" style="width:303px;">
+                    <option selected="selected"></option>
+                    @{
+                        var BrandId = ViewBag.BagBrandId as DataTable;
+                        for (int i = 0; i < BrandId.Rows.Count; i++)
+                        {
+                            var row1 = BrandId.Rows[i];
+                            <option value="@row1["BrandId"].ToString()">@row1["Name"].ToString()</option>
+                        }
+                    }
+
+                </select>
+            </div><div class="span4 ">
+                <span>Customer Code:</span>
+                      <select id="newCustomerId" style="width:303px;">
+                          <option selected="selected"></option>
+                          @{
+                              var CustomerId = ViewBag.BagCustomerId as DataTable;
+                              for (int i = 0; i < CustomerId.Rows.Count; i++)
+                              {
+                                  var row = CustomerId.Rows[i];
+                                  <option value="@row["CustomerId"].ToString()">@row["CustomerNO"].ToString()  @row["Name"].ToString()</option>
+                              }
+                          }
+                      </select>
+            </div>
+        </div>
+        @*第三行*@
+        <div class="row-fluid">
+            <div class="span2 span2_hide">
+                <div class="control-group">
+                    <label class="control-label" for="firstName"></label>
+                    <div class="controls">
+                    </div>
+                </div>
+            </div>
+            <div class="span4 ">
+                <span>RoleGroup Code:</span>
+                <select id="newRoleGroupId" style="width:303px;">
+                    <option value="" selected="selected">--请选择--</option>
+                    @{
+                        var RoleGroupId = ViewBag.BagRoleGroupId as DataTable;
+                        for (int i = 0; i < RoleGroupId.Rows.Count; i++)
+                        {
+                            var row2 = RoleGroupId.Rows[i];
+                            <option value="@row2["@RoleGroupId"]">@row2["@Name"]</option>
+                        }
+                    }
+                </select>
+            </div><div class="span4 ">
+                <span>Email:</span>
+                <input type="text" name="InternalEMailAddress" id="InternalEMailAddress" style="width:290px;" />
+            </div>
+        </div>
+
+        @*<dl>        
+            <dt style="font-size:larger;">UserName:</dt>
+            <dd><input type="text" name="user" id="user" style="width:290px;" readonly="readonly" /></dd>
+            <dt style="font-size:larger;">PassWord:</dt>
+            <dd><input type="text" name="passw" id="passw" style="width:290px;" /></dd>
+            <dt style="font-size:larger;"><i>Customer Code:</i></dt>
+            <dd style="width:310px;">
+                <select id="newCustomerId" style="width:303px;">
+                    <option selected="selected"></option>
+                    @{
+                        var CustomerId = ViewBag.BagCustomerId as DataTable;
+                        for (int i = 0; i < CustomerId.Rows.Count; i++)
+                        {
+                            var row = CustomerId.Rows[i];
+                            <option value="@row["CustomerId"].ToString()">@row["VendorID"].ToString()  @row["Name"].ToString()</option>
+                        }
+                    }
+                </select>
+            </dd>
+            <dt style="font-size:larger;"><i>Brand Code:</i></dt>
+            <dd style="width:310px;">
+                <select id="newBrandId" style="width:303px;">
+                    <option selected="selected"></option>
+                    @{
+                        var BrandId = ViewBag.BagBrandId as DataTable;
+                        for (int i = 0; i < BrandId.Rows.Count; i++)
+                        {
+                            var row1 = BrandId.Rows[i];
+                            <option value="@row1["BrandId"].ToString()">@row1["Name"].ToString()</option>
+                        }
+                    }
+
+                </select>
+            </dd>
+            <dt style="font-size:larger;"><i>RoleGroup Code:</i></dt>
+            <dd style="width:310px;">
+                <select id="newRoleGroupId" style="width:303px;">
+                    <option value="" selected="selected">--请选择--</option>
+                    @{
+                        var RoleGroupId = ViewBag.BagRoleGroupId as DataTable;
+                        for (int i = 0; i < RoleGroupId.Rows.Count; i++)
+                        {
+                            var row2 = RoleGroupId.Rows[i];
+                            <option value="@row2["@RoleGroupId"]">@row2["@Name"]</option>
+                        }
+                    }
+                </select>
+            </dd>
+        </dl>*@
+        <p>
+            <button type="button" class="btn" onclick="submitPassword()" id="btnUpdatePwd">Submit</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn" onclick="breakPassword()" id="btnBreank">Break</button>
+        </p>
+    </div>
+    <!-- 新建 用户-->
+    <div id="newUserPanel" style="display:none;">
+        <dl>
+            <dt><i>UserName:</i></dt>
+            <dd><input type="text" name="newUserName" id="newUserName" onblur="userNameblur()" /><span style="display:none;" class="errmsg" id="newUserNameMsg"></span></dd>
+            <dt><i>Pass Word:</i></dt>
+            <dd><input type="password" name="newPwd" id="newPwd" onblur="PassWordblur()" /><span style="display:none" id="newPwdMsg" class="errmsg"></span></dd>
+            <dt><i>Full Name:</i></dt>
+            <dd><input type="text" name="newFullName" id="newFullName" /><span style="display:none" id="newFullNameMsg" class="errmsg"></span></dd>
+            @*<dt><i>Customer Code:</i></dt>
+            <dd><input type="text" name="newCustomerId" id="newCustomerId" /></dd>
+            <dt><i>Brand Code:</i></dt>
+            <dd><input type="text" name="newBrandId" id="newBrandId" /></dd>*@
+        </dl>
+        <p>
+            <button type="button" class="btn" id="newUserSubmit" name="newUserSubmit" onclick="CreateNewUserSubmit();">Submit</button>&nbsp;
+            <button type="button" class="btn" id="newUserBreak" name="newUserBreak" onclick="newUserBreak();">Break</button>
+        </p>
+    </div>   
+    <!--查看该用户历史登录信息-->
+    <div id="LoginDIV" style="display:@ViewBag.ds">
+        <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+            <thead>
+                <tr role="row">
+                    <th>ID</th>
+                    <th>UserName</th>
+                    <th>FunctionName</th>
+                    <th>Action</th>
+                    <th>Time</th>
+                    <th>IP</th>
+                </tr>
+            </thead>
+            <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all">
+                @{
+                    DataTable dtT = ViewBag.Tbl_UserLoginLogByID as DataTable;
+                    if (dtT != null)
+                    {
+                        for (int i = 0; i < dtT.Rows.Count; i++)
+                        {
+                        <tr>
+                            <td>@dtT.Rows[i]["ID"]</td>
+                            <td>@dtT.Rows[i]["UserName"].ToString()</td>
+                            <td>@dtT.Rows[i]["FunctionName"].ToString()</td>
+                            <td>@dtT.Rows[i]["Action"].ToString()</td>
+                            <td>@dtT.Rows[i]["Time"]</td>
+                            <td>@dtT.Rows[i]["IP"].ToString()</td>
+                        </tr>
+                            }
+                        }
+                    }
+            </tbody>
+
+        </table>
+        <div class="span4">
+            <div class="mypage">
+                <ul>
+                    <li  id="PageIndex_Login" onclick="ChagePage_Login(1)"><<</li>
+                    <li  id="Pageup_Login_Login" onclick="ChagePage_Login(@ViewBag.pageIndex_Login-1==0?1:@ViewBag.pageIndex_Login-1 )"><</li>
+                    <li>
+                        <input type="text" id="nowpage_Login" value="@ViewBag.pageIndex_Login" onkeyup="showValue()" />
+                        <span id="OriNowPage_Login" hidden>@ViewBag.pageIndex_Login</span>
+                    </li>
+                    <li>/</li>
+                    <li><i id="TotalPageCount_Login">@ViewBag.PageCount_Login</i></li>
+                    <li id="Pagewown_Login" onclick="ChagePage_Login(@ViewBag.pageIndex_Login+1 >= @ViewBag.PageCount_Login?@ViewBag.PageCount_Login:@ViewBag.pageIndex_Login+1) ">></li>
+                    <li id="PageLast_Login" onclick="ChagePage_Login(@ViewBag.PageCount_Login==0?1:@ViewBag.PageCount_Login)">>></li>
+                    <li id="PageGO_Login" onclick="Go_Login()">GO</li>
+                    <li><input id="pc_Login" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount_Login" type="hidden" value=1></li>
+                </ul>
+            </div>
+            <p>
+                <button type="button" class="btn" onclick="breakTbl_UserLog()" id="btnBreank">Break</button>
+            </p>
+        </div>      
+    </div>
+    <!-- 修改角色组 和角色-->
+    <div id="ChangeGroupRolePanel">       
+        <div id="NotownRolePanel">
+            <!-- 没有拥有的角色信息 -->
+
+        </div>
+        <div id="HaveRolePanel">
+            <!-- 已拥有的角色信息 -->
+        </div>
+    </div>
+</body>
+</html>

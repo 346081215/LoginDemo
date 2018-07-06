@@ -1,0 +1,326 @@
+﻿@using System.Data;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/Content/js/loading.js"></script>
+    <title>BrandLabelTypeManatain</title>
+    <style type="text/css">
+        .main_right li span {
+        margin-top:7.8px;
+        width:initial;
+        }
+        .main_left li span {
+         margin-top:7.8px;
+        width:initial;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            document.body.scrollTop = 0;
+            GetProductCode();
+
+            //分页
+            $('#PageIndex').click(function () {
+                //给文本框赋值都为1
+                document.getElementById("pc").value = 1;
+                document.getElementById("nowpage").value = 1;
+                Query();
+            });
+            //向上一个页翻
+            $('#Pageup').click(function () {
+                //首先获取当前输入文本框的值
+                var nowpage = document.getElementById("nowpage").value;
+                //parseInt() 函数可解析一个字符串，并返回一个整数。（也就是输入的内容必须是数字）
+                var newpage = parseInt(nowpage);
+                if (parseInt(nowpage) > 1) {
+                    newpage = parseInt(nowpage) - 1;
+                    document.getElementById("pc").value = newpage;
+                    document.getElementById("nowpage").value = newpage;
+                    Query();
+                }
+            });
+            //向下一个页翻
+            $('#Pagewown').click(function () {
+                var nowpage = document.getElementById("nowpage").value;
+                var maxpage = parseInt(document.getElementById("PageTotalCount").value);
+                var newpage = parseInt(nowpage);
+                //判断，如果输入的文本框的值小于最大的页数 2 3 2<3 3=2+1
+                if (parseInt(nowpage) < maxpage) {
+                    newpage = parseInt(nowpage) + 1
+                };
+                document.getElementById("pc").value = newpage;
+                document.getElementById("nowpage").value = newpage;
+                Query();
+            });
+            //翻到最后
+            $('#PageLast').click(function () {
+                var maxpage = parseInt(document.getElementById("PageTotalCount").value);
+                document.getElementById("pc").value = maxpage;
+                document.getElementById("nowpage").value = maxpage;
+                Query();
+            });
+            $('#PageGO').click(function () {
+                var nowpage = parseInt(document.getElementById("nowpage").value);
+                var maxpage = parseInt(document.getElementById("PageTotalCount").value) + 1;
+                if (nowpage > 0 && nowpage < maxpage) {
+                    document.getElementById("pc").value = document.getElementById("nowpage").value;
+                    Query();
+                }
+                else {
+
+                    $("#labtxt").html("wrong page no.");
+                    showDiv();
+                    document.getElementById("nowpage").value = 1;
+                }
+            });
+            $("#nowpage").keyup(function () {
+                var t = $("#nowpage").val();
+                //判断是否是数字
+                if (isNaN(t)) {
+                    $("#labtxt").html("wrong page no.");
+                    showDiv();
+                    document.getElementById("nowpage").value = 1;
+                }
+            });
+
+
+            $("button#btnQuerys").click(Query)
+            $("#btnADD").click(function () {
+                $("#DivEditInfo").show();
+                $("#hidID").val("");
+                $("#EditSelbrand").get(0).selectedIndex = 0;
+                $("#SelLabelType").get(0).selectedIndex = 0;
+                $("#SelProductCode").get(0).selectedIndex = 0;
+            })
+            $("button#EditSave").click(function () {
+                $.ajax({
+                    url: "/ECI/EditBrandLabelType",
+                    dataType: "json",
+                    type: "post",
+                    data: {
+                        id: $("#hidID").val(),
+                        Brand: $("#EditSelbrand").val(),
+                        LabelType: $("#SelLabelType").val(),
+                        ProductCode: $("#SelProductCode").val()
+                    },
+                    success: function (result) {
+                        debugger;
+                        if (result.status == true) {
+                            Query();
+                            $("#DivSuccess").show().hide(3500)
+                        } else if (result.status == "fail") {
+                            $("#labtxt").html("This Item Has Been existsed")
+                            showDiv();
+                        } else {
+                            $("#labtxt").html("Save failed")
+                            showDiv();
+                        }
+                    }
+                })
+            })
+            $("#EditCancle").click(function () {
+                $("#DivEditInfo").hide();
+            })
+        })
+        function GetProductCode() {
+            $.ajax({
+                url: "/ECI/GetProductCode",
+                dataType: "json",
+                type: "get",
+                data: {
+                    Brand: $("#EditSelbrand").val(),
+                    LabelType: $("#SelLabelType").val(),
+                },
+                success: function (result) {
+                    if (result.table.length > 0) {
+                        var html = "";
+                        $.each(JSON.parse(result.table), function (index, item) {
+                            html += "<option value='" + item.productcode + "'>" + item.productcustno + "</option>";
+                        })
+                        $("#SelProductCode").html(html);
+                    }
+                }
+            })
+        }
+
+        function FunEdit(id) {
+            $.ajax({
+                url: "/ECI/EditBrandLabelType",
+                dataType: "json",
+                type: "get",
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                    if (result.table.length > 0) {
+                        $("#hidID").val(id);
+                        $.each(JSON.parse(result.table), function (index, item) {
+                            $("#EditSelbrand").val(item.Brand);
+                            $("#SelLabelType").val(item.LabelType);
+                            $("#SelProductCode").val(item.ProductCode);
+                        })
+                        $("#DivEditInfo").show();
+                    }
+                }
+            })
+        }
+
+        function FunDelete(id) {
+            if (!window.confirm("Do You Sure To Delete This Item?")) {
+                return;
+            }
+            $.ajax({
+                url: "/ECI/DeleteBrandLabelType",
+                dataType: "json",
+                type: "post",
+                data: {
+                    id:id
+                },
+                success: function (result) {
+                    if (result.status != true) {
+                        $("#labtxt").html("Delete failed")
+                        showDiv();
+                    } else {
+                        Query();
+                        $("#DivSuccess").show().hide(3500)
+                    }
+                }
+            })
+        }
+
+
+        function Query() {
+            GetProductCode();
+            showloading();
+            $("#OrderDetail").html("")
+            $.ajax({
+                url: "/ECI/GetBrandLabelTypeList",
+                dataType: "json",
+                type: "get",
+                data: {
+                    PC: $("#pc").val(),
+                    Brand: $("#Selbrand").val()
+                },
+                success: function (result) {
+                    hideloading();
+                    debugger;
+                    if (result.table.length > 1) {
+                        var html = "";
+                        $.each(JSON.parse(result.table), function (index, item) {
+                            html += "<tr>";
+                            html += "<td style='display:none'>" + item.ID + "</td>";
+                            html += "<td>" + (index + 1) + "</td>";
+                            html += "<td>" + item.Brand + "</td>";
+                            html += "<td>" + item.LabelType + "</td>";
+                            html += "<td>" + item.ProductCode + "</td>";
+                            html += "<td><button id='Edit" + index + "' type='button' class='btn btn-default glyphicon glyphicon-plus'  onclick='FunEdit(" + item.ID + ")'>Edit</button> <button id='Delete" + index + "' type='button' class='btn btn-default glyphicon glyphicon-trash' onclick='FunDelete(" + item.ID + ")'>Delete</button></td>";
+                            html += "</tr>";
+                        })
+                        $("#QueryResult").show();
+                        $("#OrderDetail").html(html)
+                        $("#TotalPageCount").html(result.totalCount)
+                        $("#PageTotalCount").val(result.totalCount)
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+    <div style="float:left;align-items:center; position:absolute;width:100%">
+        <div id="DivSuccess" class="alert alert-success alert-dismissable" style="width:30%;margin-left:auto;margin-right:auto;display:none;">
+            <button type="button" class="close" data-dismiss="alert" ria-hidden="true">&times;</button>
+            <font id="SuccessInfo">Success</font>
+        </div>
+    </div>
+    <div id="Page1" style="clear:left">
+        <div id="OrderQuery" style="width:100%;height:70px;">
+            <ul class="main_right">
+                <li><span>Brand :</span><select id="Selbrand"><option value="">--All--</option>
+                @{  
+                    DataTable table = ViewBag.BrandTable as DataTable;
+                    for (int i = 0; i < table.Rows.Count; i++)
+                    {
+                        <option value="@table.Rows[i][0].ToString()">@table.Rows[i][0].ToString()</option>
+                    }
+                }
+                 </select>
+                </li>
+            </ul>
+            <ul class="main_left">
+                <li><button type="button" id="btnQuerys" class="btn btn-default glyphicon glyphicon-search"><font>Query</font></button> <button type="button" id="btnADD" class="btn btn-default glyphicon glyphicon-plus">ADD</button></li>
+            </ul>
+        </div>
+        <div class="clearfix main_table" id="QueryResult" style="display:none;min-height:10px;">
+            <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                <table id="OrdTable" class="table table-striped table-responsive">
+                    <thead>
+                        <tr class="head">
+                            <th style="display:none">ID</th>
+                            <th class="center">Line</th>
+                            <th class="center">Brand</th>
+                            <th class="center">LabelType</th>
+                            <th class="center">ProductCode</th>
+                            <th class="center"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="OrderDetail" id="OrderDetail"></tbody>
+                </table>
+                <div class="span4">
+                    <div class="mypage">
+                        <ul>
+                            <li id="PageIndex"><<</li>
+                            <li id="Pageup"><</li>
+                            <li><input type="text" id="nowpage" style="height: 30px;" value="1"/></li>
+                            <li>/</li>
+                            <li><i id="TotalPageCount">0</i></li>
+                            <li id="Pagewown">></li>
+                            <li id="PageLast">>></li>
+                            <li id="PageGO">GO</li>
+                            <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="DivEditInfo" style="display:none;">
+            <input type="hidden" id="hidID" />
+            <ul class="main_left" style="width:400px;">
+                <li><span class="span4">Brand :</span><select id="EditSelbrand" onchange="GetProductCode()">
+            @{
+                DataTable table2 = ViewBag.BrandTable as DataTable;
+                for (int i = 0; i < table2.Rows.Count; i++)
+                {
+                    <option value="@table2.Rows[i][0].ToString()">@table2.Rows[i][0].ToString()</option>
+                }
+            }</select></li>
+                
+                <li><span class="span4">LabelType:</span>
+                    <select id="SelLabelType" onchange="GetProductCode()">
+                        <option value="Hang_Tag_variable_Label">Hang_Tag_variable_Label</option>
+                        <option value="Hang_Tag_with_Fibers">Hang_Tag_with_Fibers</option>
+                        <option value="Care_Compostion_Label">Care_Compostion_Label</option>
+                        <option value="Woven_Size_Label">Woven_Size_Label</option>
+                        <option value="logistic_Label">logistic_Label</option>
+                        <option value="None_Variable">None_Variable</option>
+                    </select></li>
+                <li><span class="span4">ProductCode:</span><select id="SelProductCode"></select></li>
+                <li><button id="EditSave" class="btn btn-default glyphicon glyphicon-ok">Save</button> <button id="EditCancle" class="btn btn-default glyphicon glyphicon-remove">Cancle</button></li>
+            </ul>
+
+
+
+        </div>
+    </div>
+</body>
+</html>

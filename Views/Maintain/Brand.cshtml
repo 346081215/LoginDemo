@@ -1,0 +1,342 @@
+﻿@using System.Data;
+@using Maxim.Model.BaseModel
+@model Brand_Model
+@{
+    ViewBag.Title = "Brand";
+    Layout = null;
+}
+<script type="text/javascript" src="~/scripts/Maintain/Brand.js"></script>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="portlet box " id="xm">
+            <div class="portlet-title">
+                <div class="caption">
+                    <em class="red-em" id="step1">Brand</em>
+                    <em class="red-em" id="step2" style="display:none">AddBrand</em>
+                    <em class="red-em" id="step3" style="display:none">EditBrand</em>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="all">
+        BrandId:@Html.DropDownListFor(x => x.BrandId_sel, Model.Brandlist, new { @class = "m-wrap span3" })
+        <button type="submit" class="btn" id="btnQuery" style="border: 1px solid ;width: 170px;margin-left:0;" onclick="SelectAll()">Query</button>
+        <button type="button" class="btn" id="newBrand" name="newBrand" onclick="return CreatenewBrand();">NewBrand</button>
+        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+            <table id="ShowDetailShowDataSetting" class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+                <thead>
+                    <tr class="head">
+                        <th class="center">BrandId</th>
+                        <th class="center">Name</th>
+                        <th class="center">CodeName</th>
+                        <th class="center">ContactAddress</th>
+                        <th class="center">ContactPerson</th>
+                        <th class="center">ContactTel</th>
+                        <th class="center">Country</th>
+                        <th class="center">CountryCode</th>
+                        <th class="center">LogoUrl</th>
+                        <th class="center">ParentBrandId</th>
+                        <th class="center">IsEnabled</th>
+                        <th class="center">EnableERPFunc</th>
+                        <th class="center">EnableBigVndFunc</th>
+                        <th class="center">EnableReviseQtyFunc</th>
+                        <th class="center">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="BrandDetail"></tbody>
+            </table>
+            @*分页*@
+            <div class="span4">
+                <div class="mypage">
+                    <ul>
+                        <li id="PageIndex"><<</li>
+                        <li id="Pageup"><</li>
+                        <li><input type="text" id="nowpage" value="1" /></li>
+                        <li>/</li>
+                        <li><i id="TotalPageCount">0</i></li>
+                        <li id="Pagewown">></li>
+                        <li id="PageLast">>></li>
+                        <li id="PageGO">GO</li>
+                        <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+<div id="insertBrand" style="display:none">
+    @*第一行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>BrandId:</span>
+            <input type="text" id="BrandId" name="BrandId" class="m-wrap span8" style="background-color:#ffffff;"/>
+        </div><div class="span4 ">
+            <span>Name:</span>
+            <input type="text" id="Name" name="Name" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第二行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>CodeName:</span>
+            <input type="text" id="CodeName" name="CodeName" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div><div class="span4 ">
+            <span>ContactAddress:</span>
+            <input type="text" id="ContactAddress" name="ContactAddress" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第三行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>ContactPerson:</span>
+            <input type="text" id="ContactPerson" name="ContactPerson" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div><div class="span4 ">
+            <span>ContactTel:</span>
+            <input type="text" id="ContactTel" name="ContactTel" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第四行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>Country:</span>
+            <input type="text" id="Country" name="Country" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div><div class="span4 ">
+            <span>CountryCode:</span>
+            <input type="text" id="CountryCode" name="CountryCode" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第五行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>LogoUrl:</span>
+            <input type="text" id="LogoUrl" name="LogoUrl" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div><div class="span4 ">
+            <span>ParentBrandId:</span>
+            <input type="text" id="ParentBrandId" name="ParentBrandId" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第六行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>Notes:</span>
+            <input type="text" id="Notes" name="Notes" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+        <div class="span4 ">
+            <span>EnableERPFunc:</span>
+            <input type="radio" id="EnableERPFunc0" name="EnableERPFunc" value="false" style="background-color:#ffffff;" checked="checked" /><font style="font-size:20px;">false</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="EnableERPFunc1" name="EnableERPFunc" value="true"  style="background-color:#ffffff;" /><font style="font-size:20px;">true</font>
+        </div>
+    </div>
+    @*第八行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>EnableBigVndFunc:</span>
+            <input type="radio" id="EnableBigVndFunc0" name="EnableBigVndFunc" value="false" style="background-color:#ffffff;" checked="checked"/><font style="font-size:20px;">false</font>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="EnableBigVndFunc1" name="EnableBigVndFunc" value="true" style="background-color:#ffffff;"/><font style="font-size:20px;">true</font>
+        </div>
+        <div class="span4 ">
+            <span>EnableReviseQtyFunc:</span>
+            <input type="radio" id="EnableReviseQtyFunc0" name="EnableReviseQtyFunc" value="false" style="background-color:#ffffff;" checked="checked" /><font style="font-size:20px;">false</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="EnableReviseQtyFunc1" name="EnableReviseQtyFunc" value="true" style="background-color:#ffffff;" /><font style="font-size:20px;">true</font>
+        </div>
+    </div>
+    @*保存和返回按钮*@
+    <div class="row-fluid" id="SaveAt">
+        <div class="span3 span2_hide">
+        </div>
+        <div class="span3">
+            <button type="button" id="SaveBrand_Add" name="SaveBrand_Add" class="btn btn-default" value="Save" onclick="funSaveBrand_Add()">Save</button>
+            <button type="button" onclick="ReturnIndex()" name="ReturnIndex" class="btn btn-default" value="Query">Return</button>
+        </div>
+    </div>
+</div>
+<div id="updataBrand" style="display:none">
+    @*第一行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>BrandId:</span>
+            <input type="text" id="BrandId_u" name="BrandId_u" class="m-wrap span8" style="background-color:#ffffff;" readonly="readonly" />
+        </div><div class="span4 ">
+            <span>Name:</span>
+            <input type="text" id="Name_u" name="Name_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第二行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>CodeName:</span>
+            <input type="text" id="CodeName_u" name="CodeName_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div><div class="span4 ">
+            <span>ContactAddress:</span>
+            <input type="text" id="ContactAddress_u" name="ContactAddress_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第三行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>ContactPerson:</span>
+            <input type="text" id="ContactPerson_u" name="ContactPerson_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div><div class="span4 ">
+            <span>ContactTel:</span>
+            <input type="text" id="ContactTel_u" name="ContactTel_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第四行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>Country:</span>
+            <input type="text" id="Country_u" name="Country_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div><div class="span4 ">
+            <span>CountryCode:</span>
+            <input type="text" id="CountryCode_u" name="CountryCode_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第五行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>LogoUrl:</span>
+            <input type="text" id="LogoUrl_u" name="LogoUrl_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div><div class="span4 ">
+            <span>ParentBrandId:</span>
+            <input type="text" id="ParentBrandId_u" name="ParentBrandId_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+    </div>
+    @*第六行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>Notes:</span>
+            <input type="text" id="Notes_u" name="Notes_u" class="m-wrap span8" style="background-color:#ffffff;" />
+        </div>
+        <div class="span4 ">
+            <span>EnableERPFunc:</span>
+            <input type="radio" id="EnableERPFunc0_u" name="EnableERPFunc_u" value="false" style="background-color:#ffffff;" /><font style="font-size:20px;">false</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="EnableERPFunc1_u" name="EnableERPFunc_u" value="true" style="background-color:#ffffff;" /><font style="font-size:20px;">true</font>
+        </div>
+    </div>
+    @*第八行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>EnableBigVndFunc:</span>
+            <input type="radio" id="EnableBigVndFunc0_u" name="EnableBigVndFunc_u" value="false" style="background-color:#ffffff;" /><font style="font-size:20px;">false</font>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="EnableBigVndFunc1_u" name="EnableBigVndFunc_u" value="true" style="background-color:#ffffff;" /><font style="font-size:20px;">true</font>
+        </div>
+        <div class="span4 ">
+            <span>EnableReviseQtyFunc:</span>
+            <input type="radio" id="EnableReviseQtyFunc0_u" name="EnableReviseQtyFunc_u" value="false" style="background-color:#ffffff;" /><font style="font-size:20px;">false</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="EnableReviseQtyFunc1_u" name="EnableReviseQtyFunc_u" value="true" style="background-color:#ffffff;" /><font style="font-size:20px;">true</font>
+        </div>
+    </div>
+    @*保存和返回按钮*@
+    <div class="row-fluid" id="SaveAt">
+        <div class="span3 span2_hide">
+        </div>
+        <div class="span3">
+            <button type="button" id="SaveBrand_u" name="SaveBrand_u" class="btn btn-default" value="Save" onclick="funSaveBrand_u()">Save</button>
+            <button type="button" onclick="ReturnIndex()" name="ReturnIndex" class="btn btn-default" value="Query">Return</button>
+            <input id="EditSCompanyID_U" name="EditSCompanyID_U" type="hidden" />
+         </div>
+    </div>
+</div>
+
+

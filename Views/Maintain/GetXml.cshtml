@@ -1,0 +1,39 @@
+﻿@using Maxim.Model.BaseModel;
+@using System.Data;
+@{
+    ViewBag.Title = "GetXml";
+    Layout = null;
+}
+<div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+    <table class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+        <thead>
+            <tr class="head">
+                @{
+                    var dt = Model.xml as DataTable;
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                    {
+                        var columname = dt.Columns[i].ColumnName;
+                        <th class="center">@columname</th>
+                    }
+                }
+            </tr>
+        </thead>
+        <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all">
+            @{
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    <tr>
+                        @for (int j = 0; j < dt.Columns.Count; j++)
+                        {
+                            var data = dt.Rows[i][j].ToString();
+                            <td class="center">@data</td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+

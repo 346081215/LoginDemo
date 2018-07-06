@@ -1,0 +1,168 @@
+﻿@using Maxim.Model.ECI
+@using Maxim.Model.BaseModel
+@model CarelableOrderUploadBind
+@{
+    ViewBag.Title = "OriOrderQuery";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>OriOrderQuery</title>
+
+    <script src="~/scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/ECI/OriOrderQuery.js"></script>
+    <script src="~/Content/js/loading.js"></script>
+    <style type="text/css">
+        #OrderQuery ul li {
+        line-height:24px;
+        margin-top:10px;
+        }
+        .cust_ULleft li span {
+        width:110px;
+        margin-top:8px;
+        }
+        .cust_ULright li span {
+        width:60px;
+        margin-top:8px;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            document.body.scrollTop = 0;
+            $.ajax({
+                url: "/ECI/GetDepartment",
+                dataType: "json",
+                type: "get",
+                success: function (data) {
+                    var html = "";
+                    $.each(data.DepartList, function (index, item) {
+                        html += "<option value='" + item.Value + "'>" + item.Text + "</option>";
+                    })
+                    $("#SelDepart").html(html)
+                    $("#SelDepart").trigger("change");
+                }
+            })
+
+            $("#SelDepart").change(function () {
+                $("#SelBrand").html("");
+                $.ajax({
+                    url: "/ECI/GetBrandByDepartment",
+                    dataType: "json",
+                    type: "get",
+                    data: {
+                        depart: this.value
+                    },
+                    success: function (data) {
+                        var html = "";
+                        $.each(data.BrandList, function (index, item) {
+                            html += "<option value='" + item.Value + "'>" + item.Text + "</option>";
+                        })
+                        $("#SelBrand").html(html)
+                    }
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+    <form id="frmOrderQuery1" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="txtformatid" value="@ViewBag.FormatId" />
+        @RenderPage("~/Views/Shared/PopDiv.cshtml")
+        @RenderPage("~/Views/Shared/loading.cshtml")
+
+        <div id="page-inner">
+            <div class="main_body">
+
+                <div id="portlet-title" class="portlet-title" style="background-color:black;margin-bottom: 0px;">
+                    <h2 class="title clearfix">
+                        <em id="step1" class="red-em">Order PO List</em>
+                        <em id="step2" class="gray-em" style="display:none;">Order PO</em>
+                        <em id="step3" class="gray-em" style="display:none">Fiber and Washing</em>
+                        <em id="step4" class="gray-em" style="display:none">Saved successfully!</em>
+                    </h2>
+                </div>
+                <div id="Page1">
+                    <div id="OrderQuery">
+                        <ul class="main_left cust_ULleft">
+                            <li><span>Department  :</span><select id="SelDepart"><option value="">--Please Select--</option></select></li>
+                            <li><span>PO_Number:</span><input type="text" id="txtOrder_Number" class="m-wrap span4"  style="background-color:white;"/></li>
+                            
+                        </ul>
+                        <ul class="main_right cust_ULright">
+                            <li><span>Brand :</span><select id="SelBrand"><option value="">--Please Select--</option></select><input type="hidden" id="hidBrand"/></li>
+                            <li><span>Vendor:</span><input type="text" id="txtvendor" class="m-wrap span4" readonly="readonly" value="@ViewBag.Vendor"/></li>
+                        </ul>
+                        <ul class="main_left cust_ULleft">
+                            <li><button type="button" id="btnQuery" class="btn btn-default">Query</button></li>
+                        </ul>
+
+                    </div>
+                    <div class="clearfix main_table" id="page-inner2_Org" style="display:none">
+                        <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                            <table id="OrdTable" class="table table-striped table-responsive">
+                                <thead>
+                                    <tr class="head">
+                                        <th class="center">Line</th>
+                                        <th class="center" style="display:none">FileDataLogID</th>
+                                        <th class="center">PO_Number</th>
+                                        <th class="center">CreateTime</th>
+                                        <th class="center"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail" id="OrderDetail"></tbody>
+                            </table>
+                            <div class="span4">
+                                <div class="mypage">
+                                    <ul>
+                                        <li id="PageIndex"><<</li>
+                                        <li id="Pageup"><</li>
+                                        <li><input type="text" id="nowpage" style="height: 30px;" value="1" /></li>
+                                        <li>/</li>
+                                        <li><i id="TotalPageCount">0</i></li>
+                                        <li id="Pagewown">></li>
+                                        <li id="PageLast">>></li>
+                                        <li id="PageGO">GO</li>
+                                        <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* 第二页 *@
+                <div id="Page2">
+
+
+
+
+                </div>
+
+
+                @* 贴纸下单  FMT002*@
+                <div id="StickerOrder">
+
+
+                </div>
+
+
+                @* 洗标下单 FMT003 *@
+                <div id="CareLabelOrder">
+
+                    
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </form>
+</body>
+</html>

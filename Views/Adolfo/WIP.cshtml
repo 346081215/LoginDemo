@@ -1,0 +1,298 @@
+﻿@model Maxim.Model.BaseModel.HydroFlaskWIP
+@{
+    ViewBag.Title = "WIP";
+    Layout = null;
+}
+<script src="~/Content/js/Popup.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //日历控件
+        FormComponents.init();
+        $('#PageIndex').click(function () {
+            document.getElementById("pc").value = 1;
+            document.getElementById("nowpage").value = 1;
+            GetOrder();
+        });
+        $('#Pageup').click(function () {
+            var nowpage = document.getElementById("nowpage").value;
+            var newpage = parseInt(nowpage);
+            if (parseInt(nowpage) > 1) {
+                newpage = parseInt(nowpage) - 1;
+                document.getElementById("pc").value = newpage;
+                document.getElementById("nowpage").value = newpage;
+                GetOrder();
+            }
+        });
+        $('#Pagewown').click(function () {
+            var nowpage = document.getElementById("nowpage").value;
+            var maxpage = parseInt(document.getElementById("PageTotalCount").value);
+            var newpage = parseInt(nowpage);
+            if (parseInt(nowpage) < maxpage) newpage = parseInt(nowpage) + 1;
+            document.getElementById("pc").value = newpage;
+            document.getElementById("nowpage").value = newpage;
+            GetOrder();
+        });
+        $('#PageLast').click(function () {
+            var maxpage = parseInt(document.getElementById("PageTotalCount").value);
+            document.getElementById("pc").value = maxpage;
+            document.getElementById("nowpage").value = maxpage;
+            GetOrder();
+        });
+        $('#PageGO').click(function () {
+            var nowpage = parseInt(document.getElementById("nowpage").value);
+            var maxpage = parseInt(document.getElementById("PageTotalCount").value) + 1;
+            if (nowpage > 0 && nowpage < maxpage) {
+                document.getElementById("pc").value = document.getElementById("nowpage").value;
+                GetOrder();
+            }
+            else {
+                //alert("wrong page no.");
+                $("#labtxt").html("wrong page no.");
+                showDiv();
+                document.getElementById("nowpage").value = 1;
+            }
+        });
+        $("#nowpage").keyup(function () {
+            var t = $("#nowpage").val();
+            if (isNaN(t)) {
+                $("#labtxt").html("wrong page no.");
+                showDiv();
+                document.getElementById("nowpage").value = 1;
+            }
+        });
+        $("#step1").click(function () {
+            $("#step2").css("display", "none");
+            $("#Query-Results").css("display", "none");
+            $("#Query-order").slideDown();
+            $("#step1").attr("class","red-em");
+        });
+    })
+
+    function Query() {
+        $("#step2").removeAttr("style");
+        $("#nowpage").val(1);
+        $("#pc").val(1);
+        GetOrder();
+    }
+
+    function GetOrder() {
+        var po = $("#txtPO").val();
+        var oos_orderno = $("#txtoosorderno").val();
+        var RcDateStart = $("input[name='SubmitStartTime']").val();
+        var RcDateEnd = $("input[name='SubmitEndTime']").val();
+        var BrandId = $("#lblBrandid").attr("value");
+        var nowPage = $("#pc").val();
+        // alert(nowPage);
+        var StrHtml = "";
+        var url = "/Adolfo/GetWIPData?BrandId=" + BrandId + "&po=" + po + "&oos_orderno=" + oos_orderno  + "&RcDateStart=" + RcDateStart + "&RcDateEnd" + RcDateEnd + "&pageIndex=" + nowPage;
+        $.get(url, null, function (data) {
+            $.each(data, function (i, item) {
+                StrHtml += "<tr>";
+                StrHtml += "<td>" + item.MaximNo + "</td>";
+                StrHtml += "<td>" + item.ProductNo + "</td>";
+                StrHtml += "<td>" + item.PO + "</td>";
+                StrHtml += "<td>" + item.SKU + "</td>";
+                StrHtml += "<td>" + item.QrderQty + "</td>";
+                StrHtml += "<td>" + item.OpenQTY + "</td>";
+                StrHtml += "<td>" + item.ConfirmData + "</td>";
+                StrHtml += "<td>" + item.VendEDT + "</td>";
+                StrHtml += "<td>" + item.EDT + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "<td>" + item.ShipQty_1 + "</td>";
+                StrHtml += "<td>" + item.ShipData_1 + "</td>";
+                StrHtml += "<td>" + item.ShipExpressNO_1 + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "<td>" + item.ShipQty_2 + "</td>";
+                StrHtml += "<td>" + item.ShipData_2 + "</td>";
+                StrHtml += "<td>" + item.ShipExpressNO_2 + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "<td>" + item.ShipQty_3 + "</td>";
+                StrHtml += "<td>" + item.ShipData_3 + "</td>";
+                StrHtml += "<td>" + item.ShipExpressNO_3 + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "<td>" + item.ShipQty_4 + "</td>";
+                StrHtml += "<td>" + item.ShipData_4 + "</td>";
+                StrHtml += "<td>" + item.ShipExpressNO_4 + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "<td>" + "</td>";
+                StrHtml += "</tr>";
+                document.getElementById("PageTotalCount").value = item.TotalPageCount;
+                $("#TotalPageCount").html(item.TotalPageCount);
+            });
+            $("#OrderDetail tbody").html(StrHtml);
+            if (StrHtml == "") {
+                $("#labtxt").html("No Data.");
+                showDiv();
+                $("#OrderDetail tbody").html("None");
+                $("#GridViewPage").css("display", "none");
+                document.getElementById("nowpage").value = 1;
+                document.getElementById("PageTotalCount").value = 1;
+            } else {
+                $("#GridViewPage").removeAttr("style");
+                $("#Query-order").css("display", "none")
+                $("#Query-Results").slideDown();
+                $("#step2").removeAttr("style");
+                $("#step1").attr("class", "gray-em");
+                $("#step2").attr("class", "red-em");
+            }
+
+        });
+    }
+
+</script>
+@RenderPage("~/Views/Shared/PopDiv.cshtml")
+@using (Html.BeginForm())
+{
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box " id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <em class="red-em" id="step1">WIP</em>
+                        <em class="gray-em" id="step2" style="display:none;">Query Results</em>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div id="Query-order">
+                        <h3 class="form-section" style="text-align:center"></h3>
+                        @*第一行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+
+                                <div class="control-group">
+
+                                    <label class="control-label" for="firstName"></label>
+
+                                    <div class="controls">
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="span4 ">
+                               <span>PO#:</span>
+                                <input type="text" id="txtPO" name="txtPO" class="m-wrap span8" />
+                            </div>
+                            <div class="span4">
+                                <span>Oredr Date:</span>
+                                <input class="m-wrap m-ctrl-medium date-picker m-wrap span8" size="16" type="text" value="" name="SubmitStartTime">
+                            </div>
+                        </div>
+                        @*第二行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+
+                                <div class="control-group">
+
+                                    <label class="control-label" for="firstName"></label>
+
+                                    <div class="controls">
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="span4">
+                                <span>Maxim OOS NO:</span>
+                                <input type="text" id="txtoosorderno" name="txtoosorderno" class="m-wrap span8" />
+                            </div>
+                            <div class="span4">
+                                <span></span>
+                                <input class="m-wrap m-ctrl-medium date-picker m-wrap span8" size="16" type="text" value="" name="SubmitEndTime">
+                            </div>
+
+                          
+                               
+                              
+                             
+                               
+                        </div>
+                        @*Query*@
+                        <div class="row-fluid">
+                            <p style="text-align:center">
+                                <button type="button" id="btnQuery" name="btnQuery" class="btn btn-default" onclick="Query()" value="Query" style="border: 1px solid #D6D6D6;width: 170px;margin-left:0;">Query</button>
+                            </p>
+                        </div>
+                    </div>
+                    @*Table*@
+                    <div class="portlet-body" id="Query-Results" style="display:none;">
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="center">MaximNO</th>
+                                        <th class="center">Item</th>
+                                        <th class="center">PO#</th>
+                                        <th class="center">SKU</th>
+                                        <th class="center">PO Qty</th>
+                                        <th class="center">Open QTY</th>
+                                        <th class="center">Received PO Date</th>
+                                        <th class="center">Reuqested XFD</th>
+                                        <th class="center">Confirmed XFD</th>
+                                        <th class="center">Lead-Time</th>
+                                        <th class="center">Updated XFD</th>
+
+                                        <th class="center">Est Weiguo Inspection Date</th>
+                                        <th class="center">1st Release Qty Shipped</th>
+                                        <th class="center">1st Release Actual XFD</th>
+                                        <th class="center">1st Release Days Off Track</th>
+                                        <th class="center">1st Release ETA</th>
+                                        <th class="center">1st Release Comments</th>
+
+                                        <th class="center">2st Release Qty Shipped</th>
+                                        <th class="center">2st Release Actual XFD</th>
+                                        <th class="center">2st Release Days Off Track</th>
+                                        <th class="center">2st Release ETA</th>
+                                        <th class="center">2st Release Comments</th>
+
+                                        <th class="center">3st Release Qty Shipped</th>
+                                        <th class="center">3st Release Actual XFD</th>
+                                        <th class="center">3st Release Days Off Track</th>
+                                        <th class="center">3st Release ETA</th>
+                                        <th class="center">3st Release Comments</th>
+
+                                        <th class="center">4st Release Qty Shipped</th>
+                                        <th class="center">4st Release Actual XFD</th>
+                                        <th class="center">4st Release Days Off Track</th>
+                                        <th class="center">4st Release ETA</th>
+                                        <th class="center">4st Release Comments</th>
+                                </thead>
+                                <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                            </table>
+                        </div>
+
+
+                        @*分页*@
+                        <div class="row-fluid">
+
+                            <div class="span4">
+                                <div class="mypage">
+                                    <ul>
+                                        <li id="PageIndex"><<</li>
+                                        <li id="Pageup"><</li>
+                                        <li><input type="text" id="nowpage" value="1" /></li>
+                                        <li>/</li>
+                                        <li><i id="TotalPageCount">60</i></li>
+                                        <li id="Pagewown">></li>
+                                        <li id="PageLast">>></li>
+                                        <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <button type="submit" formaction="/Adolfo/WIPExportExcel" id="btnExcel" name="btnExcel" class="btn btn-default" style="border: 1px solid #D6D6D6;width: 170px;margin-left: 33%;margin-top: -2px;">Export to Excel<i class="m-icon-swapright m-icon-white"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

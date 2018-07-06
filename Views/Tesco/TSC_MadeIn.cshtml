@@ -1,0 +1,116 @@
+﻿@using System.Data;
+@using Maxim.Model.BaseModel
+@{
+    ViewBag.Title = "TSC_MadeIn";
+    Layout = null;
+}
+<script type="text/javascript" src="~/scripts/Tesco/TSC_MadeIn.js"></script>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="portlet box " id="xm">
+            <div class="portlet-title">
+                <div class="caption">
+                    <em class="red-em" id="step1">TSC_MadeIn</em>
+                    <em class="red-em" id="step2" style="display:none">AddTSC_MadeIn</em>
+                    <em class="red-em" id="step3" style="display:none">EditTSC_MadeIn</em>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post">
+    <div id="all">
+        <font style="font-size:20px;font-weight:bold">English:</font><input id="English_sel" name="English_sel" class="m-wrap span3" style="background-color:#ffffff;" />
+        <button type="button" class="btn" id="btnQuery" style="border: 1px solid ;width: 170px;margin-left:0;" onclick="SelectAll()">Query</button>
+        <button type="button" class="btn" id="newTSC_MadeIn" name="newTSC_MadeIn" onclick="return CreatenewTSC_MadeIn();">NewTSC_ExtraCareInstr</button>
+        <button type="submit" id="SaveExcel" formaction="/Tesco/TSC_MadeInExcel" name="SaveExcel" class="btn btn-default" value="">Export to Excel</button>
+        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+            <table id="ShowTSC_MadeIn" class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+                <thead>
+                    <tr class="head">
+                        <th class="center">ID</th>
+                        <th class="center">English</th>
+                        <th class="center">Notes</th>
+                        <th class="center">ModifiedBy</th>
+                        <th class="center">ModifiedOn</th>
+                        <th class="center">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="TSC_MadeInDetail"></tbody>
+            </table>
+            @*分页*@
+            <div class="span4">
+                <div class="mypage">
+                    <ul>
+                        <li id="PageIndex"><<</li>
+                        <li id="Pageup"><</li>
+                        <li><input type="text" id="nowpage" value="1" /></li>
+                        <li>/</li>
+                        <li><i id="TotalPageCount">0</i></li>
+                        <li id="Pagewown">></li>
+                        <li id="PageLast">>></li>
+                        <li id="PageGO">GO</li>
+                        <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+    <div id="insertTSC_MadeIn" style="display:none">
+        @*第一行*@
+        <div class="row-fluid">
+            <div class="span2 span2_hide">
+                <div class="control-group">
+                    <label class="control-label" for="firstName"></label>
+                    <div class="controls">
+                    </div>
+                </div>
+            </div>
+            <div class="span4 ">
+                <span>English:</span>
+                <input type="text" id="English" name="English" class="m-wrap span8" style="background-color:#ffffff;" />
+            </div><div class="span4 ">
+                <span>Notes:</span>
+                <input type="text" id="Notes" name="Notes" class="m-wrap span8" style="background-color:#ffffff;" />
+            </div>
+        </div>
+        @*保存和返回按钮*@
+        <div class="row-fluid" id="SaveAt">
+            <div class="span3 span2_hide">
+            </div>
+            <div class="span3">
+                <button type="button" id="SaveTSC_MadeIn_Add" name="SaveTSC_MadeIn_Add" class="btn btn-default" value="Save" onclick="funSaveTSC_MadeIn_Add()">Save</button>
+                <button type="button" onclick="ReturnIndex()" name="ReturnIndex" class="btn btn-default" value="Query">Return</button>
+            </div>
+        </div>
+    </div>
+    <div id="updataTSC_MadeIn" style="display:none">
+        <div class="row-fluid">
+            <div class="span2 span2_hide">
+                <div class="control-group">
+                    <label class="control-label" for="firstName"></label>
+                    <div class="controls">
+                    </div>
+                </div>
+            </div>
+            <div class="span4 ">
+                <span>English:</span>
+                <input type="text" id="English_u" name="English_u" class="m-wrap span8" style="background-color:#ffffff;" />
+            </div><div class="span4 ">
+                <span>Notes:</span>
+                <input type="text" id="Notes_u" name="Notes_u" class="m-wrap span8" style="background-color:#ffffff;" />
+                <input id="EditSCompanyID_U" name="EditSCompanyID_U" type="hidden" />
+            </div>
+        </div>
+        @*保存和返回按钮*@
+        <div class="row-fluid" id="SaveAt">
+            <div class="span3 span2_hide">
+            </div>
+            <div class="span3">
+                <button type="button" id="SaveTSC_MadeIn_u" name="SaveTSC_MadeIn_u" class="btn btn-default" value="Save" onclick="funSaveTSC_MadeIn_u()">Save</button>
+                <button type="button" onclick="ReturnIndex()" name="ReturnIndex" class="btn btn-default" value="Query">Return</button>
+            </div>
+        </div>
+    </div>
+

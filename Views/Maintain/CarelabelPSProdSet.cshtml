@@ -1,0 +1,86 @@
+﻿@using System.Data;
+@using Maxim.Model.BaseModel
+@model CarelabelPSProdSet
+@{
+    ViewBag.Title = "CarelabelPSProdSet";
+    Layout = null;
+}
+<script type="text/javascript" src="~/scripts/Maintain/CarelabelPSProdSet.js"></script>
+
+
+@using (Html.BeginForm())
+{
+    <body>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box" id="form_wizard_1">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <em class="red-em" id="step">PrintShop洗标产品版型设定</em>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div id="Query">
+                            <h3 class="form-section" style="text-align:center"></h3>
+                            @*第一行*@
+                            <div class="row-fluid">
+                                <div class="span3 ">
+                                    <span>Printshop:</span>
+                                    @Html.DropDownListFor(x => x.Printshop, Model.Printshops, new { @class = "m-wrap span5" })
+                                </div>
+                                <div class="span3 ">
+                                    <span>Product:</span>
+                                    @Html.DropDownListFor(x => x.Product, Model.Products, new { @class = "m-wrap span5" })
+                                </div>
+                                <div class="span3 ">
+                                    <span>TempletSet:</span>
+                                    @Html.DropDownListFor(x => x.TempletSet, Model.TempletSets, new { @class = "m-wrap span5" })
+                                </div>
+                                <div class="span3">
+                                    <button type="button" id="Query" name="Query" class="btn btn-default" onclick="return funcQuery();">Query</button>
+                                    <button type="button" id="ADD" name="ADD" class="btn btn-default" onclick="return funcADD()">ADD</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="portlet-body" id="Query-Results">
+                            <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                                <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                    <thead>
+                                        <tr role="row">
+                                            				
+                                            <th class="center">Seq</th>
+                                            <th class="center">Printshop</th>
+                                            <th class="center">TempletSet</th>
+                                            <th class="center"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                                </table>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <div class="mypage">
+                                        <ul>
+                                            <li id="PageIndex"><<</li>
+                                            <li id="Pageup"><</li>
+                                            <li><input type="text" id="nowpage" value="1" /></li>
+                                            <li>/</li>
+                                            <li><i id="TotalPageCount">0</i></li>
+                                            <li id="Pagewown">></li>
+                                            <li id="PageLast">>></li>
+                                            <li id="PageGO">GO</li>
+                                            <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+}
+
+

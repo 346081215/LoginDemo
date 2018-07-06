@@ -1,0 +1,95 @@
+﻿@using Resources
+@using System.Data;
+@{
+    ViewBag.Title = "Language";
+    Layout = null;
+}
+<script>
+       var $ConfirmOrder =
+            {
+                OK: "@Html.Raw(@ConfirmOrder.OK)",
+                View_Detail: "@Html.Raw(@ConfirmOrder.View_Detail)",
+                SubmitOrder: "@Html.Raw(@ConfirmOrder.SubmitOrder)",
+                ReviseOrder: "@Html.Raw(@ConfirmOrder.ReviseOrder)",
+                Customer_PO:"@Html.Raw(@ConfirmOrder.Customer_PO)",
+                MaximNo:"@Html.Raw(@ConfirmOrder.MaximNo)",
+                Seq:"@Html.Raw(@ConfirmOrder.Seq)",
+                Item:"@Html.Raw(@ConfirmOrder.Item)",
+                OriOrderQty:"@Html.Raw(@ConfirmOrder.OriOrderQty)",
+                OrderQty:"@Html.Raw(@ConfirmOrder.OrderQty)",
+                ArtWork:"@Html.Raw(@ConfirmOrder.ArtWork)",
+                View_1: "@Html.Raw(@ConfirmOrder.View_1)",
+                View: "@Html.Raw(@ConfirmOrder.View)",
+                PLEASE_FILL_IN_THE_REASONS_FOR_REFUSAL: "@Html.Raw(@ConfirmOrder.PLEASE_FILL_IN_THE_REASONS_FOR_REFUSAL)",
+                PleaseSelectPrintShop: "@Html.Raw(@ConfirmOrder.PleaseSelectPrintShop)",
+                PleaseSelectBillAccount:"@Html.Raw(@ConfirmOrder.PleaseSelectBillAccount)",
+                PleaseSelectShipAccount: "@Html.Raw(@ConfirmOrder.PleaseSelectShipAccount)",
+                PleaseSelectShipAddress: "@Html.Raw(@ConfirmOrder.PleaseSelectShipAddress)",
+                PleaseSelectShipmentType: "@Html.Raw(@ConfirmOrder.PleaseSelectShipmentType)",
+                PleaseSelectACourierCompany: "@Html.Raw(@ConfirmOrder.PleaseSelectACourierCompany)",
+                PleaseSelectAPaymentMethod: "@Html.Raw(@ConfirmOrder.PleaseSelectAPaymentMethod)",
+                AccountNumberNotNull: "@Html.Raw(@ConfirmOrder.AccountNumberNotNull)",
+                ClickOKCheckSpareRate: "@Html.Raw(@ConfirmOrder.ClickOKCheckSpareRate)",
+                SubmitOrderFail: "@Html.Raw(@ConfirmOrder.SubmitOrderFail)",
+                HAVE_INFORMED_ADOLFO_DOMINGUEZ: "@Html.Raw(@ConfirmOrder.HAVE_INFORMED_ADOLFO_DOMINGUEZ)",
+                Notice: "@Html.Raw(@ConfirmOrder.Notice)",
+                Confirmation: "@Html.Raw(@ConfirmOrder.Confirmation)",
+                PleaseClickOK: "@Html.Raw(@ConfirmOrder.PleaseClickOK)",
+                Reject: "@Html.Raw(@ConfirmOrder.Reject)",
+                YouSelectedDifferentSpare: "@Html.Raw(@ConfirmOrder.YouSelectedDifferentSpare)",
+                ShouldNotbelessthanZero:"@Html.Raw(@ConfirmOrder.ShouldNotbelessthanZero)",
+                The_selected_value_is_not_all_equal_to_Zero:"@Html.Raw(@ConfirmOrder.The_selected_value_is_not_all_equal_to_Zero)"
+            };
+          $RepeatOrder =
+         {
+            ViewDetail:"@Html.Raw(@RepeatOrder.ViewDetail)",
+            ApproveOrder: "@Html.Raw(@RepeatOrder.ApproveOrder)",
+            CancelOrder:"@Html.Raw(@RepeatOrder.CancelOrder)",
+            AWBPOD:"@Html.Raw(@RepeatOrder.AWBPOD)",
+            CopyOrder: "@Html.Raw(@RepeatOrder.CopyOrder)",
+            View: "@Html.Raw(@RepeatOrder.View)",
+            AWBNumberPOD: "@Html.Raw(@RepeatOrder.AWBNumberPOD)",
+            CONFIRM_OFFICIAL_ORDER: "@Html.Raw(@RepeatOrder.CONFIRM_OFFICIAL_ORDER)",
+            ORDER_WILL_BE_CANCELED: "@Html.Raw(@RepeatOrder.ORDER_WILL_BE_CANCELED)",
+            Please_do_not_repeat_submit:"@Html.Raw(@RepeatOrder.Please_do_not_repeat_submit)",
+            please_input_correct_number:"@Html.Raw(@RepeatOrder.please_input_correct_number)",
+            Please_select_a_repeat_reason:"@Html.Raw(@RepeatOrder.Please_select_a_repeat_reason)",
+            The_Others_repeat_reason_can_not_be_empty:"@Html.Raw(@RepeatOrder.The_Others_repeat_reason_can_not_be_empty)",
+            Please_select_order_lines_to_copy:"@Html.Raw(@RepeatOrder.Please_select_order_lines_to_copy)",
+            HAVE_INFORMED_ADOLFO_DOMINGUEZ_TO_CONFIRM_WHETHER_TO_PRODUCE_THE_ORDER_OR_NOT:"@Html.Raw(@RepeatOrder.HAVE_INFORMED_ADOLFO_DOMINGUEZ_TO_CONFIRM_WHETHER_TO_PRODUCE_THE_ORDER_OR_NOT)"
+         }
+        $UrgenOrderReq =
+        {
+            UrgentRequest: "@Html.Raw(@UrgenOrderReq.UrgentRequest)",
+            PleaseInputPOorMaximNO: "@Html.Raw(@UrgenOrderReq.PleaseInputPOorMaximNO)",
+            MaximNOisNull: "@Html.Raw(@UrgenOrderReq.MaximNOisNull)",
+            FailureToModify: "@Html.Raw(@UrgenOrderReq.FailureToModify)",
+            ShowDivPriceUpChargeRequst: "@Html.Raw(@UrgenOrderReq.ShowDivPriceUpChargeRequst)",
+            ShowConfirmtoChargeRequst:"@Html.Raw(@UrgenOrderReq.ShowConfirmtoChargeRequst)"
+        }
+        $OrderCancel =
+        {
+            Cancel: "@Html.Raw(@OrderCancel.Cancel)",
+            Length_should_not_exceed_100: "@Html.Raw(@OrderCancel.Length_should_not_exceed_100)",
+            CheckCancelOrder:"@Html.Raw(@OrderCancel.CheckCancelOrder)"
+        }
+        $OrderQueryForVendor =
+        {
+            PrintShop: "@Html.Raw(@OrderQueryForVendor.PrintShop)",
+            MaximNo: "@Html.Raw(@OrderQueryForVendor.MaximNo)",
+            Customer_PO: "@Html.Raw(@OrderQueryForVendor.Customer_PO)",
+            Vendor: "@Html.Raw(@OrderQueryForVendor.Vendor)",
+            OrderDate: "@Html.Raw(@OrderQueryForVendor.OrderDate)",
+            OrderStatus: "@Html.Raw(@OrderQueryForVendor.OrderStatus)",
+            ETD: "@Html.Raw(@OrderQueryForVendor.ETD)",
+            Style: "@Html.Raw(@OrderQueryForVendor.Style)",
+            ViewReport: "@Html.Raw(@OrderQueryForVendor.ViewReport)",
+            Season: "@Html.Raw(@OrderQueryForVendor.Season)",
+            SO:"@Html.Raw(@OrderQueryForVendor.SO)",
+            ServiceLevel: "@Html.Raw(@OrderQueryForVendor.ServiceLevel)",
+            ReferenceNo: "@Html.Raw(@OrderQueryForVendor.ReferenceNo)",
+            Repeat_Order_Report: "@Html.Raw(@OrderQueryForVendor.Repeat_Order_Report)",
+            Cancelled_Order: "@Html.Raw(@OrderQueryForVendor.Cancelled_Order)"
+        }
+</script>
+

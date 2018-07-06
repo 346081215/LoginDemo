@@ -1,0 +1,379 @@
+﻿
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TranslationMaintain</title>
+    <script type="text/javascript">
+        $(function () {
+            //查询
+            $('#btnSearch').click(function () {
+                $("#Query-Results").css("display", "block");
+                document.getElementById("pc").value = 1;
+                document.getElementById("nowpage").value = 1;
+                $("#TotalPageCount").html(1);
+                $("#PageTotalCount").val(1);
+                funSelectTranslation();
+            });
+
+            //分页
+            $('#PageIndex').click(function () {
+                document.getElementById("pc").value = 1;
+                document.getElementById("nowpage").value = 1;
+                funSelectTranslation();
+            });
+            $('#Pageup').click(function () {
+                var nowpage = document.getElementById("nowpage").value;
+                var newpage = parseInt(nowpage);
+                if (parseInt(nowpage) > 1) {
+                    newpage = parseInt(nowpage) - 1;
+                    document.getElementById("pc").value = newpage;
+                    document.getElementById("nowpage").value = newpage;
+                    funSelectTranslation();
+                }
+            });
+            $('#Pagewown').click(function () {
+                var nowpage = document.getElementById("nowpage").value;
+                var maxpage = parseInt(document.getElementById("PageTotalCount").value);
+                var newpage = parseInt(nowpage);
+                if (parseInt(nowpage) < maxpage) newpage = parseInt(nowpage) + 1;
+                document.getElementById("pc").value = newpage;
+                document.getElementById("nowpage").value = newpage;
+                funSelectTranslation();
+            });
+            $('#PageLast').click(function () {
+                var maxpage = parseInt(document.getElementById("PageTotalCount").value);
+                document.getElementById("pc").value = maxpage;
+                document.getElementById("nowpage").value = maxpage;
+                funSelectTranslation();
+            });
+            $('#PageGO').click(function () {
+                var nowpage = parseInt(document.getElementById("nowpage").value);
+                var maxpage = parseInt(document.getElementById("PageTotalCount").value) + 1;
+                if (nowpage > 0 && nowpage < maxpage) {
+                    document.getElementById("pc").value = document.getElementById("nowpage").value;
+                    funSelectTranslation();
+                }
+                else {
+
+                    $("#labtxt").html("wrong page no.");
+                    showDiv();
+                    document.getElementById("nowpage").value = 1;
+                }
+            });
+            $("#nowpage").keyup(function () {
+                var t = $("#nowpage").val();
+                if (isNaN(t)) {
+                    $("#labtxt").html("wrong page no.");
+                    showDiv();
+                    document.getElementById("nowpage").value = 1;
+                }
+            });
+        });
+        var colName = "";
+        //查询翻译表
+        function funSelectTranslation() {
+            var data_ = {
+                pc: $("#pc").val(),
+                English: $("#English_Select").val()
+            }
+            $.ajax({
+                url: "/Maintain/TranslationQuery",
+                type: "get",
+                dataType: "json",
+                data: data_,
+                success: function (table) {
+                    var colCount = table.colCount;
+                    colName = table.colName.split('^');
+                    var html = "";
+                    var ColNameHtml = "";
+                    var idIndex = -1;
+                    for (var i = 0; i < colName.length; i++) {
+                        if (colName[i].toUpperCase() == "ID") {
+                            ColNameHtml += "<td style='display:none'>" + colName[i] + "</td>";
+                            idIndex = i;
+                        } else {
+                            ColNameHtml += "<td>" + colName[i] + "</td>";
+                        }
+                        
+                    }
+                    $("#ColName").html(ColNameHtml);
+                    var seq = 1;
+                    $.each(table.Table, function (i, item) {
+                        html += "<tr>";
+                        var count = 0;
+                        for (var a in item) {
+                            if (count == colCount) {
+                                break;
+                            }
+                            if (count == 0) {
+                                html += "<td>"+item[a]+"</td>";
+                            } else {
+                                if (idIndex == count) {
+                                    seq = item[a];
+                                    html += "<td style='display:none'><input id='id" + item[a] + "' type='text' value='" + item[a] + "'/></td>";
+                                } else {
+                                    html += "<td><input type='text' value='" + item[a] + "'/></td>";
+                                }
+                            }
+                            count++;
+                        }
+                        html += "<td><button class='btn btn-default' type='button' onclick='funSaveTran(this)'>Save</button>  <button class='btn btn-default' type='button' idseq='" + seq + "' onclick='funDeleteTran(this)'>Delete</button></td>";
+                        html += "</tr>";
+                        
+                    });
+                    $("#TotalPageCount").html(table.PageCount);
+                    $("#PageTotalCount").val(table.PageCount);
+                    $("#TranDetail").html(html);
+                    $("#btnAdd").removeAttr("disabled")
+                }
+            })
+        }
+
+        //添加新行
+        function dunAddNewTran() {
+            var addColNameHtml = ""
+            var addColHtml = "";
+            for (var i = 2; i < colName.length; i++) {
+                if (colName[i].toUpperCase() == "ID") {
+                    addColNameHtml += "<td style='display:none'>" + colName[i] + "</td>";
+                    addColHtml += "<td><input type='text' value=''  style='display:none' /></td>";
+                } else {
+                    addColNameHtml += "<td>" + colName[i] + "</td>";
+                    addColHtml += "<td><input type='text' value='' /></td>";
+                }
+            }
+            addColHtml += "<td><button class='btn btn-default' type='button' onclick='funAddTran(this)'>Add</button></td>";
+            $("#AddTran").show();
+            $("#ColName2").html(addColNameHtml);
+            $("#TranDetail2").html(addColHtml);
+        }
+        //保存新多国语言
+        function funAddTran(obj) {
+            $("#labtxt").html("数据确定无误？")
+            showDiv2();
+            $("#no").click(function () {
+                $("#popDiv").css("display", "none");
+                $("#bg").css("display", "none");
+            })
+            $("#ok").click(function () {
+                $("#popDiv").css("display", "none");
+                $("#bg").css("display", "none");
+                var TranNameTable = document.getElementById("ColName2")
+                var TranName = "";
+                for (var i = 0; i < $("#ColName2").children().length; i++) {
+                    TranName += $("#ColName2").children().eq(i).text() + "^";
+                }
+                TranName = TranName.substring(0, TranName.length-1)
+                
+                var Tran = "";
+                for (var i = 0; i < $("#TranDetail2").children().length-1; i++) {
+                    Tran += $("#TranDetail2").children().eq(i).children().val() + "↑";
+                }
+                Tran = Tran.substring(0, Tran.length - 1)
+                var transplit = Tran.split('↑');
+
+                var trann = TranName.split('^')
+                var a = 0;
+                if (trann[0].toUpperCase() == "SYMBOL") {
+                    a = 1;
+                }
+                for (var i = a; i < transplit.length; i++) {
+                    if (transplit[i] == "") {
+                        $("#labtxt").html("请检查数据，多国语言栏位内容不能为空");
+                        showDiv();
+                        return;
+                    }
+                }
+                $.ajax({
+                    url: "/Maintain/TranslationAdd",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        _TranName: TranName,
+                        _Tran: Tran
+                    },
+                    success: function (data) {
+                        if (data == "Success") {
+                            funSelectTranslation();
+                            dunAddNewTran();
+                        }
+                        $("#labtxt").html(data);
+                        showDiv();
+                    }
+                })
+            })
+        }
+
+        //更新多国语言
+        function funSaveTran(obj) {
+            $("#labtxt").html("数据确定无误？")
+            showDiv2();
+            $("#no").click(function () {
+                $("#popDiv").css("display", "none");
+                $("#bg").css("display", "none");
+            })
+            $("#ok").click(function () {
+                $("#popDiv").css("display", "none");
+                $("#bg").css("display", "none");
+                var TranName = "";
+                for (var i = 1; i < $("#ColName").children().length; i++) {
+                    TranName += $("#ColName").children().eq(i).text() + "^";
+                }
+                TranName = TranName.substring(0, TranName.length - 1)
+                debugger;
+                var UpdateDetailTable = $(obj).parent().parent();
+                var UpdateDetail = "";
+                for (var i = 1; i < UpdateDetailTable.children().length - 1; i++) {
+                    UpdateDetail += UpdateDetailTable.children().eq(i).children().val() + "↑";
+                }
+                UpdateDetail = UpdateDetail.substring(0, UpdateDetail.length - 1);
+
+                var transplit = UpdateDetail.split('↑');
+                var trann = TranName.split('^')
+                var a = 0;
+                if (trann[1].toUpperCase()=="SYMBOL") {
+                    a = 2;
+                }
+                for (var i = a; i < transplit.length; i++) {
+                    if (transplit[i] == "") {
+                        $("#labtxt").html("请检查数据，多国语言栏位内容不能为空");
+                        showDiv();
+                        return;
+                    }
+                }
+
+                $.ajax({
+                    url: "/Maintain/TranslationUpdate",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        TranName: TranName,
+                        UpdateDetail: UpdateDetail
+                    },
+                    success: function (data) {
+                        if (data == "Success") {
+                            funSelectTranslation();
+                        }
+                        $("#labtxt").html(data);
+                        showDiv();
+                    }
+                })
+            })
+        }
+
+        //删除多国语言
+        function funDeleteTran(obj) {
+            $("#labtxt").html("是否确定删除？")
+            showDiv2();
+            $("#no").click(function () {
+                $("#popDiv").css("display", "none");
+                $("#bg").css("display", "none");
+            })
+            $("#ok").click(function () {
+                $("#popDiv").css("display", "none");
+                $("#bg").css("display", "none");
+                var id = obj.attributes["idseq"].nodeValue
+                $.ajax({
+                    url: "/Maintain/TranslationDelete",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        id: id
+                    },
+                    success: function (data) {
+                        if (data == "Success") {
+                            funSelectTranslation();
+                        }
+                        $("#labtxt").html(data);
+                        showDiv();
+                    }
+                })
+            });
+
+        }
+    </script>
+</head>
+<body>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box " id="form_wizard_1">
+                @*页面*@
+                <div class="portlet-body form">
+                    @*条件*@
+                    <div id="Query">
+                        <font style="color:red">如果有Symbol列,且需要填洗图符号.添加时请注意格式为：符号⊥洗图图片名称（如 v⊥小v）</font>
+                        @*第一行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls"></div>
+                                </div>
+                            </div>
+                            <div class="span4 ">
+                                <span>English:</span>
+                                <input type="text" id="English_Select" name="English_Select" class="m-wrap span8">
+                            </div>
+                            <div class="span4 ">
+                                <span></span>
+                                <button id="btnSearch" class="btn btn-default" type="button" name="btnSearch" >Search</button>
+                                <button id="btnAdd" class="btn btn-default" type="button" name="btnSearch" disabled="disabled" onclick="dunAddNewTran()">Add New</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*查询*@
+                    <div class="portlet-body" id="Query-Results" style="display:none;">
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr role="row" id="ColName">
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail" id="TranDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                            </table>
+                        </div>
+                        @* 分页 *@
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="mypage">
+                                    <ul>
+                                        <li id="PageIndex"><<</li>
+                                        <li id="Pageup"><</li>
+                                        <li><input type="text" id="nowpage" value="1" /></li>
+                                        <li>/</li>
+                                        <li><i id="TotalPageCount">0</i></li>
+                                        <li id="Pagewown">></li>
+                                        <li id="PageLast">>></li>
+                                        <li id="PageGO">GO</li>
+                                        <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body" id="AddTran" style="display:none;">
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail2" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr role="row" id="ColName2"></tr>
+                                </thead>
+                                <tbody class="OrderDetail" id="TranDetail2" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

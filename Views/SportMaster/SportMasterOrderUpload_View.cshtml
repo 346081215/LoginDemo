@@ -1,0 +1,123 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SportMasterOrderUpload_View</title>
+    <script src="~/scripts/Adolfo/MyAjaxForm.js"></script>
+    <script src="~/scripts/SportMaster/SportMasterOrderUpload_View.js"></script>
+</head>
+<body>
+    <form id="form1" method="post" action="/SportMaster/SportMasterOrderUpload_ViewUPOrderLoad" enctype="multipart/form-data">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box" id="form_wizard_1">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <em class="red-em" id="step">OrderUpload</em>
+                            <em class="gray-em" id="step1" style="display:none;">OrderList</em>
+                            <em class="gray-em" id="step2" style="display:none;"></em>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+
+                        <div id="Query">
+                            <h3 class="form-section" style="text-align:center"></h3>
+                            @*第七行*@
+                            <div class="row-fluid">
+                                <div class="span2 span2_hide">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"></label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4 ">
+                                    <span>File:</span>
+                                    <input id="photoCover" class="m-wrap span8" type="text" style="position:relative;">
+                                    <input id="UploadFile" type="file" style="display:none" name="UploadFile">
+
+                                </div>
+                                <div class="span4" style="margin-left: 10px;">
+                                    <a class="btn Browse" style="margin-top:0 !important;" onclick="$('input[id=UploadFile]').click();">Browse...</a>
+                                </div>
+                            </div>
+                            @*第八行*@
+                            <div class="row-fluid">
+                                <div class="span2 span2_hide">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"></label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4 ">
+                                    <span></span>
+                                    <button type="button" id="btnUpload" name="Upload" class="btn btn-default">Upload</button>
+                                </div>
+                                <div class="span4 ">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="portlet-body" id="Query-Results" style="display:none">
+                            <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                                <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                    <thead class="OrderColumn">
+                                        @* 列名 *@
+                                        <tr role="row">
+                                            <th>Seq</th>
+                                            <th>Collection</th>
+                                            <th>Vendor_ID</th>
+                                            <th>PPO_No</th>
+                                            <th>Start_Ship_Date</th>
+                                            <th>Recommended_Releasing_Date</th>
+                                            <th>Brand</th>
+                                            <th>Label_ID</th>
+                                            <th>Barcode</th>
+                                            <th>Style</th>
+                                            <th>Color</th>
+                                            <th>Code_TD</th>
+                                            <th>Original_Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                                </table>
+                                <button type="button" id="Confirm" name="Confirm" class="btn btn-default" value="Confirm">Confirm</button>
+                                <button type="button" id="NoConfirm" name="NoConfirm" class="btn btn-default" value="NoConfirm">NoConfirm</button>
+                            </div>
+                            @* 分页 *@
+                            <div class="row-fluid" style="display:none">
+                                <div class="span4">
+                                    <div class="mypage">
+                                        <ul>
+                                            <li id="PageIndex"><<</li>
+                                            <li id="Pageup"><</li>
+                                            <li><input type="text" id="nowpage" value="1" /></li>
+                                            <li>/</li>
+                                            <li><i id="TotalPageCount">0</i></li>
+                                            <li id="Pagewown">></li>
+                                            <li id="PageLast">>></li>
+                                            <li id="PageGO">GO</li>
+                                            <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</body>
+
+</html>

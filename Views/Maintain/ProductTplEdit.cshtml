@@ -1,0 +1,258 @@
+﻿@using Maxim.Model.BaseModel
+@using System.Data
+
+@model ProductTplEdit
+@{
+    Layout = null;
+}
+<script src="~/scripts/Maintain/ProductTplEdit.js"></script>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="portlet box " id="form_wizard_1">
+            @*<div class="portlet-title">
+                <div class="caption">
+                    <em class="red-em" id="step1">ProductQuery</em>
+                    <em class="red-em" id="step2">Query-Results</em>
+                </div>
+            </div>*@
+            <div class="portlet-body form">
+                <div id="Query">
+                    <h3 class="form-section" style="text-align:center"></h3>
+                    @*第一行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>产品模板代号:</span>
+                            @Html.TextBoxFor(x=>x.ProductTplCode,new { @class = "m-wrap span8", @id = "_ProductTplCode", @name = "_ProductTplCode" })
+                        </div>
+                        <div class="span4">
+                            <span>产品ID:</span>
+                            @Html.TextBoxFor(x => x.ProductCode, new { @class = "m-wrap span8", @id = "_ProductCodeTpl", @name = "_ProductCode" })
+                        </div>
+                    </div>
+                    @*第二行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>模板名称:</span>
+                            @Html.TextBoxFor(x => x.TplName, new { @class = "m-wrap span8", @id = "_TplName", @name = "_TplName" })
+                        </div>
+                        <div class="span4">
+                            <span>模板版本:</span>
+                            @Html.TextBoxFor(x => x.TplVersion, new { @class = "m-wrap span8", @id = "_TplVersion", @name = "_TplVersion" })
+                        </div>
+                    </div>
+                    @*第三行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>宽度:</span>
+                            @Html.TextBoxFor(x => x.TplWidth, new { @class = "m-wrap span8", @id = "_TplWidth", @name = "_TplWidth" })
+                        </div>
+                        <div class="span4">
+                            <span>高度:</span>
+                            @Html.TextBoxFor(x => x.TplHeight, new { @class = "m-wrap span8", @id = "_TplHeight", @name = "_TplHeight" })
+                        </div>
+                    </div>
+                    @*第四行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>PrintType:</span>
+                            @Html.DropDownListFor(x=>x.PrintType,Model.PrintTypeList, new { @class = "m-wrap span8", @id = "_PrintType", @name = "_PrintType" })
+                        </div>
+                        <div class="span4">
+                            <span>DivideQty:</span>
+                            @Html.TextBoxFor(x => x.DivideQty, new { @class = "m-wrap span8", @id = "_DivideQty", @name = "_DivideQty" })
+                        </div>
+                    </div>
+                    @*第五行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>EndmarkType:</span>
+                            @Html.DropDownListFor(x => x.EndmarkType, Model.EndmarkTypeList, new { @class = "m-wrap span8", @id = "_EndmarkType", @name = "_EndmarkType" })
+                        </div>
+                        <div class="span4">
+                            <span>EndmarkQty:</span>
+                            @Html.TextBoxFor(x => x.EndmarkQty, new { @class = "m-wrap span8", @id = "_EndmarkQty", @name = "_EndmarkQty" })
+                        </div>
+                    </div>
+                    @*第六行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>JobPieces:</span>
+                            @Html.TextBoxFor(x => x.JobPieces, new { @class = "m-wrap span8", @id = "_JobPieces", @name = "_JobPieces" })
+                        </div>
+                        <div class="span4">
+                            <span>补满方式:</span>
+                            @Html.DropDownListFor(x => x.PcsFillType,Model.PcsFillTypeList, new { @class = "m-wrap span8", @id = "_PcsFillType", @name = "_PcsFillType" })                  
+                        </div>
+                    </div>
+                    @*第七行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>是否不满整行:</span>
+                            @Html.CheckBoxFor(x => x.IsFullLine, new { @class = "m-wrap span8", @id = "_IsFullLine", @name = "_IsFullLine", @checked = "checked" })       
+                        </div>
+                        <div class="span4">
+                            <span>每行PSC数:</span>
+                            @Html.TextBoxFor(x => x.HalfProdLinePcs, new { @class = "m-wrap span8", @id = "_HalfProdLinePcs", @name = "_HalfProdLinePcs" })
+                        </div>
+                    </div>
+                    @*第八行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>是否铺满整页:</span>
+                            @Html.CheckBoxFor(x => x.IsFullPiece, new { @class = "m-wrap span8", @id = "_IsFullPiece", @name = "_IsFullPiece", @checked = "checked" })                  
+                        </div>
+                        <div class="span4">
+                            <span>每页PCS数:</span>
+                            @Html.TextBoxFor(x => x.PcsPerPiece, new { @class = "m-wrap span8", @id = "_PcsPerPiece", @name = "_PcsPerPiece" })
+                        </div>
+                    </div>
+                    @*第九行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>是否换页:</span>
+                            @Html.CheckBoxFor(x => x.IsChgPiece, new { @class = "m-wrap span8", @id = "_IsChgPiece", @name = "_IsChgPiece", @checked = "checked" })
+                        </div>
+                        <div class="span4">
+                            <span>是否按页生产:</span>
+                            @Html.CheckBoxFor(x => x.IsPrintByPiece, new { @class = "m-wrap span8", @id = "_IsPrintByPiece", @name = "_IsPrintByPiece", @checked = "checked" })
+                        </div>
+                    </div>
+                    @*第九行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>创建日期:</span>
+                            @Html.TextBoxFor(x => x.ProdPLCreatedDate, new { @class = "m-wrap span8", @id = "_ProdPLCreatedDate", @name = "_ProdPLCreatedDate" , @readonly = "readonly" })
+                        </div>
+                        <div class="span4">
+                            <span>创建人:</span>
+                            @Html.TextBoxFor(x => x.ProdPLCreatedBy, new { @class = "m-wrap span8", @id = "_ProdPLCreatedBy", @name = "_ProdPLCreatedBy", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    @*第十行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>修改日期:</span>
+                            @Html.TextBoxFor(x => x.ProdPLModifiedDate, new { @class = "m-wrap span8", @id = "_ProdPLModifiedDate", @name = "_ProdPLModifiedDate", @readonly = "readonly" })
+                        </div>
+                        <div class="span4">
+                            <span>修改人:</span>
+                            @Html.TextBoxFor(x => x.ProdPLModifiedBy, new { @class = "m-wrap span8", @id = "_ProdPLModifiedBy", @name = "_ProdPLModifiedBy", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    @*第十一行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <span>是否启用:</span>
+                            @Html.CheckBoxFor(x => x.ProdPLIsEnabled, new { @class = "m-wrap span8", @id = "_ProdPLIsEnabled", @name = "_ProdPLIsEnabled", @checked = "checked" })
+                        </div>
+                        <div class="span4">
+                            <span>备注:</span>
+                            @Html.TextBoxFor(x => x.ProdPLNotes, new { @class = "m-wrap span8", @id = "_ProdPLNotes", @name = "_ProdPLNotes"})
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <input type="button" class="btn" id="btnProductTplAdd" value="新增" />
+                            <input type="button" class="btn" id="btnProductTplEdit" value="修改" />
+                            <input type="button" class="btn" id="btnProductTplEditBack" value="返回" />　
+                        </div>
+
+                    </div>
+                   
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

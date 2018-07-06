@@ -1,0 +1,645 @@
+﻿@using Maxim.Model.DemoReportModel;
+
+@model TrendAnalysis
+@{
+    ViewBag.Title = "TrendAnalysis";
+    Layout = null;
+}
+
+
+
+<script src="~/Content/js/echarts-all.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //$("#LineCharts").css("display", "none");
+        //$("#GridData").css("display", "none");
+        $("#step2").click(function () {
+            $('#Query-order').css('display', 'none');
+            $('#GridData').slideDown();
+        })
+        $("#step1").click(function () {
+            $('#GridData').css('display', 'none');
+            $('#Query-order').slideDown();
+            $("#step1").attr("class", "red-em");
+        })
+            $("#btnQuery").click(function () {
+                $("#sbbb").html("");
+                $("#country-menu").html("");
+                $("#step1").attr("class", "gray-em");
+                $("#step2").attr("class", "red-em");
+                var a = $("#PSID").find("option:selected").text()
+
+                $("#oneprintshop").text(a);
+                GetOrder();
+                $("#step2").removeAttr("style");
+                //ShowLineCharts();
+            });
+            $("#step1").click(function () {
+                $("#step2").css("display", "none");
+                //$("#Gridviews").html("");
+            });
+
+            })
+
+    function GetOrder() {
+        var TCharts2015 = new Array();
+        var TCharts2016 = new Array();
+        var text2015=""; var text2016="";
+        //表数据
+        list = new Array();
+        list[13] = "TrendData_Bangladesh";
+        list[1] = 'TrendData_HongKong';
+        list[2] = 'TrendData_India';
+        list[3] = 'TrendData_WestCoast';
+        list[4] = 'TrendData_EastCoast';
+        list[5] = 'TrendData_Shanghai';
+        list[6] = 'TrendData_Turkey';
+        list[7] = 'TrendData_UK';
+        list[8] = 'TrendData_VN';
+        list[9] = 'TrendData_Shenzhen';
+        list[10] = 'TrendData_Cambodia';
+        list[11] = 'TrendData_US';
+        list[12] = 'TrendData_Pakistan';
+        list[0] = 'TrendData_Total';
+
+        //折线
+        charts = new Array();
+        charts[13] = 'TCharts_Bangladesh';
+        charts[1] = 'TCharts_HongKong';
+        charts[2] = 'TCharts_India';
+        charts[3] = 'TCharts_WestCoast';
+        charts[4] = 'TCharts_EastCoast';
+        charts[5] = 'TCharts_Shanghai';
+        charts[6] = 'TCharts_Turkey';
+        charts[7] = 'TCharts_UK';
+        charts[8] = 'TCharts_VN';
+        charts[9] = 'TCharts_Shenzhen';
+        charts[10] = 'TCharts_Cambodia';
+        charts[11] = 'TCharts_US';
+        charts[12] = 'TCharts_Pakistan';
+        charts[0] = 'TCharts_Total';
+        var urlPost = "/DemoReport/GetTrendAnalysis";
+
+        $.post(urlPost, $("form").serialize(), function (data, status) {
+            //带条件
+            $("#LineCharts").html("");
+            $("#GridData").slideDown();
+            $("#Query-order").css("display", "none")
+            if (data["TrendData_select"].length !== 0 && data["TCharts_select"].length !== 0) {
+                $("#LineCharts").css("display", "block")
+                $("#Gridviews").css("display", "none")
+                $("#Order").css("display", "table")
+                $("#oneprintshop").css("display", "block");
+
+                var sTrHtmls = "";
+                //表数据
+                $.each(data["TrendData_select"], function (i, item) {
+                    sTrHtmls += "<tr>";
+                    sTrHtmls += "<td>" + item.Year + "</td>";
+                    sTrHtmls += "<td>" + item.Item + "</td>";
+                    sTrHtmls += "<td>" + item.Jan + "</td>";
+                    sTrHtmls += "<td>" + item.Feb + "</td>";
+                    sTrHtmls += "<td>" + item.Mar + "</td>";
+                    sTrHtmls += "<td>" + item.Apr + "</td>";
+                    sTrHtmls += "<td>" + item.May + "</td>";
+                    sTrHtmls += "<td>" + item.Jun + "</td>";
+                    sTrHtmls += "<td>" + item.Jul + "</td>";
+                    sTrHtmls += "<td>" + item.Aug + "</td>";
+                    sTrHtmls += "<td>" + item.Sep + "</td>";
+                    sTrHtmls += "<td>" + item.Oct + "</td>";
+                    sTrHtmls += "<td>" + item.Nov + "</td>";
+                    sTrHtmls += "<td>" + item.Dec + "</td>";
+                    sTrHtmls += "<td>" + item.Total + "</td>";
+                    sTrHtmls += "<td>" + item.versuslastyear + "</td>";
+                    sTrHtmls += "<td>" + item.MonthlyAverage + "</td>";
+                    sTrHtmls += "</tr>";
+                });
+                //折线图
+                $.each(data["TCharts_select"], function (i, item) {
+                    if (data["TCharts_select"][i].Year == "2017") {
+                        TCharts2015[0] = item.Jan;
+                        TCharts2015[1] = item.Feb;
+                        TCharts2015[2] = item.Mar;
+                        TCharts2015[3] = item.Apr;
+                        TCharts2015[4] = item.May;
+                        TCharts2015[5] = item.Jun;
+                        TCharts2015[6] = item.Jul;
+                        TCharts2015[7] = item.Aug;
+                        TCharts2015[8] = item.Sep;
+                        TCharts2015[9] = item.Oct;
+                        TCharts2015[10] = item.Nov;
+                        TCharts2015[11] = item.Dec;
+                        text2015 = "2017";
+                        text2016 = " ";
+
+
+                    }
+                    if (data["TCharts_select"][i].Year == "2016") {
+                        TCharts2016[0] = item.Jan;
+                        TCharts2016[1] = item.Feb;
+                        TCharts2016[2] = item.Mar;
+                        TCharts2016[3] = item.Apr;
+                        TCharts2016[4] = item.May;
+                        TCharts2016[5] = item.Jun;
+                        TCharts2016[6] = item.Jul;
+                        TCharts2016[7] = item.Aug;
+                        TCharts2016[8] = item.Sep;
+                        TCharts2016[9] = item.Oct;
+                        TCharts2016[10] = item.Nov;
+                        TCharts2016[11] = item.Dec;
+
+                        text2016 = "2016";
+                        text2015 = " ";
+                    }
+
+                    var myChart = echarts.init(document.getElementById("LineCharts"));
+                    var option = {
+                        //title: {
+                        //    text: 'TrendAnalysis',
+                        //    subtext: 'TrendAnalysis'
+                        //},
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data: [text2015, text2016]
+                        },
+                        //toolbox: {
+                        //    show: true,
+
+                        //},
+                        //calculable: true,
+                        xAxis: [
+                            {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value',
+                                axisLabel: {
+                                    // formatter: '{value} °C'
+                                }
+                            }
+                        ],
+                        series: [
+                            {
+                                name: text2015,
+                                type: 'line',
+                                data: TCharts2015,
+                                markPoint: {
+                                    data: [
+                                        //{ type: 'max', name: '最大值' },
+                                        //{ type: 'min', name: '最小值' }
+                                    ]
+                                },
+
+                            },
+                            {
+                                name: text2016,
+                                type: 'line',
+                                data: TCharts2016,
+                                markPoint: {
+                                    data: [
+                                        //{ name: '年最低', value: -2, xAxis: 1, yAxis: -1.5 }
+                                    ]
+                                },
+                                markLine: {
+                                    data: [
+                                        //{ type: 'average', name: '平均值' }
+                                    ]
+                                }
+                            }
+                        ]
+
+                    };
+
+                    // 为echarts对象加载数据
+                    myChart.setOption(option);
+                })
+
+
+                $("#Order tbody").html(sTrHtmls);
+
+            }
+
+                //查所有
+            else {
+
+                $("#Order").css("display","none");
+                $("#Gridviews").css("display", "table");
+                $("#LineCharts").css("display", "none");
+                $("#oneprintshop").css("display", "none");
+                for (var i = 0; i <  list.length; i++) {
+                    var strlist = list[i];
+                    var chartslist = charts[i];
+                    if (data[strlist].length !== 0 && data[chartslist].length !== 0) {
+
+                        var printshopnames = strlist.substring(10);
+                        var spanstr = "";
+                        spanstr += "<li class=\"country-menu\"><span class=\"_printshop\" onclick='OnePrinshop(this)' >" + printshopnames + "</span></li>";
+                        $("#country-menu").append(spanstr);
+
+
+                    }
+                }
+
+                for (var i = 0; i < list.length; i++) {
+                    var strlist = list[i];
+                    var chartslist = charts[i];
+                    if (data[strlist].length !== 0&&data[chartslist].length!==0) {
+                        var sTrHtml = "";
+                        $.each(data[strlist], function (i, item) {
+                            sTrHtml += "<tr>";
+                            sTrHtml += "<td>" + item.Year + "</td>";
+                            sTrHtml += "<td>" + item.Item + "</td>";
+                            sTrHtml += "<td>" + item.Jan + "</td>";
+                            sTrHtml += "<td>" + item.Feb + "</td>";
+                            sTrHtml += "<td>" + item.Mar + "</td>";
+                            sTrHtml += "<td>" + item.Apr + "</td>";
+                            sTrHtml += "<td>" + item.May + "</td>";
+                            sTrHtml += "<td>" + item.Jun + "</td>";
+                            sTrHtml += "<td>" + item.Jul + "</td>";
+                            sTrHtml += "<td>" + item.Aug + "</td>";
+                            sTrHtml += "<td>" + item.Sep + "</td>";
+                            sTrHtml += "<td>" + item.Oct + "</td>";
+                            sTrHtml += "<td>" + item.Nov + "</td>";
+                            sTrHtml += "<td>" + item.Dec + "</td>";
+                            sTrHtml += "<td>" + item.Total + "</td>";
+                            sTrHtml += "<td>" + item.versuslastyear + "</td>";
+                            sTrHtml += "<td>" + item.MonthlyAverage + "</td>";
+                            sTrHtml += "</tr>";
+
+                        });
+                        var printshopname= strlist.substring(10);
+                        var strchen = "";
+                        //strchen += "<span class=\"_printshop\" onclick='OnePrinshop(this)' >" + printshopname + "</span>"
+
+                        strchen += "<table id=\"Order" + i + "\" class=\"table table-striped table-bordered table-hover table-full-width dataTable\" name=" + printshopname + ">";
+                        strchen += " <thead>"
+                        strchen += "<tr class=\"head\">"
+                        strchen += " <th class=\"center\">Year</th>"
+                        strchen += "<th class=\"center\">Item</th>"
+                        strchen += "<th class=\"center\">Jan</th>"
+                        strchen += "<th class=\"center\">Feb</th>"
+                        strchen += "<th class=\"center\">Mar</th>"
+                        strchen += "<th class=\"center\">Apr</th>"
+                        strchen += "<th class=\"center\">May</th>"
+                        strchen += "<th class=\"center\">Jun</th>"
+                        strchen += "<th class=\"center\">Jul</th>"
+                        strchen += "<th class=\"center\">Aug</th>"
+                        strchen += "<th class=\"center\">Sep</th>"
+                        strchen += "<th class=\"center\">Oct</th>"
+                        strchen += "<th class=\"center\">Nov</th>"
+                        strchen += "<th class=\"center\">Dec</th>"
+                        strchen += "<th class=\"center\">Total</th>"
+                        strchen += "<th class=\"center\">% versus last year</th>"
+                        strchen += "<th class=\"center\">Monthly Average</th>"
+                        strchen += "</tr>";
+                        strchen += "</thead>"
+                        strchen += "<tbody class=\"OrderDetail\">"
+                        strchen += " </tbody>"
+                        strchen += " </table>"
+
+
+                        $("#sbbb").append(strchen);
+
+                        $("#Order" + i + " tbody").html(sTrHtml);
+                        var chartsdivstr = "";
+                        chartsdivstr += "<div id=\"LineCharts" + i + "\" style=\"height:400px;width:600px\" name=" + printshopname + "></div>";
+                        $("#Order" + i + " ").after(chartsdivstr);
+
+
+
+
+                        //////折线图
+                        $.each(data[chartslist], function (i, item) {
+                            if (data[chartslist][i].Year == "2017") {
+                                TCharts2015[0] = item.Jan;
+                                TCharts2015[1] = item.Feb;
+                                TCharts2015[2] = item.Mar;
+                                TCharts2015[3] = item.Apr;
+                                TCharts2015[4] = item.May;
+                                TCharts2015[5] = item.Jun;
+                                TCharts2015[6] = item.Jul;
+                                TCharts2015[7] = item.Aug;
+                                TCharts2015[8] = item.Sep;
+                                TCharts2015[9] = item.Oct;
+                                TCharts2015[10] = item.Nov;
+                                TCharts2015[11] = item.Dec;
+                                text2015 = "2017";
+                            }
+                            if (data[chartslist][i].Year == "2016") {
+                                TCharts2016[0] = item.Jan;
+                                TCharts2016[1] = item.Feb;
+                                TCharts2016[2] = item.Mar;
+                                TCharts2016[3] = item.Apr;
+                                TCharts2016[4] = item.May;
+                                TCharts2016[5] = item.Jun;
+                                TCharts2016[6] = item.Jul;
+                                TCharts2016[7] = item.Aug;
+                                TCharts2016[8] = item.Sep;
+                                TCharts2016[9] = item.Oct;
+                                TCharts2016[10] = item.Nov;
+                                TCharts2016[11] = item.Dec;
+                                text2016 = "2016";
+                            }
+
+                        })
+
+                        var myChart = echarts.init(document.getElementById("LineCharts"+i+""));
+
+                        var option = {
+                            //title: {
+                            //    text: 'TrendAnalysis',
+                            //    subtext: 'TrendAnalysis'
+                            //},
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                data: [text2015, text2016]
+                            },
+                            //toolbox: {
+                            //    show: true,
+
+                            //},
+                            //calculable: true,
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    boundaryGap: false,
+                                    data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value',
+                                    axisLabel: {
+                                        // formatter: '{value} °C'
+                                    }
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: text2015,
+                                    type: 'line',
+                                    data: TCharts2015,
+                                    markPoint: {
+                                        data: [
+                                            //{ type: 'max', name: '最大值' },
+                                            //{ type: 'min', name: '最小值' }
+                                        ]
+                                    },
+
+                                },
+                                {
+                                    name: text2016,
+                                    type: 'line',
+                                    data: TCharts2016,
+                                    markPoint: {
+                                        data: [
+                                            //{ name: '年最低', value: -2, xAxis: 1, yAxis: -1.5 }
+                                        ]
+                                    },
+                                    markLine: {
+                                        data: [
+                                            //{ type: 'average', name: '平均值' }
+                                        ]
+                                    }
+                                }
+                            ]
+
+                        };
+
+                        // 为echarts对象加载数据
+                        myChart.setOption(option);
+
+                    }
+                    //if (data[strlist].length == 0) {
+                    //    alert("没有值");
+                    //}
+                    //else
+                    //{
+                    //    alert("有值");
+                    //}
+
+                    //$("#Order0").html("156416131");
+                    //$("#Order1").html("fdfdfdfdfd");
+                }
+
+                ShowAllDataHideTable();
+
+            }
+
+            //$("#Order tbody").append("<h1>" + data.IvenData[0].TotalQty + "</h1>");
+        });
+
+
+
+            $("select[name='_Categroy']").change(function () {
+                var data = {
+                    _CategroyId: $(this).val()
+                };
+                var urlPost = "/Maxim/CategoryChangeBinItem?CategroyId=" + $(this).val();
+                $.post(urlPost, data, function (data, status) {
+                    var sTrHtml = "";
+                    $("select[name='_Item']").html(sTrHtml);
+                    $.each(data, function (i, item) {
+                        sTrHtml += "<option value=\""+ item.Value + "\">" + item.Text + "</option>";
+                    })
+                    $("select[name='_Item']").html(sTrHtml);
+                });
+
+            });
+    };
+
+    function ShowAllDataHideTable()
+    {
+        var totalldata=$("#Order0").find("tr");
+        if (totalldata.length == 0) {
+            //alert("123");
+        }
+        else {
+            $("#Order0").siblings("table").css("display", "none");
+            $("#LineCharts0").siblings("div").css("display", "none");
+        }
+    }
+    function OnePrinshop(data)
+    {
+        var a = $(data).html();
+        //alert($(a).html());
+
+        $("table[name='"+a+"']").siblings("table").css("display", "none");
+        $("div[name='" + a + "']").siblings("div").css("display", "none");
+        $("table[name='"+a+"']").css("display", "block");
+        $("div[name='" + a + "']").css("display", "block");
+        $(".country-menu").click(function () {
+            $(data).css('background', '#999').parent('li').siblings().children('span').css('background', '#f7f7fc')
+        })
+    }
+
+</script>
+@using (Html.BeginForm("TrendAnalysis", "Maxim", FormMethod.Post))
+{      
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box " id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <em class="red-em" id="step1">Trend Analysis</em>
+                        <em class="gray-em" id="step2" style="display:none;">Query Results</em>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div id="Query-order">
+                        <h3 class="form-section" style="text-align:center"></h3>
+                        @*第一行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 ">
+                                <span>Print Shop:</span>
+                                @*@Html.DropDownListFor(x => x.PSID, Model.PSlist, new { @class = "m-wrap span8",@style = "color:BLACK;font-size: 17px" })*@
+                                <select id="PSID" name="PSID" class = "m-wrap span8">
+                                    @foreach (SelectListItem item in Model.PSlist)
+                                    {
+                                        if (item.Disabled)
+                                        {
+                                            <option disabled="disabled" value="@item.Value">@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value" style="color:black;font-weight:bold">@item.Text</option>
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="span4 ">
+                               
+                            </div>
+                        </div>
+                        @*第二行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <span>Category:</span>
+                                @Html.DropDownListFor(x => x._Categroy, Model.Category, new { @class = "m-wrap span8" })
+                            </div>
+                            <div class="span4">
+
+                            </div>
+                        </div>
+                        @*第三行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <span>Item:</span>
+                                @Html.DropDownListFor(x => x._Item, Model.Item, new { @class = "m-wrap span8" })
+                            </div>
+                            <div class="span4">
+
+                            </div>
+                        </div>
+                        @*第四行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <span>Year:</span>
+                                @Html.DropDownListFor(x => x._Year, Model.Year, new { @class = "m-wrap span8" })
+                            </div>
+                            <div class="span4">
+
+                            </div>
+                        </div>
+                        @*查询*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <span></span>
+                                <button type="button" id="btnQuery" name="btnQuery" class="btn btn-default" value="Query" style="margin-left:0;">Query</button>
+                            </div>
+                            <div class="span4">
+
+                            </div>
+                        </div>
+                       
+                    </div>
+
+                    @*图表*@
+                    <div id="GridData" style="display:none;">
+                        <i id="oneprintshop" style="display:none"></i>
+
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <table id="Order" class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr class="head">
+                                        <th class="center">Year</th>
+                                        <th class="center">Item</th>
+                                        <th class="center">Jan</th>
+                                        <th class="center">Feb</th>
+                                        <th class="center">Mar</th>
+                                        <th class="center">Apr</th>
+                                        <th class="center">May</th>
+                                        <th class="center">Jun</th>
+                                        <th class="center">Jul</th>
+                                        <th class="center">Aug</th>
+                                        <th class="center">Sep</th>
+                                        <th class="center">Oct</th>
+                                        <th class="center">Nov</th>
+                                        <th class="center">Dec</th>
+                                        <th class="center">Total</th>
+                                        <th class="center">% versus last year</th>
+                                        <th class="center">Monthly Average</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail"></tbody>
+                            </table>
+
+                            <div class="clearfix main_table" id="Gridviews">
+                                <ul id="country-menu" class="tolist"></ul>
+
+                                <div id="sbbb"></div>
+                            </div>
+                        </div>
+                            <div id="LineCharts" style="height:400px;width:600px"></div>
+                            <button type="submit" formaction="/DemoReport/TrendAnalysisExportExcel" class="btn btn-default">Export to Excel</button>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewBag.Title = "ShoppingCartSubmit";
+    Layout = null;
+}
+<script src="~/scripts/ShoppingCart/ShoppingCartSubmit.js"></script>
+<div class="row-fluid">
+    <div class="span2 span2_hide">
+
+    </div>
+    <div class="span4">
+        <span>@ViewData["printshop"]:</span>
+        <select id="PrintShop" name="PrintShop" readonly="readonly"  class="m-wrap span8"></select>
+    </div>
+    <div class="span4">
+        <span>@ViewData["PONumber"]:</span>
+        <input type="text" id="txtPO_" name="txtPO_" readonly="readonly"  class="m-wrap span8" />
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span2 span2_hide">
+
+    </div>
+    <div class="span4">
+        <span>@ViewData["Billing To"]:</span>
+        <select id="BilltoId" name="BilltoId" class="m-wrap span8"></select>
+    </div>
+    <div class="span4">
+        <span>@ViewData["Ship To"]:</span>
+        <select id="ShiptoId" name="ShiptoId" class="m-wrap span8"></select>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span2 span2_hide">
+
+    </div>
+    <div class="span4">
+        <span>@ViewData["Billing Address"]:</span>
+        <textarea id="BillToAddress" name="BillToAddress" readonly="readonly" class="m-wrap span8" style="margin-bottom:10px;resize:none;"></textarea>
+    </div>
+    <div class="span4">
+        <span>@ViewData["Shipping Address"]:</span>
+        <select id="ShipAddress" name="ShipAddress" class="m-wrap span8"></select>
+
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span2 span2_hide">
+    </div>
+    <div class="span4">
+        <span>@ViewData["Contact"]:</span>
+        <input type="text" id="BillingAddrContact" name="BillingAddrContact" readonly="readonly" class="m-wrap span8" />
+    </div>
+    <div class="span4">
+        <span>@ViewData["Contact"]:</span>
+        <input type="text" id="ShipAddrContact" name="ShipAddrContact" readonly="readonly" class="m-wrap span8" />
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span2 span2_hide">
+    </div>
+    <div class="span4">
+        <span>@ViewData["Tel"]:</span>
+        <input type="text" id="BillingAddrTel" name="BillingAddrTel" readonly="readonly" class="m-wrap span8" />
+    </div>
+    <div class="span4">
+        <span>@ViewData["Tel"]:</span>
+        <input type="text" id="ShipAddrTel" name="ShipAddrTel" readonly="readonly" class="m-wrap span8" />
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span2 span2_hide">
+    </div>
+    <div class="span4">
+        <span>@ViewData["Shipment Type"]:</span>
+        <input type="text" id="ShipmentType_" name="ShipmentType_" readonly="readonly" class="m-wrap span8" />
+    </div>
+    <div class="span4">
+        <span>@ViewData["Country"]:</span>
+        <input type="text" id="ShipAddrCountry" name="ShipAddrCountry" readonly="readonly" class="m-wrap span8" />
+    </div>
+</div>
+
+@*<div class="row-fluid">
+        <div class="span2 span2_hide">
+
+        </div>
+        <div class="span4">
+            <span>@ViewData["FreightCompany"]</span>
+            <input type="text" id="ExpressCompany_" name="ExpressCompany_" readonly="readonly" class="m-wrap span8" />
+        </div>
+        <div class="span4">
+
+        </div>
+    </div>*@
+<div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+    <table id="ShoppingCartOrder2" class="table table-striped table-bordered table-hover table-full-width dataTable">
+
+        <thead>
+            <tr class="head" style="font-size: 12px !important;">
+                <th class="center"></th>
+                <th class="center" style="text-align:right;">@ViewData["OrderQty"]</th>
+                <th class="center" style="width: 400px;">@ViewData["Product Sample"]</th>
+                <th class="center">@ViewData["Product"]</th>
+                <th class="center">@ViewData["Currency"]</th>
+                <th class="center">@ViewData["Unit Price"]</th>
+                @*<th class="center">@ViewData["Stock Qty"]</th>*@
+                <th class="center">@ViewData["UOM"]</th>
+                <th class="center">@ViewData["PurchaseUnit"]</th>
+            </tr>
+        </thead>
+
+        <tbody id="NeedOrderNowOrder" class="OrderDetail shoppingcart"></tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    <span id="Label2" style="font-weight:bold;">Total Cost:</span>
+                </td>
+                <td>
+                    <span id="lblTotalCost" style="display:inline-block;border-style:Double;font-weight:bold;width:121px;">￥284</span>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="clearfix main_submit">
+        <button id="Submit3" class="btn btn-default" type="submit" value="Ordering Now" name="Command">@ViewData["Submit"]</button>
+        <button id="Submit4" class="btn btn-default" type="submit" value="Ordering Now" name="Command">@ViewData["Continue Shopping"]</button>
+        <button id="Submit5" class="btn btn-default" type="submit" value="Ordering Now" name="Command">@ViewData["Cancel"]</button>
+    </div>
+
+</div>
+
+
+

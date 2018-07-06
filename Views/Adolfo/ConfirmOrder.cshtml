@@ -1,0 +1,270 @@
+﻿@using Resources
+@using System.Data;
+@using Maxim.Model.BaseModel
+@model OrderTracking
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ConfirmOrder</title>
+    <script src="~/scripts/Adolfo/ConfirmOrder.js"></script>
+</head>
+@using (Html.BeginForm())
+{
+    <body>
+        <input type="text" id="tPageFunc" name="tPageFunc" @ViewBag.PageFunc value="@ViewBag.PageFunc" style="display:none" />
+        <input type="text" id="tBrandId" name="tBrandId" value="@ViewBag.BrandId" style="display:none" />
+        <input type="text" id="language" name="language" value="@ViewBag.language" style="display:none;" />
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box " id="form_wizard_1">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <em class="red-em" id="step1">@ConfirmOrder.OrderReceive</em>
+                            <em class="gray-em" id="step2" style="display:none;">@ConfirmOrder.QueryResults</em>
+                            <em class="gray-em" id="step_ViewDetail" style="display:none;">@ConfirmOrder.View_Detail</em>
+                            <em class="gray-em" id="step_ViewArtwork" style="display:none;">@ConfirmOrder.ArtWork</em>
+                            <em class="gray-em" id="step_confirm" style="display:none;">@ConfirmOrder.ConfirmOrders</em>
+                            <em class="gray-em" id="step_CancelOrder" style="display:none;">@ConfirmOrder.View_CancelOrder</em>
+                            <em class="gray-em" id="step_Revise_Order" style="display:none;">@ConfirmOrder.Revise_Order</em>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div id="Query-order">
+                            <h3 class="form-section" style="text-align:center"></h3>
+                            @*第一行*@
+                            <div class="row-fluid">
+                                <div class="span2 span2_hide">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"></label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4 ">
+                                    <span>@ConfirmOrder.MaximNo:</span>
+                                    <input type="text" id="OrderNO" name="OrderNO" class="m-wrap span8" />
+                                </div>
+                                <div class="span4 ">
+                                    <span>@ConfirmOrder.Customer_PO:</span>
+                                    <input type="text" id="txtPO" name="txtPO" class="m-wrap span8" />
+                                </div>
+                            </div>
+                            @*第二行*@
+                            <div class="row-fluid">
+                                <div class="span2 span2_hide">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"></label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4 ">
+                                    <span>@ConfirmOrder.Style:</span>
+                                    <input type="text" id="txtStyleNumber" name="txtStyleNumber" class="m-wrap span8" />
+                                </div>
+@if (ViewBag.BrandId == "ADO001")
+{
+    <div class="span4">
+        <span>@ConfirmOrder.Item:</span>
+        @Html.DropDownListFor(x => x.productid, Model.Productlist, new { @class = "m-wrap span8" })
+    </div>
+    <div class="span4 " style="display:none;">
+        <span>@ConfirmOrder.Vendor:</span>
+        @Html.DropDownListFor(x => x._Vendor, Model.Vendor, new { @class = "m-wrap span8", @id = "_Vendor" })
+    </div>
+}
+else
+{
+                                <div class="span4 ">
+                                    <span>@ConfirmOrder.Vendor:</span>
+                                    @Html.DropDownListFor(x => x._Vendor, Model.Vendor, new { @class = "m-wrap span8", @id = "_Vendor" })
+                                </div>
+}
+                            </div>
+                            @*第三行*@
+                            <div class="row-fluid">
+                                <div class="span2 span2_hide">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"></label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                @if (ViewBag.BrandId == "ADO001")
+                                {
+                                    <div class="span4 " style="display:none;">
+                                        <span>@ConfirmOrder.Season:</span>
+                                        <input type="text" id="txtseason" name="txtseason" class="m-wrap span8" />
+                                    </div>
+                                }
+                                else
+                                {
+                                <div class="span4">
+                                    <span>@ConfirmOrder.Item:</span>
+                                    @Html.DropDownListFor(x => x.productid, Model.Productlist, new { @class = "m-wrap span8" })
+                                </div>
+                                }
+                                @if (ViewBag.PageFunc == "pend")
+                                {
+                                    /**/
+                                    <div class="span4">
+                                        <span>@ConfirmOrder.PrintShop:</span>
+                                       @Html.DropDownListFor(x=>x.PrintShopId, Model.PrintshopList, new { @class= "m-wrap span8" })
+                                    </div>
+                                }
+                            </div>
+                            @*Query*@
+                            <div class="row-fluid">
+                                <p style="text-align:center">
+                                    @if (ViewBag.BrandId == "ADO001")
+                                    {
+                                        <button type="button" class="btn" id="btnQuery" name="btnQuery" style="border: 1px solid #D6D6D6;width: 170px;margin-left:0;">@ConfirmOrder.Search</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn" id="btnQuery" name="btnQuery" style="border: 1px solid #D6D6D6;width: 170px;margin-left:0;">@ConfirmOrder.Query</button>
+                                    }
+
+
+
+
+
+                                </p>
+                            </div>
+                        </div>
+                        @*Table*@
+                        <div class="portlet-body" id="Query-Results" style="display:none ">
+                            <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                                @if (ViewBag.BrandId == "ADO001")
+                                {
+                                    <label style="color:#ff0000">"Pick and Pack"items need to be ordered by unit (each unit is 200pcs), labels / tags with variable data  have no MOQ limitation</label>
+                                }
+                                <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th>@ConfirmOrder.Seq</th>
+                                            <th>@ConfirmOrder.Upload_Date</th>
+                                            @if (ViewBag.BrandId == "PDT001")
+                                            {
+                                                <th>@ConfirmOrder.IssueDate</th>
+                                                <th>@ConfirmOrder.Export_Timestamp_Local</th>
+                                                <th>@ConfirmOrder.Customer_PO</th>
+                                                <th>@ConfirmOrder.MaximNo</th>
+                                                <th>@ConfirmOrder.Customer</th>
+                                                <th>@ConfirmOrder.Reference_number</th>
+
+                                            }
+                                            else if (ViewBag.BrandId == "ADO001")
+                                            {
+                                                <th>@ConfirmOrder.Series</th>
+                                                <th>@ConfirmOrder.MaximNo</th>
+                                                <th>@ConfirmOrder.Customer_PO</th>
+                                                <th>@ConfirmOrder.Style</th>
+                                                <th>@ConfirmOrder.Vendor</th>
+                                                <th>@ConfirmOrder.Vendor_Name</th>
+                                                <th>@ConfirmOrder.Season</th>
+                                            }
+                                            else
+                                            {
+                                                <th>@ConfirmOrder.Customer_PO</th>
+                                                <th>@ConfirmOrder.MaximNo</th>
+                                                <th>@ConfirmOrder.Vendor</th>
+                                                <th>@ConfirmOrder.Vendor_Name</th>
+                                                <th>@ConfirmOrder.Reference</th>
+                                                <th>@ConfirmOrder.Comments</th>
+                                            }
+
+                                            <th>@ConfirmOrder.Not_Confirmed_Days</th>
+                                            <th>@ConfirmOrder.Item</th>
+                                            <th style="text-align:right;">@ConfirmOrder.OrderQty</th>
+                                            @*<th class="center">View Detail</th>
+                                                <th class="center">Submit Order</th>*@
+                                    </thead>
+                                    <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                                </table>
+                            </div>
+
+                            @*分页*@
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <div class="mypage">
+                                        <ul>
+                                            <li id="PageIndex"><<</li>
+                                            <li id="Pageup"><</li>
+                                            <li><input type="text" id="nowpage" value="1" /></li>
+                                            <li>/</li>
+                                            <li><i id="TotalPageCount">1</i></li>
+                                            <li id="Pagewown">></li>
+                                            <li id="PageLast">>></li>
+                                            <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                            <li id="PageGO">GO</li>
+                                            <li style="font-size:20px;"><font>Totals:</font><font id="fontTotal">0</font></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                @*导出Excel*@
+                                <button type="submit" formaction="/Adolfo/ConfirmOrderExportExcel" class="btn btn-default">@ConfirmOrder.Export_to_Excel</button>
+                                @*<div class="span4">
+                                        <span style="margin-top: 15px;">Estimated XFD:</span>
+                                        <div class="input-append date datepicker nopadding" data-date="" data-date-format="yyyy-mm-dd" style="margin: 0px">
+                                            <input type="text" id="SubmitStartTime" name="SubmitStartTime" class="Wdate" onclick="WdatePicker({ lang: 'en' })" value="">
+                                            <input class="m-wrap m-ctrl-medium date-picker m-wrap span4" size="16" type="text" value="" name="SubmitStartTime">
+                                        </div>
+                                        <button type="button"  id="btnConfirmOrder" class="btn btn-default" style="margin-top:0px;">Submit</button>
+                                    </div>*@
+                                @*<div class="span4">
+                                        <div id="sample_1_length" class="dataTables_length">
+                                            Estimated XFD:
+                                            <input class="m-wrap m-ctrl-medium date-picker m-wrap span4" size="16" type="text" value="" id="SubmitStartTime" name="SubmitStartTime">
+                                            <button type="button" id="btnConfirmOrder" class="btn btn-default" style="margin-top:-9px;">Submit</button>
+                                        </div>
+                                    </div>*@
+                                @*<div class="span4">
+                                        <div id="sample_1_length" class="dataTables_length">
+                                            <label>
+                                                Show
+                                                <select size="1" name="sample_1_length" aria-controls="sample_1" class="m-wrap small">
+                                                    <option value="5" selected="selected">5</option>
+                                                    <option value="15">15</option>
+                                                    <option value="20">20</option>
+                                                    <option value="-1">All</option>
+                                                </select> result per page
+                                            </label>
+                                        </div>
+                                    </div>*@
+                            </div>
+                        </div>
+                        @*ViewDetail*@
+                        <div class="portlet-body" id="Results-ViewDetail" style="display:none;">
+                        </div>
+                        @*ViewArtwork*@
+                        <div class="ron" id="Results-ViewArtwork" style="display:none;">
+                        </div>
+                        @*修改订单数量*@
+                        <div class="ron" id="Results" style="display:none;"></div>
+                        @*订单取消成功列表*@
+                        <div class="portlet-bodys" id="Results-CancelOrder" style="display:none">
+                            <h1>@ConfirmOrder.Cancel_successfully</h1>
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="CancelOrderResult">
+                                <thead>
+                                    <tr role="row">
+
+                                        <th class="center">@ConfirmOrder.MaximNo</th>
+                                        <th class="center">@ConfirmOrder.CancelRequstBy</th>
+                                </thead>
+                                <tbody role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+}
+</html>

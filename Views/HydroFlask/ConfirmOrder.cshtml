@@ -1,0 +1,165 @@
+﻿
+@{
+    ViewBag.Title = "ConfrimOrder";
+    Layout = null;
+}
+
+@RenderPage("~/Views/Shared/PopDiv.cshtml")
+
+<script src="~/Content/js/Popup.js"></script>
+<script src="~/scripts/HydroFlask/ConfirmOrder.js?v=1"></script>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="portlet box " id="form_wizard_1">
+            <div class="portlet-title">
+                <div class="caption">
+                    <em class="red-em" id="step1">Order Recieve</em>
+                    <em class="gray-em" id="step2" style="display:none;">Query Results</em>
+                    <em class="gray-em" id="step_ViewDetail" style="display:none;">View Detail</em>
+                    <em class="gray-em" id="step_ViewArtwork" style="display:none;">View Artwork</em>
+                </div>
+            </div>
+            <div class="portlet-body form">
+              <div id="Query-order">
+                  <h3 class="form-section" style="text-align:center"></h3>
+                  @*第一行*@
+                  <div class="row-fluid">
+                      <div class="span2 span2_hide">
+
+                          <div class="control-group">
+
+                              <label class="control-label" for="firstName"></label>
+
+                              <div class="controls">
+                              </div>
+
+                          </div>
+
+                      </div>
+                      <div class="span4 ">
+                          <span>Vendor:</span>
+                          <select id="DropVendor" name="DropVendor" class="m-wrap span8"></select>
+                      </div>
+                      <div class="span4 ">
+                          <span>PO#:</span>
+                          <input type="text" id="txtPO" name="txtPO" class="m-wrap span8" />
+                      </div>
+                  </div>
+                  @*第二行*@
+                  <div class="row-fluid">
+                      <div class="span2 span2_hide">
+
+                          <div class="control-group">
+
+                              <label class="control-label" for="firstName"></label>
+
+                              <div class="controls">
+                              </div>
+
+                          </div>
+
+                      </div>
+                      <div class="span4 ">
+                          <span>Print Shop:</span>
+                          <select id="PrintShop" name="PrintShop" class="m-wrap span8"></select>
+                      </div>
+                      <div class="span4 ">
+                          <span>Maxim OOS NO.:</span>
+                          <input type="text" id="OrderNO" name="OrderNO" class="m-wrap span8" />
+                      </div>
+                  </div>
+                  @*Query*@
+                  <div class="row-fluid">
+                      <p style="text-align:center">
+                          <button type="button" class="btn" id="btnQuery" name="btnQuery" style="border: 1px solid #D6D6D6;width: 170px;margin-left:0;">Query</button>
+                      </p>
+                  </div>
+              </div>
+                 @*Table*@
+                <div class="portlet-body" id="Query-Results" style="display:none;">
+                    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                        <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                            <thead>
+                                <tr role="row">
+                                    <th class="center"></th>
+                                    <th class="center">Seq</th>
+                                    <th class="center">Print Shop</th>
+                                    <th class="center">Upload Date</th>
+                                    <th class="center">Order No.</th>
+                                    <th class="center">Maxim No.</th>
+                                    <th class="center" style="text-align:right;">Order Qty</th>
+                                    <th class="center">UOM</th>
+                                    <th class="center">Detail</th>
+                                    <th class="center">Submit Order</th>
+                            </thead>
+                            <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                        </table>
+                    </div>
+
+                  
+                    @*分页*@
+                    <div class="row-fluid">
+
+                        <div class="span4">
+                            <div class="mypage">
+                                <ul>
+                                    <li id="PageIndex"><<</li>
+                                    <li id="Pageup"><</li>
+                                    <li><input type="text" id="nowpage" value="1" /></li>
+                                    <li>/</li>
+                                    <li><i id="TotalPageCount">60</i></li>
+                                    <li id="Pagewown">></li>
+                                    <li id="PageLast">>></li>
+                                    <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                    <li id="PageGO">GO</li>
+                                
+                                </ul>
+                            </div>
+                        </div>
+                        @*导出Excel*@
+                        @*<div class="span4">
+                            <span style="margin-top: 15px;">Estimated XFD:</span>
+                            <div class="input-append date datepicker nopadding" data-date="" data-date-format="yyyy-mm-dd" style="margin: 0px">
+                                <input type="text" id="SubmitStartTime" name="SubmitStartTime" class="Wdate" onclick="WdatePicker({ lang: 'en' })" value="">
+                                <input class="m-wrap m-ctrl-medium date-picker m-wrap span4" size="16" type="text" value="" name="SubmitStartTime">
+                            </div>
+                            <button type="button"  id="btnConfirmOrder" class="btn btn-default" style="margin-top:0px;">Submit</button>
+                        </div>*@
+                        <div class="span4">
+                            <div id="sample_1_length" class="dataTables_length">
+                                    Estimated XFD:
+                                    <input class="m-wrap m-ctrl-medium date-picker m-wrap span4" size="16" type="text" value="" id="SubmitStartTime" name="SubmitStartTime">
+                                    <button type="button" id="btnConfirmOrder" class="btn btn-default" style="margin-top:-9px;">Submit</button>
+                            </div>
+                        </div>
+                        @*<div class="span4">
+                            <div id="sample_1_length" class="dataTables_length">
+                                <label>
+                                    Show
+                                    <select size="1" name="sample_1_length" aria-controls="sample_1" class="m-wrap small">
+                                        <option value="5" selected="selected">5</option>
+                                        <option value="15">15</option>
+                                        <option value="20">20</option>
+                                        <option value="-1">All</option>
+                                    </select> result per page
+                                </label>
+                            </div>
+                        </div>*@
+                    </div>
+
+                </div>
+                @*ViewDetail*@
+                <div class="portlet-body" id="Results-ViewDetail" style="display:none;">
+
+                </div>
+                @*ViewArtwork*@
+                <div class="ron" id="Results-ViewArtwork" style="display:none;">
+
+                </div>
+            </div>
+         </div>
+    </div>
+</div>
+    
+

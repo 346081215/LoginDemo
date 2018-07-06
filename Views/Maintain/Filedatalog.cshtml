@@ -1,0 +1,253 @@
+﻿@using System.Data;
+@using Maxim.Model.BaseModel;
+@model Filedatalog
+@{
+    ViewBag.Title = "Filedatalog";
+    Layout = null;
+}
+
+<script src="~/scripts/Maintain/Filedatalog.js"></script>
+@using (Html.BeginForm())
+{
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box " id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <em class="red-em" id="step1">Filedatalog</em>
+                        <em class="red-em" id="step2" style="display:none">Query-Results</em>
+                        <em class="red-em" id="step3" style="display:none">ProductEdit</em>
+                        <em class="red-em" id="step4" style="display:none">ProductTplEdit</em>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div id="Query">
+                        <h3 class="form-section" style="text-align:center"></h3>
+                        @*第一行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 ">
+                                <span>Brand:</span>
+                                @Html.DropDownListFor(x => x.BrandList, Model.BrandList, new { @class = "m-wrap span8", @id = "Brand" })
+                            </div>
+                            <div class="span4 ">
+                                <span>Status:</span>
+                                @Html.DropDownListFor(x => x.Status, Model.Status, new { @class = "m-wrap span8", @id = "Status" })
+                            </div>
+
+                        </div>
+                        @*第二行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <span>Upload Date:</span>
+                                <input class="m-wrap m-ctrl-medium date-picker m-wrap span8" size="16" type="text" value="07/15/2017" id="SubmitStartTime" name="SubmitStartTime">
+                            </div>
+                            <div class="span4">
+                                <span></span>
+                                <input class="m-wrap m-ctrl-medium date-picker m-wrap span8" size="16" type="text" value="" id="SubmitEndTime" name="SubmitEndTime">
+                            </div>
+
+                        </div>
+                        @*第三行*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 ">
+                                <span>FormatId:</span>
+                                @Html.DropDownListFor(x => x.FormatId, Model.FormatIdlist, new { @class = "m-wrap span8", @id = "FormatId" })
+                            </div>
+                            <div class="span4 ">
+                                <span></span>
+                                <button id="btnQuery" class="btn btn-default" type="button" value="Query" name="Command">Query</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body" id="Query-Results" style="display:none;">
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="center">Seq</th>
+                                        <th class="center">FileDataLogID</th>
+                                        <th class="center">FormatId</th>
+                                        <th class="center">FileDataLogStatus</th>
+                                        <th class="center">FileName</th>
+                                        <th class="center">Createtime</th>
+                                        @*<th class="center">ParseOrderStatus</th>
+                                            <th class="center">OrderNo</th>
+                                            <th class="center">Po</th>
+                                            <th class="center"></th>*@
+                                        @*<th class="center"></th>*@
+                                        <th class="center"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                            </table>
+                        </div>
+                        <div class="row-fluid">
+
+                            <div class="span4">
+                                <div class="mypage">
+                                    <ul>
+                                        <li id="PageIndex"><<</li>
+                                        <li id="Pageup"><</li>
+                                        <li><input type="text" id="nowpage" value="1" /></li>
+                                        <li>/</li>
+                                        <li><i id="TotalPageCount">0</i></li>
+                                        <li id="Pagewown">></li>
+                                        <li id="PageLast">>></li>
+                                        <li id="PageGO">GO</li>
+                                        <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            @*导出Excel*@
+                            <div class="span4">
+                                <button class="btn" type="submit" formaction="/Maintain/ProductExportExcel" id="btnExcel" name="btnExcel" style="border: 1px solid #D6D6D6;width: 170px;margin-left: 33%;margin-top: -2px;">Export to Excel<i class="m-icon-swapright m-icon-white"></i></button>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 ">
+                                <span>总PO数:</span>
+                                <input type="text" id="TotalPo" name="TotalPo" class="m-wrap span8" disabled />
+                            </div>
+                            <div class="span4 ">
+                                <span>失败PO数:</span>
+                                <input type="text" id="FailPo" name="FailPo" class="m-wrap span8" disabled />
+                                <input hidden="hidden" id="SelectFileDataLogID" />
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ParseOrderLog" class="portlet-body" style="display:none;">
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <h3 id="FileDataLogID"></h3>
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable " id="ParseOrderDetail" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="center">Seq</th>
+                                        <th class="center">FileDataLogID</th>
+                                        <th class="center">OrderNo</th>
+                                        <th class="center">PO</th>
+                                        <th class="center">ErrorType</th>
+                                        <th class="center">RuleErrorValue</th>
+                                        @*<th class="center">ParseOrderStatus</th>
+                                            <th class="center">OrderNo</th>
+                                            <th class="center">Po</th>
+                                            <th class="center"></th>
+                                            <th class="center"></th>*@
+                                    </tr>
+                                </thead>
+                                <tbody class="ParseOrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                            </table>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="mypage">
+                                    <ul>
+                                        <li id="PageIndex2"><<</li>
+                                        <li id="Pageup2"><</li>
+                                        <li><input type="text" id="nowpage2" value="1" /></li>
+                                        <li>/</li>
+                                        <li><i id="TotalPageCount2">0</i></li>
+                                        <li id="Pagewown2">></li>
+                                        <li id="PageLast2">>></li>
+                                        <li id="PageGO2">GO</li>
+                                        <li><input id="pc2" name="pc2" type="hidden" value=1><input id="PageTotalCount2" name="PageTotalCount2" type="hidden" value=1></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ProductTplQueryView" class="portlet-body" style="display:none">
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail_FileDataLogID" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr role="row">
+                                        @*<th class="center">FileDataLogID</th>
+                                            <th class="center">Line_No</th>
+                                            <th class="center">OrdStatus</th>
+                                            <th class="center">Vendor_PO_Number</th>
+                                            <th class="center">Supplier_Name</th>
+                                            <th class="center">Supplier_address1</th>
+                                            <th class="center">Supplier_address2</th>
+                                            <th class="center">Supplier_address3</th>
+                                            <th class="center">Vendor_ID</th>
+                                            <th class="center">Sticker_Code</th>
+                                            <th class="center">Date</th>
+                                            <th class="center">Quantity</th>
+                                            <th class="center">Article_No</th>
+                                            <th class="center">SKU</th>
+                                            <th class="center">Article_Name</th>
+                                            <th class="center">Color_Code</th>
+                                            <th class="center">Color_Name</th>
+                                            <th class="center">EAN_Barcode_No</th>
+                                            <th class="center">Currency</th>
+                                            <th class="center">Price</th>
+                                            <th class="center">Size</th>
+                                            <th class="center">Season_Code</th>
+                                            <th class="center">Purchase_Price</th>*@
+
+                                        @{ DataTable data_OrderProductItem = ViewData["SelectFileDataLogID"] as DataTable;
+                                            foreach (DataColumn col in data_OrderProductItem.Columns)
+                                            {
+                                                <th class="center">@col.ColumnName</th>
+                                            }
+                                        }
+
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                            </table>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="mypage">
+                                    <ul>
+                                        <li id="PageIndex1"><<</li>
+                                        <li id="Pageup1"><</li>
+                                        <li><input type="text" id="nowpage1" value="1" /></li>
+                                        <li>/</li>
+                                        <li><i id="TotalPageCount1">0</i></li>
+                                        <li id="Pagewown1">></li>
+                                        <li id="PageLast1">>></li>
+                                        <li id="PageGO1">GO</li>
+                                        <li><input id="pc1" name="pc1" type="hidden" value=1><input id="PageTotalCount1" name="PageTotalCount1" type="hidden" value=1></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ProductTplEditView" class="portlet-body" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+                                            }
+
+

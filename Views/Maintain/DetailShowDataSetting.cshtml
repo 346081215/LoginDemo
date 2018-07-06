@@ -1,0 +1,174 @@
+﻿@using System.Data;
+@using Maxim.Model.BaseModel
+@model DetailShowDataSetting
+@{
+    ViewBag.Title = "DetailShowDataSetting";
+    Layout = null;
+}
+<script src="~/scripts/Maintain/DetailShowDataSetting.js"></script>
+<div id="all">
+    <h2>Order detail column setting</h2>
+    @Html.DropDownListFor(x => x.BrandId, Model.BrandList, new { @class = "m-wrap span3" })
+    @Html.DropDownListFor(x => x.FormatId, Model.FormatIdList, new { @class = "m-wrap span3" })
+    <button type="submit" class="btn" id="btnQuery" style="border: 1px solid ;width: 170px;margin-left:0;" onclick="SerachDetailShowDataSetting()">Query</button>
+    <button type="button" class="btn" id="newUser" name="newUser" onclick="return CreatenewDetail();">NewDetailShowDataSetting</button>
+
+    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+        <table id="ShowDetailShowDataSetting" class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+            <thead>
+                <tr class="head">
+                    <th class="center">BrandId</th>
+                    <th class="center">FormatId</th>
+                    <th class="center">DetailENName</th>
+                    <th class="center">DetailCNName</th>
+                    <th class="center">DetailSYSName</th>
+                    <th class="center">OrderSeq</th>
+                    <td class="center"></td>
+                </tr>
+            </thead>
+            <tbody id="DetailShowDataSettingDetail"></tbody>
+        </table>
+        @*分页*@
+        <div class="span4">
+            <div class="mypage">
+                <ul>
+                    <li id="PageIndex"><<</li>
+                    <li id="Pageup"><</li>
+                    <li><input type="text" id="nowpage" value="1" /></li>
+                    <li>/</li>
+                    <li><i id="TotalPageCount">0</i></li>
+                    <li id="Pagewown">></li>
+                    <li id="PageLast">>></li>
+                    <li id="PageGO">GO</li>
+                    <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="insertDetail" style="display:none;">
+    @*第一行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>BrandId:</span>
+            @Html.DropDownListFor(x => x.BrandId_sel, Model.BrandList, new { @class = "m-wrap span8" })
+        </div><div class="span4 ">
+            <span>FormatId:</span>
+            @Html.DropDownListFor(x => x.FormatId_sel, Model.FormatIdList, new { @class = "m-wrap span8" })
+        </div>
+    </div>
+    @*第二行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>DetailENName:</span>
+            <input type="text" id="DetailENName" name="DetailENName" class="m-wrap span8" style="background-color:#ffffff;" readonly="readonly"/>
+        </div><div class="span4 ">
+            <span>DetailCNName:</span>
+            <input type="text" id="DetailCNName" name="DetailCNName" class="m-wrap span8" style="background-color:#ffffff;" readonly="readonly"/>
+        </div>
+    </div>
+    @*第三行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>DetailSYSName:</span>
+            <select id="DetailSYSName" name="DetailSYSName" class="m-wrap span8"></select>
+        </div><div class="span4 ">
+            <span>OrderSeq:</span>
+            <input type="text" id="OrderSeq" name="OrderSeq" class="m-wrap span8" style="background-color:#ffffff" />
+        </div>
+    </div>
+    @*保存和返回按钮*@
+    <div class="row-fluid" id="SaveAt">
+        <div class="span3 span2_hide">
+        </div>
+        <div class="span3">
+            <button type="submit" id="SaveAccount" name="SaveAccount" class="btn btn-default" value="Save" onclick="funSaveDeatil()">Save</button>
+            <button type="button" id="ReturnIndex" onclick="ReturnIndex()" name="ReturnIndex" class="btn btn-default" value="Query">Return</button>
+        </div>
+    </div>
+
+</div>
+<div id="usdataDetail" style="display:none">
+    @*第一行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>DetailSYSName:</span>
+            <input type="text" id="DetailSYSName_u" name="DetailSYSName_u" class="m-wrap span8" readonly="readonly" />
+        </div><div class="span4 ">
+            <span>OrderSeq:</span>
+            <input type="text" id="OrderSeq_u" name="OrderSeq_u" class="m-wrap span8" style="background-color:#ffffff" />
+        </div>
+    </div>
+    @*第二行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>DetailENName:</span>
+            <input type="text" id="DetailENName_u" name="DetailENName_u" class="m-wrap span8" style="background-color:#ffffff" />
+        </div><div class="span4 ">
+            <span>DetailCNName:</span>
+            <input type="text" id="DetailCNName_u" name="DetailCNName_u" class="m-wrap span8" style="background-color:#ffffff" />
+        </div>
+    </div>
+    @*第三行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>BrandId:</span>
+            <input type="text" id="BrandId_u" name="BrandId_u" class="m-wrap span8" style="background-color:#ffffff" readonly="readonly" />
+        </div>
+    </div>
+    @*保存和返回按钮*@
+    <div class="row-fluid" id="SaveAt">
+        <div class="span3 span2_hide">
+        </div>
+        <div class="span3">
+            <button type="submit" id="SaveAccount_u" name="SaveAccount_u" class="btn btn-default" value="Save" onclick="funUpdateDeatil()">Save</button>
+            <button type="button" id="ReturnIndex_u" onclick="ReturnIndex()" name="ReturnIndex_u" class="btn btn-default" value="Query">Return</button>
+            <input id="EditDetailID_U" name="EditDetailID_U" type="hidden" />
+        </div>
+    </div>
+</div>
+
+

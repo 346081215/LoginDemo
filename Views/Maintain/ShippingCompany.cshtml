@@ -1,0 +1,171 @@
+﻿
+@{
+    ViewBag.Title = "ShippingCompanyInfo";
+    Layout = null;
+}
+<script src="~/scripts/Maintain/ShippingCompany.js"></script>
+
+<div id="all">
+    <h2>Freight Company</h2>
+    <span>oos_name:</span> <input type="text" id="inputusername" value="@ViewBag.name" placeholder="快递公司 " />
+    <button type="submit" class="btn" id="btnQuery" style="border: 1px solid ;width: 170px;margin-left:0;" onclick="SerachSCompany()">Query</button>
+    <button type="button" class="btn" id="newUser" name="newUser" onclick="return CreatenewSCompany();">NewShippingCompany</button>
+
+    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+        <table id="ShowShipping" class="table table-striped table-bordered table-hover table-full-width dataTable" aria-describedby="sample_2_info">
+            <thead>
+                <tr class="head">
+                    <th class="center">seq</th>
+                    <th class="center">oos_name</th>
+                    <th class="center">oos_chinesename</th>
+                    <th class="center">oos_enname</th>
+                    <th class="center">oos_website</th>
+                    <th class="center">oos_extype</th>
+                    <th class="center">IsEnabled</th>
+                    <th class="center">Notes</th>
+                    <td class="center"></td>
+                </tr>
+            </thead>
+            <tbody id="ShippingDetail"></tbody>
+        </table>
+        @*分页*@
+        <div class="span4">
+            <div class="mypage">
+                <ul>
+                    <li id="PageIndex"><<</li>
+                    <li id="Pageup"><</li>
+                    <li><input type="text" id="nowpage" value="1" /></li>
+                    <li>/</li>
+                    <li><i id="TotalPageCount">0</i></li>
+                    <li id="Pagewown">></li>
+                    <li id="PageLast">>></li>
+                    <li id="PageGO">GO</li>
+                    <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="EditInfor" style="display:none;">
+    @*第一行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>oos_name:</span>
+            <input type="text" id="oos_name" name="oos_name" class="m-wrap span8" />
+        </div><div class="span4 ">
+            <span>oos_chinesename:</span>
+            <input type="text" id="oos_chinesename" name="oos_chinesename" class="m-wrap span8" />
+        </div>
+    </div>
+    @*第二行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>oos_enname:</span>
+            <input type="text" id="oos_enname" name="oos_enname" class="m-wrap span8" />
+        </div><div class="span4 ">
+            <span>oos_website:</span>
+            <input type="text" id="oos_website" name="oos_website" class="m-wrap span8" />
+        </div>
+    </div>
+    @*第三行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span>Notes:</span>
+            <input type="text" id="Notes" name="Notes" class="m-wrap span8" />
+        </div>
+    </div>
+    @*保存和返回按钮*@
+    <div class="row-fluid" id="SaveAt">
+        <div class="span3 span2_hide">
+        </div>
+        <div class="span3">
+            <button type="submit" id="SaveAccount" name="SaveAccount" class="btn btn-default" value="Save" onclick="funSaveSCompany()">Save</button>
+            <button type="button" id="ReturnIndex" onclick="ReturnIndex()" name="ReturnIndex" class="btn btn-default" value="Query">Return</button>
+        </div>
+    </div>
+
+</div>
+<div id="Updateinfo" style="display:none;">
+    @*第一行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span class="sp">oos_name:</span>
+            <input type="text" id="oos_name_u" name="oos_name_u" class="m-wrap span8" />
+        </div>
+        <div class="span4 ">
+            <span class="sp">oos_chinesename:</span>
+            <input type="text" id="oos_chinesename_u" name="oos_chinesename_u" class="m-wrap span8" />
+        </div>
+    </div>
+    @*第二行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span class="sp">oos_enname:</span>
+            <input type="text" id="oos_enname_u" name="oos_enname_u" class="m-wrap span8" />
+        </div>
+        <div class="span4 ">
+            <span class="sp">oos_website:</span>
+            <input type="text" id="oos_website_u" name="oos_website_u" class="m-wrap span8" />
+        </div>
+    </div>
+    @*第三行*@
+    <div class="row-fluid">
+        <div class="span2 span2_hide">
+            <div class="control-group">
+                <label class="control-label" for="firstName"></label>
+                <div class="controls">
+                </div>
+            </div>
+        </div>
+        <div class="span4 ">
+            <span class="sp">Notes:</span>
+            <input type="text" id="Notes_u" name="Notes_u" class="m-wrap span8" />
+        </div>
+    </div>
+    @*保存和返回按钮*@
+    <div class="row-fluid" id="SaveAt">
+        <div class="span3 span2_hide">
+        </div>
+        <div class="span3">
+            <button type="submit" id="SaveAccount2" name="SaveAccount2" class="btn btn-default" value="Save" onclick="funSaveSCompanyUpdate()">Save</button>
+            <button type="button" id="ReturnIndex2" onclick="ReturnIndex()" name="ReturnIndex" class="btn btn-default" value="Query">Return</button>
+            <input id="EditSCompanyID_U" name="EditSCompanyID_U" type="hidden" />
+        </div>
+    </div>
+</div>

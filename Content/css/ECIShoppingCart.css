@@ -1,0 +1,57 @@
+﻿ .big {
+        width: 1600px;
+        height: 440px;
+    }
+
+    .Product {
+        width: 300px;
+        /*height: 220px;*/
+        float: left;
+    }
+
+    .ProductImages img
+     {
+        /*width: 25%;*/
+        /*height: 60px;*/
+        margin-left:22px;
+    }
+
+    .Description 
+    {
+        margin-left: -5px;
+        /*margin-top: 10px;*/
+    }
+    .Description .Item
+    {
+        font-size:17px;
+    }
+        .Description .notes {
+            font-size: 17px;
+        }
+    #Qty
+    {
+        width: 80px !important;
+    }
+    #panSuccess 
+    {
+        border:#ec008c solid 1px;
+    }
+    #AddtoCart    
+    {
+        margin-top:10px;
+
+    }
+     .Size
+    {
+        height:40px;
+    }
+.ProductImages 
+{
+    height:110%;
+    vertical-align: bottom !important;
+    Line-height: 270px !important;
+
+}
+
+    
+

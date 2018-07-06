@@ -1,0 +1,431 @@
+﻿@model Maxim.Model.DemoReportModel.Performance
+@{
+    ViewBag.Title = "Performance";
+    Layout = null;
+}
+@using (Html.BeginForm("Performance", "DemoReport", FormMethod.Post))
+{
+    <script src="~/scripts/jquery-1.10.2.js"></script>
+    <script src="~/Content/js/echarts-all.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('input:radio:first').attr('checked', 'checked');
+            $("#step2").css("display", "none");
+            $("#btnQuery").click(Query);
+            $("#step1").click(function () {
+                $("#step2").css("display", "none");
+            });
+            $("#_Year").val($("#selectYear").find("option:selected").text());
+            // $("#_Month").val($("#selectMonth").find("option:selected").text());
+            $("#_Services").val($("#selectServicesId").find("option:selected").text());
+            $("#selectYear").change(function () {
+                $("#_Year").val($(this).val());
+            });
+            $("#selectMonth").change(function () {
+                $("#_Month").val($(this).val());
+            });
+            $("#selectServicesId").change(function () {
+                $("#_Services").val($(this).val());
+            });
+
+            $("#btnExcel").click(function () {
+                $("form").submit();
+            });
+            //$("#btnQuery").text("text");
+
+
+            hideloading();
+
+        })
+
+        function Query() {
+            $("#step2").removeAttr("style")
+            var psid = $("#ddlPrintShop").val();
+            var monvalues = $("#selectMonth").val();
+            var year = $("#selectYear").val();
+            var serversid = $("#selectServicesId").val();
+            var vendor = $("#ddlVendor").val();
+            var RadCheck = $('input[name="RadCheck"]:checked').val();
+            var isOrder = false;
+            if (RadCheck == "Orders") {
+                isOrder = true;
+            }
+            //    alert("psid =" + psid + ", Month = " + monvalues + " ,year" + year + " ,ServcesLeaver=" + serversid + " , vendoor =" + vendor + " ,RadCheck= " + RadCheck);
+            var urlPost = "/DemoReport/GetPerformance?psid=" + psid + "&&monvalues=" + monvalues + "&&year=" + year + "&&serversid=" + serversid + "&&vendor=" + vendor + "&&isOrder=" + isOrder;
+            $.get(urlPost, null, function (data) {
+                // var obj = eval('(' + data + ')'); //方法二
+                //alert(obj.GridView);
+                data = JSON.parse(data);
+
+                var GridView = data.GridView;
+                var bodyHtml = "";
+                //debugger;
+                //alert('GridView.length : ' + GridView.length);
+                var _theTotalOrders = "";
+
+                for (var i = 0; i < GridView.length; i++) {
+                    //  alert(GridView[i].ServiceID)
+                    bodyHtml += "<tr>";
+                    bodyHtml += "<td class='center'>" + GridView[i].Seq + "</td>";
+                    bodyHtml += "<td class='center'>" + GridView[i].ServiceName + "</td>";
+                    bodyHtml += "<td class='center'>" + GridView[i].TotalOrders + "</td>";
+                    bodyHtml += "<td class='center'>" + GridView[i].OnTime + "</td>";
+                    bodyHtml += "<td class='center'>" + GridView[i].Late + "</td>";
+                    bodyHtml += "<td class='center'>" + GridView[i].OntimeA + "</td>";
+                    bodyHtml += "<td class='center'>" + GridView[i].LateA + "</td>";
+                    bodyHtml += "</tr>";
+                    if (GridView[i].ServiceName == "Totals:") {
+                        _theTotalOrders = Gridview[i].TotalOrders;
+                    }
+                }
+                
+                if (_theTotalOrders == "0") {
+                    $("#performance-chart").css("display", "none");
+                }
+                else {
+                    $("#performance-chart").css("display", "block");
+                }
+
+                $("#orderbody").html(bodyHtml);
+
+                var bardata = data.tb1;
+                CreateBar(bardata);
+
+                var linedata = data.tb2;
+                CreateLine(linedata);
+            })
+
+            function CreateBar(data) {
+                var arrCategory = new Array();
+                var lateArry = new Array();
+                var onTimeArry = new Array();
+                for (var i = 0; i < data.length; i++) {
+                    arrCategory[i] = data[i].ServiceName;
+                    lateArry[i] = (data[i].LateA).replace("%", "");
+                    onTimeArry[i] = data[i].OntimeA.replace("%", "");
+                }
+                var mychat = echarts.init(document.getElementById("Bardiv"));
+                var option = {
+                    //title: { text: 'Performance Overview' },
+                    tooltip: { trigger: 'axis' },
+                    legend: { data: ['On time', 'Late'] },
+                    xAxis: [{ type: 'category', data: arrCategory }],
+                    yAxis: [{ type: 'value', axisLabel: { formatter: '{value}%' } }],
+                    calculable: true,
+                    series: [{ "name": "On time", "type": "bar", "data": onTimeArry },
+                               { "name": "Late", "type": "bar", "data": lateArry }]
+                };
+                mychat.setOption(option);
+            }
+
+            function CreateLine(data) {
+                var TwentyfourHrArray = new Array();
+                var FortyEightHrArray = new Array();
+                var threedayArray = new Array();
+                var fivedayArray = new Array();
+                //var sevendayArray = new Array();
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].ServiceName == "24 hr service") {
+                        TwentyfourHrArray[0] = data[i].a0;
+                        TwentyfourHrArray[1] = data[i].a1;
+                        TwentyfourHrArray[2] = data[i].a2;
+                        TwentyfourHrArray[3] = data[i].a3;
+                        TwentyfourHrArray[4] = data[i].a4;
+                        TwentyfourHrArray[5] = data[i].a5;
+                        TwentyfourHrArray[6] = data[i].a6;
+                        TwentyfourHrArray[7] = data[i].a7;
+                        TwentyfourHrArray[8] = data[i].a8;
+                        TwentyfourHrArray[9] = data[i].a9;
+                        TwentyfourHrArray[10] = data[i].a10;
+                        TwentyfourHrArray[11] = data[i].a11;
+                        TwentyfourHrArray[12] = data[i].a12;
+                        TwentyfourHrArray[13] = data[i].a13;
+                        TwentyfourHrArray[14] = data[i].a14;
+                    }
+                    else if (data[i].ServiceName == "48 hr service") {
+                        FortyEightHrArray[0] = data[i].a0;
+                        FortyEightHrArray[1] = data[i].a1;
+                        FortyEightHrArray[2] = data[i].a2;
+                        FortyEightHrArray[3] = data[i].a3;
+                        FortyEightHrArray[4] = data[i].a4;
+                        FortyEightHrArray[5] = data[i].a5;
+                        FortyEightHrArray[6] = data[i].a6;
+                        FortyEightHrArray[7] = data[i].a7;
+                        FortyEightHrArray[8] = data[i].a8;
+                        FortyEightHrArray[9] = data[i].a9;
+                        FortyEightHrArray[10] = data[i].a10;
+                        FortyEightHrArray[11] = data[i].a11;
+                        FortyEightHrArray[12] = data[i].a12;
+                        FortyEightHrArray[13] = data[i].a13;
+                        FortyEightHrArray[14] = data[i].a14;
+                    }
+                    else if (data[i].ServiceName == "3 working days") {
+                        threedayArray[0] = data[i].a0;
+                        threedayArray[1] = data[i].a1;
+                        threedayArray[2] = data[i].a2;
+                        threedayArray[3] = data[i].a3;
+                        threedayArray[4] = data[i].a4;
+                        threedayArray[5] = data[i].a5;
+                        threedayArray[6] = data[i].a6;
+                        threedayArray[7] = data[i].a7;
+                        threedayArray[8] = data[i].a8;
+                        threedayArray[9] = data[i].a9;
+                        threedayArray[10] = data[i].a10;
+                        threedayArray[11] = data[i].a11;
+                        threedayArray[12] = data[i].a12;
+                        threedayArray[13] = data[i].a13;
+                        threedayArray[14] = data[i].a14;
+                    }
+                    else if (data[i].ServiceName == "5 working days") {
+                        fivedayArray[0] = data[i].a0;
+                        fivedayArray[1] = data[i].a1;
+                        fivedayArray[2] = data[i].a2;
+                        fivedayArray[3] = data[i].a3;
+                        fivedayArray[4] = data[i].a4;
+                        fivedayArray[5] = data[i].a5;
+                        fivedayArray[6] = data[i].a6;
+                        fivedayArray[7] = data[i].a7;
+                        fivedayArray[8] = data[i].a8;
+                        fivedayArray[9] = data[i].a9;
+                        fivedayArray[10] = data[i].a10;
+                        fivedayArray[11] = data[i].a11;
+                        fivedayArray[12] = data[i].a12;
+                        fivedayArray[13] = data[i].a13;
+                        fivedayArray[14] = data[i].a14;
+                    }
+                    //else if (data[i].ServiceName == "7 working days") {
+                    //    sevendayArray[0] = data[i].a0;
+                    //    sevendayArray[1] = data[i].a1;
+                    //    sevendayArray[2] = data[i].a2;
+                    //    sevendayArray[3] = data[i].a3;
+                    //    sevendayArray[4] = data[i].a4;
+                    //    sevendayArray[5] = data[i].a5;
+                    //    sevendayArray[6] = data[i].a6;
+                    //    sevendayArray[7] = data[i].a7;
+                    //    sevendayArray[8] = data[i].a8;
+                    //    sevendayArray[9] = data[i].a9;
+                    //    sevendayArray[10] = data[i].a10;
+                    //    sevendayArray[11] = data[i].a11;
+                    //    sevendayArray[12] = data[i].a12;
+                    //    sevendayArray[13] = data[i].a13;
+                    //    sevendayArray[14] = data[i].a14;
+                    //}
+                }
+
+                var mychart = echarts.init(document.getElementById("Linediv"));
+                var option = {
+                    // title: { text: 'Processing days' },
+                    tooltip: { trigger: 'axis' },
+                    legend: { data: ['24 hr service', '48 hr service', '3 working days', '5 working days'] },
+                    yAxis: [{ type: 'value', axisLabel: { formatter: '{value}%' } }],
+                    xAxis: [{ type: 'category', boundaryGap: false, data: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'] }],
+                    series: [{ name: '24 hr service', type: 'line', data: TwentyfourHrArray },
+                                { name: '48 hr service', type: 'line', data: FortyEightHrArray },
+                                { name: '3 working days', type: 'line', data: threedayArray },
+                                { name: '5 working days', type: 'line', data: fivedayArray }]
+                };
+                mychart.setOption(option);
+            }
+        }
+    </script>
+
+    <input type="text" id="tBrandId" name="tBrandId" value="@ViewBag.BrandId" style="display:none" />
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box " id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <em class="red-em" id="step1">Performance</em>
+                        <em class="red-em" id="step2" style="display:none;">Query Results</em>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div id="Query">
+                        <h3 class="form-section" style="text-align:center"></h3>
+                        @*条件*@
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="Order" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="center">PrintShop</th>
+                                        <th class="center">Month</th>
+                                        <th class="center">Year</th>
+                                        <th class="center">Service Level</th>
+                                        <th class="center">Vendor ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail Volume" role="alert" aria-live="polite" aria-relevant="all">
+                                    <tr>
+                                        <td>
+                                            @*@Html.DropDownList("ddlPrintShop", Model._listPs,new {@style= "color:BLACK;font-size: 17px" })*@
+                                            <select id="ddlPrintShop" name="ddlPrintShop">
+                                                @foreach (SelectListItem item in Model._listPs)
+                                                {
+                                                    if (item.Disabled)
+                                                    {
+                                                        <option disabled="disabled" value="@item.Value">@item.Text</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Value" style="color:black;font-weight:bold">@item.Text</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select id="selectMonth">
+                                                <option value="All">--All--</option>
+                                                <option value="1">January</option>
+                                                <option value="2">February</option>
+                                                <option value="3">March</option>
+                                                <option value="4">April</option>
+                                                <option value="5">May</option>
+                                                <option value="6">June</option>
+                                                <option value="7">July</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select id="selectYear">
+                                                <option value="2017" selected="selected">2017</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            @if (ViewBag.BrandId == "VOE001")
+                                            {
+                                                <select id="selectServicesId">
+                                                    <option value="All">--All--</option>
+                                                    <option value="5">48 hr service</option>
+                                                    <option value="2">5 working days</option>
+                                                </select>
+                                            }
+                                            else
+                                            {
+                                                <select id="selectServicesId">
+                                                    <option value="All">--All--</option>
+                                                    <option value="4">24 hr service</option>
+                                                    <option value="5">48 hr service</option>
+                                                    <option value="1">3 working days</option>
+                                                    <option value="2">5 working days</option>
+                                                </select>
+                                            }
+
+                                        </td>
+                                        <td>
+                                            @Html.DropDownList("ddlVendor", Model._listVendorList)
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        @*单选*@
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <p style="margin:20px 40px;font-size: 16px;">
+                                    Show:<i style="margin-left: 30px;">Orders</i><input id="Radio1" name="RadCheck" type="radio" value="Orders" class="magic-checkbox" style="display:none;" /><label for="Radio1" style="margin-bottom: 20px;display: inline-block;"></label>
+                                    <i style="margin-left: 30px;">Labels</i><input id="Radio2" name="RadCheck" type="radio" value="Labels" class="magic-checkbox" style="display:none;" /><label for="Radio2" style="margin-bottom: 20px;display: inline-block;"></label>
+                                </p>
+                            </div>
+                            <div class="span4">
+
+                            </div>
+                        </div>
+                        @*Query*@
+                        <div class="row-fluid">
+                            <div class="span2 span2_hide">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                    <div class="controls">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+                                <button type="button" class="btn btn-default" value="Query" id="btnQuery" style="margin-left:0;margin-top:35px;">Query</button>
+                            </div>
+                            <div class="span4">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="Query-Results" style="display:none;">
+                        @*表格*@
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="Order" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr class="head">
+                                        <th class="center">Level</th>
+                                        <th class="center">Service Level</th>
+                                        <th class="center">No.of orders</th>
+                                        <th class="center">On Time</th>
+                                        <th class="center">Late</th>
+                                        <th class="center">On Time(%)</th>
+                                        <th class="center">Late(%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail" id="orderbody"></tbody>
+                            </table>
+                        </div>
+                        <button type="submit" formaction="/DemoReport/ExportPerformanceDataForExcel" id="btnExcel" name="btnExcel" class="btn btn-default">Export to Excel</button>
+                        @*图表*@
+                        <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                            <div id="performance-chart" style="display:none;">
+                                <div class="col-sm-6 col-xs-12">
+                                    <div class="panel panel-default chartJs">
+                                        <div class="panel-body">
+                                            <div class="clearfix main_table" style="width: 100%;overflow-x: auto;">
+                                                <h1 style="font-size:14px;color:#ec008c;padding-bottom:10px">Performance Overview</h1>
+                                                <!--<img src="~/Content/images/ChartImg.png">-->
+                                                <div id="Bardiv" style="height:400px; "></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-xs-12">
+                                    <div class="panel panel-default chartJs">
+                                        <div class="panel-body">
+                                            <div class="clearfix main_table" style="width: 100%;overflow-x: auto;">
+                                                <h1 style="font-size:14px;color:#ec008c;padding-bottom:10px">Processing days</h1>
+                                                <!--<img src="~/Content/images/ChartImg1.png">-->
+                                                <div id="Linediv" style="height:400px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="_Year" name="_Year" value="" />
+    <input type="hidden" id="_Month" name="_Month" value="" />
+    <input type="hidden" id="_Services" name="_Services" value="" />
+    <script>
+        $('#btnQuery').click(function () {
+            $('#performance-chart').slideDown();
+            $(".Query-Results").slideDown();
+            $("#step1").attr("class", "gray-em");
+            $("#Query").css("display", "none");
+        });
+        $('#step1').click(function () {
+            $("#Query").slideDown();
+            $('#performance-chart').css('display', 'none');
+            $(".Query-Results").css("display", "none");
+            $("#step1").attr("class", "red-em");
+        });
+        $('#step2').click(function () {
+            $('#performance-chart').slideDown();
+        });
+    </script>
+}

@@ -1,0 +1,312 @@
+﻿@using Maxim.Model.BaseModel
+@using System.Data
+@using Resources
+@model CopyOrderMode
+@{
+    Layout = null;
+}
+
+<script src="~/scripts/Adolfo/RepeatOrderCopy.js"></script>
+
+<input id="IsSumbited" name="IsSumbited" type="hidden" value='0'>
+<input id="tPageRealRows" name="tPageRealRows" type="hidden" value='@Model.OrderDetails.Rows.Count'>
+<input id="hiddenCulture" name="hidden" type="hidden" value="@ViewBag.tCulture"/>
+<input type="text" id="tBrandId" name="tBrandId" value="@ViewBag.BrandId" style="display:none" />
+<input id="tMaximNO" name="tMaximNO" type="hidden" value='@Model.oriMaximNO' />
+<div id="page-inner1" onload="return funcBodyOnlodChk();">
+    <div class="main_body">
+        <div class="clearfix main_form">
+            @*<h2 class="clearfix title">
+                    <em class="red-em">Repeat Order</em>
+                </h2>*@
+            <div class="clearfix " id="Query-order">
+                <ul class="fl main_left order-y">
+                    <li>
+                        <span>@RepeatOrder.PrintShop:</span>
+                        <select id='SelectPSID' name='SelectPSID'>
+                            @foreach (var item in Model.PSlist)
+                            {
+                                if (item.Disabled)
+                                {
+                                    <option value='@Html.DisplayFor(modelItem => item.Value)' disabled='disabled'> @Html.DisplayFor(modelItem => item.Text)</option>
+                                }
+                                else
+                                {
+                                    if (Model.PSID == item.Value)
+                                    {
+                                        <option value='@Html.DisplayFor(modelItem => item.Value)' style='color:black; font-weight:700' selected="selected"> @Html.DisplayFor(modelItem => item.Text)</option>
+                                    }
+                                    else
+                                    {
+                                        <option value='@Html.DisplayFor(modelItem => item.Value)' style='color:black; font-weight:700'> @Html.DisplayFor(modelItem => item.Text)</option>
+                                    }
+                                }
+                            }
+                            @*@Html.DropDownListFor(x => x.PSID, Model.PSlist)*@
+                        </select>
+                    </li>
+                    <li>
+                        <span>@RepeatOrder.BillTO:</span>
+                        <select id='SelectBillTo' name='SelectBillTo' onchange="return funcSelectBillTo()">
+                            @foreach (var item in Model.BilltoList)
+                            {
+                                <option value='@Html.DisplayFor(modelItem => item.Value)'> @Html.DisplayFor(modelItem => item.Text)</option>
+                            }
+                        </select>
+                        @*@Html.DropDownListFor(x => x.BilltoId, Model.BilltoList)*@
+                    </li>
+                    <li>
+                        <span>@RepeatOrder.BillingAddress:</span><i style="float:left;"></i>
+
+                        <i id="iBilltoLine1">@Html.TextAreaFor(x => x.BilltoAddress, new { @readonly = "readonly" })</i>
+                    </li>
+                    <li>
+                        <span>@RepeatOrder.CustomerPO:</span>
+                        <span>@Model.CustOrderNO</span>
+                    </li>
+                    <li>
+                        <span id="spRepeatReason">@RepeatOrder.RepeatReason:</span>
+                        <select id='SelectReason' name='SelectReason' onchange="return funcSelectReason()">
+                            *
+                            @foreach (var item in Model.RepeatReason)
+                            {
+                                <option value='@Html.DisplayFor(modelItem => item.Value)'> @Html.DisplayFor(modelItem => item.Text)</option>
+                            }
+                        </select><e style="color: red;padding-left: 8px;">*</e>
+                        @*@Html.DropDownListFor(x => x.seleRepeatReason, Model.RepeatReason)*@
+
+                    </li>
+                    <li>
+                        <input id="txtOthersComment" name="txtOthersComment" type="text" style="display: none;margin: 0px 0px 0px 127px; ">
+                    </li>
+                    <li>
+                        <span>@RepeatOrder.AddComments:</span>
+                        @Html.TextBoxFor(x => x.AddComments)
+                    </li>
+                </ul>
+                <ul class="fl main_right order-y">
+                    <li>
+                        <span>@RepeatOrder.Currency:</span>
+                        <span id="iCurrency"> @Model.Currency</span>
+                    </li>
+                    <li>
+                        <span>@RepeatOrder.ShipTo:</span>
+                        <select id='SelectShipTo' name='SelectShipTo' onchange="return funcSelectShipTo()">
+                            @foreach (var item in Model.ShiptoList)
+                            {
+                                <option value='@Html.DisplayFor(modelItem => item.Value)'> @Html.DisplayFor(modelItem => item.Text)</option>
+                            }
+                        </select>
+                        @*@Html.DropDownListFor(x => x.ShiptoId, Model.ShiptoList)*@
+                    </li>
+                    <li>
+                        <span>@RepeatOrder.ShippingAddress:</span>
+                        <select id='SelectShipAddr' name='SelectShipAddr' onchange="return funcSelectShipAddr()">
+                            @foreach (var item in Model.ShipAddrList)
+                            {
+                                <option value='@Html.DisplayFor(modelItem => item.Value)'> @Html.DisplayFor(modelItem => item.Text)</option>
+                            }
+                        </select>
+                        @*@Html.DropDownListFor(x => x.ShipAddrId, Model.ShipAddrList)*@
+                    </li>
+                    <li>
+                        <span>@RepeatOrder.Contact:</span>
+                        <span id="iShipAddrContact"> @Model.ShipAddrContact</span>
+                    </li>
+                    <li>
+                        <span>@RepeatOrder.TelNo:</span>
+                        <span id="iShipAddrTel">@Model.ShipAddrTel</span>
+                    </li>
+                </ul>
+
+                <div class="clearfix main_table interval" id="Gridview">
+                    <table id="Order" class="table table-striped table-bordered table-hover table-full-width dataTable">
+                        <thead>
+                            <tr class="head">
+                                <th class="center"><input type="checkbox" id="ckSelectAll" style="margin-left: -30px;" /></th>
+                                <th class="center">Request QTY</th>
+                                @*<th class="center">Original QTY</th>*@
+                                @{
+                                    var dt = Model.OrderDetails as DataTable;
+                                    for (int i = 0; i < dt.Columns.Count; i++)
+                                    {
+                                        if (dt.Columns[i].ColumnName != "Seq" && dt.Columns[i].ColumnName != "OsssrderQty" && dt.Columns[i].ColumnName != "ProductItemNO")
+                                        {
+                                            var columname = dt.Columns[i].ColumnName;
+                                            <th class="center">@columname</th>
+                                        }
+                                    }
+                                }
+                            </tr>
+                        </thead>
+                        <tbody id="OrderCopyDetail" class="OrderDetail">
+                            @{
+                                for (int i = 0; i < dt.Rows.Count; i++)
+                                {
+                                    var Seq = dt.Rows[i]["Seq"].ToString();
+                                    var Qty = dt.Rows[i]["OrderQty"].ToString();
+                                    var ProductItemNO = dt.Rows[i]["ProductItemNO"].ToString();
+                                    var ckboxNm = "chkbox" + @Seq;
+                                    var QtyNm = "txtQty" + @Seq;
+                                    var OrdProSeq = "OrdProSeq" + Seq;
+
+
+                                    <tr>
+                                        <td style="text-align:right" width="60px;">
+                                            <input id='@ckboxNm' name='ckSelect' type='checkbox' value='true' class="magic-checkbox" style="display:none"> @Seq
+                                            <label for="@ckboxNm" style="margin-bottom: 20px;padding-left: 30px;top:-22px;left:-10px;" onclick="return CheckEdit(this);">
+                                        </td>
+                                        <td class="center">
+                                            <input id='@QtyNm' name='@QtyNm' value='@Qty' type="text" disabled="disabled" onkeyup="return funcCheckData(this);" />
+                                            <input id="@OrdProSeq" name="@OrdProSeq" value="@ProductItemNO" type="hidden" />
+                                        </td>
+
+                                        <td class="center"> @Qty </td>
+
+                                        @for (int j = 0; j < dt.Columns.Count; j++)
+                                        {
+                                            if (dt.Columns[j].ColumnName != "Seq" && dt.Columns[j].ColumnName != "OrderQty" && dt.Columns[j].ColumnName != "ProductItemNO")
+                                            {
+                                                var data = dt.Rows[i][j].ToString();
+                                                <td class="center">@data</td>
+                                            }
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="clearfix main_submit">
+                    <button type="button" id="btnSubmit" class="btn btn-default" value="Submit" onclick="return funcCopySubmit();">@RepeatOrder.Submit</button>
+                    @*<button type="button" id="btnReturn" class="btn btn-default" value="Return" onclick="return funcColseMe();">Return</button>*@
+                </div>
+            </div><!--ron end-->
+
+        </div>
+    </div>
+</div>
+
+
+
+<div>
+    <table>
+        <tr>
+            <td>
+                <span ID="lblErrMsg_Pgload" style="color:#FF3300"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="page-inner2">
+
+    <div id="divSuccess" class="clearfix  main_form" style="display:none;">
+
+        <div style="font-size:18px; margin:10px 10px 0;">
+
+            <em>@RepeatOrder.RepeatOrders</em>
+
+            <i id="lblOrderPO" style="color:#ff3300"></i>
+
+            <em> @RepeatOrder.Successfully</em>
+
+            <i ID="lblOrderNO" style="color:#ff3300"></i>
+
+        </div>
+        <br />
+        <br />
+        <div ID="pan_en">
+            <ul style="list-style: none; width: 1020px;padding:0px; margin:0px;">
+                <li>
+                    1.For barcode items, please confirm artwork before submitting the order.Once submitted,
+                    the order will be received by our factory and processed immediately.
+                </li>
+                <li>&nbsp;&nbsp; **Processed orders cannot be cancelled or changed** </li>
+                <li>
+                    2. Payment Terms are ship upon payment. Goods will be delivered after we receive
+                    your payment.
+                </li>
+                @if (ViewBag.BrandId == "TSC001")
+                {
+                <li>
+
+                    3. If you have any complaints regarding our customer service, delays or product
+                    quality, please contact Maggie by mail:<a href="mailto: tescosales03@maxim-group.com">
+                        tescosales03@maxim-group.com
+                    </a>. Your feedback is very important to us.
+                </li>
+                }
+                else
+                {
+                <li>
+
+                    3. If you have any complaints regarding our customer service, delays or product
+                    quality, please contact our Director Ruth Zhu by mail:<a href="mailto: ruth.zhu@maxim-group.com">
+                        ruth.zhu@maxim-group.com
+                    </a>. Your feedback is very important to us.
+                </li>
+
+                }
+                @*@if (ViewBag.BrandId == "ADO001")
+                {
+                    <li>4.HAVE INFORMED ADOLFO DOMINGUEZ TO CONFIRM WHETHER PRODUCTION THIS ORDER OR NOT.</li>
+                }*@
+
+            </ul>
+        </div>
+        <div ID="pan_cn">
+            <ul style="list-style: none; width: 1020px;padding:0px; margin:0px;">
+                <li>
+                    1.关于barcode产品，请确认画稿无误后再提交订单。我司车间会在您提交订单之后收到订单并会直接安排生产。
+                </li>
+                <li>&nbsp;&nbsp; 若订单已生产是无法取消或做任何更改。 </li>
+                <li>2.付款方式：款到发货。收到您的货款后，我司会尽快为您发货。</li>
+                @if (ViewBag.BrandId == "TSC001")
+                {
+                    <li>
+                        3.若您对我们业务人员的服务有任何意见或建议，或对我司产品有任何疑问，请联系Maggie，邮箱地址：<a href="mailto: tescosales03@maxim-group.com">
+                            tescosales03@maxim-group.com
+                        </a>. 您的反馈对我们来说至关重要！！
+                        ！
+                        ！
+                        ！
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        3.若您对我们业务人员的服务有任何意见或建议，或对我司产品有任何疑问，请联系我司业务总监Ruth Zhu，邮箱地址：<a href="mailto: ruth.zhu@maxim-group.com">
+                            ruth.zhu@maxim-group.com
+                        </a>. 您的反馈对我们来说至关重要！！
+                        ！
+                        ！
+                        ！
+
+                    </li>
+                }
+                @*@if (ViewBag.Brand == "ADO001")
+                {
+                    <li>4.已通知ADOLFO DOMINGUEZ确认是否重复生产此订单。</li>
+                }*@
+
+            </ul>
+        </div>
+
+
+        <br />
+        @*<button class="btn btn-default" type="button" ID="btnReturn"  onclick="return funcColseMe();" >Close</button>*@
+    </div>
+
+    <div id="divErrMsg" style="display:none">
+        <table>
+            <tr>
+                <td>
+                    <span id="lblErrMsg" style="color:#FF3300"> </span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>

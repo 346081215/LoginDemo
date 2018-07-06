@@ -1,0 +1,36 @@
+﻿body {
+}
+
+#UpNode {
+    padding: 60px;
+    background-color: #ffffff !important;
+    color: #FFFFFF;
+    width: 450px;
+    height:520px;
+    position: fixed;
+    z-index: 9999;
+    top: 28%;
+    left: 50%;
+    margin-left: -300px;
+    margin-top: -150px;
+}
+
+#Tit {
+color:black;
+font-size: 26px;
+}
+.UpdataNode {
+    display: none;
+}
+#Other 
+{
+    margin-top:-10px;
+}
+
+/*.alert.alert-warning {
+    display: none;
+}*/
+
+
+
+

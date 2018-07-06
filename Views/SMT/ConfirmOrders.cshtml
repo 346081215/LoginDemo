@@ -1,0 +1,331 @@
+﻿@model OOSControllerBLL.SMT.ConfirmPageLoadModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ConfirmOrder</title>
+    <script type="text/javascript">
+        $(function () {
+            //分页事件
+            $('#PageIndex').click(function () {
+                document.getElementById("pc").value = 1;
+                document.getElementById("nowpage").value = 1;
+                if ($("#TotalPageCount").html() == "0") {
+                    return false;
+                }
+                else {
+                    GetOrder();
+                }
+            });
+            $('#Pageup').click(function () {
+                var nowpage = document.getElementById("nowpage").value;
+                var newpage = parseInt(nowpage);
+                if (parseInt(nowpage) > 1) {
+                    newpage = parseInt(nowpage) - 1;
+                    document.getElementById("pc").value = newpage;
+                    document.getElementById("nowpage").value = newpage;
+                    if ($("#TotalPageCount").html() == "0") {
+                        return false;
+                    }
+                    else {
+                        GetOrder();
+                    }
+                }
+            });
+            $('#Pagewown').click(function () {
+                var nowpage = document.getElementById("nowpage").value;
+                var maxpage = parseInt(document.getElementById("PageTotalCount").value);
+                var newpage = parseInt(nowpage);
+                if (parseInt(nowpage) < maxpage) newpage = parseInt(nowpage) + 1;
+                document.getElementById("pc").value = newpage;
+                document.getElementById("nowpage").value = newpage;
+                if ($("#TotalPageCount").html() == "0") {
+                    return false;
+                }
+                else {
+                    GetOrder();
+                }
+
+            });
+            $('#PageLast').click(function () {
+                var maxpage = parseInt(document.getElementById("PageTotalCount").value);
+                document.getElementById("pc").value = maxpage;
+                document.getElementById("nowpage").value = maxpage;
+                if ($("#TotalPageCount").html() == "0") {
+                    return false;
+                }
+                else {
+                    GetOrder();
+                }
+            });
+            $('#PageGO').click(function () {
+                var nowpage = parseInt(document.getElementById("nowpage").value);
+                var maxpage = parseInt(document.getElementById("PageTotalCount").value) + 1;
+                if (nowpage > 0 && nowpage < maxpage) {
+                    document.getElementById("pc").value = document.getElementById("nowpage").value;
+                    if ($("#TotalPageCount").html() == "0") {
+                        return false;
+                    }
+                    else {
+                        GetOrder();
+                    }
+                }
+                else {
+                    //alert("wrong page no.");
+                    $("#labtxt").html("wrong page no.");
+                    showDiv();
+                    document.getElementById("nowpage").value = 1;
+                }
+            });
+            $("#nowpage").keyup(function () {
+                var t = $("#nowpage").val();
+                if (isNaN(t)) {
+                    $("#labtxt").html("wrong page no.");
+                    showDiv();
+                    document.getElementById("nowpage").value = 1;
+                }
+            });
+
+            $("#btnQuery").click(function () {
+                $("#step2").show();
+                $("#step2").addClass("red-em").removeClass("gray-em")
+                $("#step1").addClass("gray-em").removeClass("red-em")
+                $("#Query-order").hide();
+                $("#OrderDetail").show();
+                GetOrder()
+            })
+            $("#BtnBackToQuery").click(function () {
+                $("#step1").addClass("red-em").removeClass("gray-em")
+                $("#step2").hide();
+                $("#step2").addClass("gray-em").removeClass("red-em")
+                $("#step1").addClass("red-em").removeClass("gray-em")
+                $("#Query-order").show();
+                $("#OrderDetail").hide();
+
+            })
+
+            $("#backToMain").click(function () {
+                $("#OK").hide();
+                $("#step_Detail").hide();
+                $("#step2").addClass("red-em").removeClass("gray-em")
+                GetOrder();
+            })
+
+        })
+
+        function GetOrder() {
+            var QueryDetail = {
+                Item: $("#Item").val(),
+                Printshop: $("#Printshop").val(),
+                MaximNo: $("#MaximNo").val(),
+                OrderNo: $("#OrderNo").val(),
+                pc: $("#pc").val(),
+                Fun:$("#Fun").val()
+            }
+            showloading();
+            $.ajax({
+                url: "/SMT/ConfirmQuery",
+                dataType: "json",
+                type: "get",
+                data: QueryDetail,
+                success: function (result) {
+                    hideloading();
+                    if (result.Table.length < 1) {
+                        return;
+                    }
+                    var html = "";
+                    $.each(result.Table, function (index, item) {
+                        html += "<tr>";
+                        html += "<td>" + (index + 1) + "</td>";
+                        html += "<td>" + item.PrintShop + "</td>";
+                        html += "<td>" + item.UploadDate + "</td>";
+                        html += "<td>" + item.OrderNo + "</td>";
+                        html += "<td>" + item.MaximNo + "</td>";
+                        html += "<td>" + item.MaximNo + "</td>";
+                        html += "<td>" + item.Item + "</td>";
+                        html += "<td>" + item.OrderQty + "</td>";
+                        html += "<td>" + item.ServiceLevel + "</td>";
+                        html += `<td><a id='' href='###' onclick="FunViewDetail('` + item.MaximNo + `','` + item.OrderNo + `')">ViewDetail</a></td>`;
+                        if (item.ArtWork == "" || item.ArtWork == null) {
+                            html += "<td>ArtWork</td>";
+                        } else {
+                            html += "<td><a id='' href='" + item.ArtWork + "' target='_blank'>ArtWork</a></td>";
+                        }
+                        html += "</tr>";
+                    })
+                    $("#OrderBody").html(html)
+                    $("#TotalPageCount").html(result.totalPgCount)
+                    $("#PageTotalCount").val(result.totalPgCount)
+                    
+                }
+            })
+        }
+
+        function FunViewDetail(maximno, OrderNo) {
+            showloading();
+            $.ajax({
+                url: "/SMT/GetOrderDetailByMaixmNo?Fun=" + $("#Fun").val(),
+                dataType: "html",
+                type: "get",
+                data: {
+                    MaximNo: maximno,
+                    OrderNo: OrderNo
+                },
+                success: function (result) {
+                    $("#OrderDetail").hide();
+                    $("#Page2").show()
+                    $("#step_Detail").show();
+                    $("#step_Detail").addClass("red-em").removeClass("gray-em");
+                    $("#step2").addClass("gray-em").removeClass("red-em");
+                    $("#Page2").html(result);
+                    hideloading();
+                }
+            })
+
+        }
+
+    </script>
+</head>
+<body>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box " id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <em class="red-em" id="step1">Confirm Order</em>
+                        <em class="gray-em" id="step2" style="display:none;">Query Results</em>
+                        @*<em class="gray-em" id="step_SubmitOrder" style="display:none;">SubmitOrder Results</em>*@
+                        <em class="gray-em" id="step_Detail" style="display:none;">View Detail</em>
+                        @*<em class="gray-em" id="step_ViewArtwork" style="display:none;">Edit Carelable</em>*@
+                        <em class="gray-em" id="OK" style="display:none;">Success</em>
+                        <input  type="hidden" id="Fun" value="@ViewBag.Fun"/>
+                    </div>
+                </div>
+
+                <div id="Query-order">
+                    <h3 class="form-section" style="text-align:center"></h3>
+                    @*第一行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4 ">
+                            <span>Vendor:</span>
+                           <input type="text" readonly="readonly"  value="@ViewBag.Vendor"/>
+                        </div>
+                        <div class="span4 ">
+                            <span>Item:</span>
+                            @Html.DropDownListFor(x=>x.Item,Model.ItemList,new { @id="Item",@class="m-wrap span6"})
+                        </div>
+                    </div>
+                    @*第二行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4 ">
+                            <span>Maxim No.:</span>
+                            @Html.Editor("MaximNo", new{ @class = "m-wrap span6" })
+                            @*<input id="MaximNo" name="MaximNo" type="text" value="" class="m-wrap span8" />*@
+                        </div>
+                        <div class="span4 ">
+                            <span>Print Shop:</span>
+                            @Html.DropDownListFor(x => x.PrintShop, Model.PrintShopList, new { @id = "Printshop", @class = "m-wrap span6" })
+                        </div>
+                    </div>
+                    @*第三行*@
+                    <div class="row-fluid">
+                        <div class="span2 span2_hide">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName"></label>
+                                <div class="controls">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4 ">
+                            <span>Order No:</span>
+                            @Html.Editor("OrderNo",new { @class="m-warp span6"})
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <p style="text-align:center">
+                            <button type="button" id="btnQuery" class="btn btn-default" value="Query" style="border: 1px solid #D6D6D6;width: 170px;margin-left:0;">Query</button>
+                        </p>
+                        
+                    </div>
+                </div>
+
+                <div id="OrderDetail" style="display:none">
+                    <div class="table dataTable table-bordered table-responsive table-striped">
+                        <table>
+                            <thead id="OrderHead">
+                                <tr>
+                                    <th>Seq</th>
+                                    <th>Print Shop</th>
+                                    <th>Upload Date</th>
+                                    <th>Order No.</th>
+                                    <th>Maxim No.</th>
+                                    <th>Department Code</th>
+                                    <th>Item</th>
+                                    <th>Order QTY</th>
+                                    <th>Service Level</th>
+                                    <th>Detail</th>
+                                    <th>Artwork</th>
+                                </tr>
+                            </thead>
+                            <tbody id="OrderBody">
+                                
+                            </tbody>
+
+                        </table>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <div class="mypage">
+                                    <ul>
+                                        <li id="PageIndex"><<</li>
+                                        <li id="Pageup"><</li>
+                                        <li><input type="text" id="nowpage" value="1" /></li>
+                                        <li>/</li>
+                                        <li><i id="TotalPageCount">1</i></li>
+                                        <li id="Pagewown">></li>
+                                        <li id="PageLast">>></li>
+                                        <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                        <li id="PageGO">GO</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="BtnBackToQuery" type="button" class="btn btn-default">Back</button>
+                </div>
+
+                <div id="Page2">
+                   
+
+                </div>
+
+                <div id="SubmitSuccess" style="display:none">
+                    <font>Submitted Success!Order No :<font id="SuccessOrder"></font></font>
+
+                    <button id="backToMain" type="button" class="btn btn-default">Return</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

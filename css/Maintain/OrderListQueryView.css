@@ -1,0 +1,53 @@
+﻿.center {
+    text-align: center;
+    border: 1px solid black;
+}
+
+.cao {
+    width: 50px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+#Insert {
+    height: 350px;
+    width: 1350px;
+    /*border: 1px solid black;*/
+}
+
+#left, #right {
+    float: left;
+    width: 650px;
+    height: 350px;
+    /*border: 1px solid black;*/
+}
+
+.spanAdd {
+    width: 150px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    /*border: 1px solid black;*/
+}
+
+.OrigOrderRuleSetting {
+    width: 350px;
+    height: 40px;
+    line-height: 40px;
+}
+#ConfirmDateTimeId {
+    width: 100px;
+}
+
+#ConfirmDateEndTimeId {
+    width: 100px;
+}
+#TimestartId {
+    width: 100px;
+}
+
+#TimeendId {
+    width: 100px;
+}
+
+

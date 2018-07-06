@@ -1,0 +1,236 @@
+﻿
+@{
+    ViewBag.Title = "CarelabelPlateSetting";
+    Layout = null;
+}
+<script type="text/javascript" src="~/scripts/Maintain/CarelabelPlateSetting.js"></script>
+@using (Html.BeginForm())
+{
+    <body>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box" id="form_wizard_1">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <em class="red-em" id="step">洗标拼版维护</em>
+                            <em class="gray-em" id="step1" style="display:none;">新增/修改</em>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <button id="btnNewSave" name="btnNewSave" class="btn btn-default" onclick="return funcAdd(this)" type="button" value="Add">Add</button>
+                        <div class="portlet-body" id="Query-Results">
+                            <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                                <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="center">版号</th>
+                                            <th class="center">版号名称</th>
+                                            <th class="center">工艺#</th>
+                                            <th class="center">宽度</th>
+                                            <th class="center">高度</th>
+                                            <th class="center">方向</th>
+                                            <th class="center">拼版方式</th>
+                                            <th class="center">左边距</th>
+                                            <th class="center">右边距</th>
+                                            <th class="center">上边距</th>
+                                            <th class="center">下边距</th>
+                                            <th class="center">行</th>
+                                            <th class="center">列</th>
+                                            <th class="center">水平间距</th>
+                                            <th class="center">垂直间距</th>
+                                            <th class="center">旋转角度</th>
+                                            <th class="center">版号信息</th>
+                                            <th class="center">是否显示版号信息</th>
+                                            <th class="center">排模顺序</th>
+                                            <th class="center">排版模式</th>
+                                            <th class="center">款号信息位置</th>
+                                            <th class="center"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all"></tbody>
+                                </table>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <div class="mypage">
+                                        <ul>
+                                            <li id="PageIndex"><<</li>
+                                            <li id="Pageup"><</li>
+                                            <li><input type="text" id="nowpage" value="1" /></li>
+                                            <li>/</li>
+                                            <li><i id="TotalPageCount">0</i></li>
+                                            <li id="Pagewown">></li>
+                                            <li id="PageLast">>></li>
+                                            <li id="PageGO">GO</li>
+                                            <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="CrateEdit" style="display:none;">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>版号:</td>
+                                        <td><input name="txtTemplateNo" type="text" value="" id="txtTemplateNo" readonly="readonly"></td>
+                                        <td>版号名称:</td>
+                                        <td><input name="txtTemplateName" type="text" value="" id="txtTemplateName"><span class="mark">*</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>工艺:</td>
+                                        <td>
+                                            <table id="rblType" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input id="rblType_0" type="radio" name="rblType" value="true" checked="checked">轮转生产</td>
+                                                        <td><input id="rblType_1" type="radio" name="rblType" value="false">丝网印刷</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td colspan="2">
+                                            <table id="rblPaperType" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input id="rblPaperType_0" type="radio" name="rblPaperType" value="true" checked="checked">纵向标</td>
+                                                        <td><input id="rblPaperType_1" type="radio" name="rblPaperType" value="false">横向标</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+
+
+
+
+
+                                    <tr>
+                                        <td>纸张规格:</td>
+                                        <td>
+                                            宽度<input name="txtPageWidth" type="text" value="" id="txtPageWidth" style="width:40px;">mm<span class="mark">*</span>
+                                            高度<input name="txtPageHeight" type="text" value="" id="txtPageHeight" style="width:40px;">mm<span class="mark">*</span>
+                                        </td>
+                                        <td>
+                                            <input id="cbAutoHeight" type="checkbox" name="cbAutoHeight">是否自动调整
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>拼版方式:</td>
+                                        <td>
+                                            <table id="rblImpositionType" border="0" style="display: inline;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input id="rblImpositionType_0" type="radio" name="rblImpositionType" value="true" checked="checked">单面排模</td>
+                                                        <td><input id="rblImpositionType_1" type="radio" name="rblImpositionType" value="false">正反面排模</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <span class="mark">*</span>
+                                        </td>
+                                        <td>旋转角度:</td>
+                                        <td>
+                                            <select name="ddlRotation" id="ddlRotation">
+                                                <option selected="selected" value="0">0</option>
+                                                <option value="90">90</option>
+                                                <option value="180">180</option>
+                                                <option value="270">270</option>
+
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            左边距:<input name="txtMarginLeft" type="text" value="" id="txtMarginLeft" style="width:40px;">mm<span class="mark">*</span>
+                                            右边距:<input name="txtMarginRight" type="text" value="" id="txtMarginRight" style="width:40px;">mm
+                                            上边距:<input name="txtMarginTop" type="text" value="" id="txtMarginTop" style="width:40px;">mm<span class="mark">*</span>
+                                            下边距:<input name="txtMarginBottom" type="text" value="" id="txtMarginBottom" style="width:40px;">mm<span class="mark">*</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>排模数:</td>
+                                        <td>
+                                            <input name="txtRows" type="text" value="" id="txtRows" style="width:40px;">行
+                                            <input name="txtColumns" type="text" value="" id="txtColumns" style="width:40px;">列
+                                        </td>
+                                        <td>水平间距:<input name="txtHorizontalGap" type="text" value="" id="txtHorizontalGap" style="width:40px;">mm</td>
+                                        <td>垂直间距:<input name="txtVerticalGap" type="text" value="" id="txtVerticalGap" style="width:40px;">mm</td>
+                                    </tr>
+                                    <tr>
+                                        <td>版号信息:</td>
+                                        <td><input name="txtTemplateInfo" type="text" value="" id="txtTemplateInfo"></td>
+                                        <td><input id="cbShowInfo" type="checkbox" name="cbShowInfo" checked="checked">是否显示版号信息</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>款号信息位置:</td>
+                                        <td colspan="3">
+                                            <table id="rblDescriptionPosition" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input id="rblDescriptionPosition_0" type="radio" name="rblDescriptionPosition" value="1" checked="checked">上</td>
+                                                        <td><input id="rblDescriptionPosition_1" type="radio" name="rblDescriptionPosition" value="2">右</td>
+                                                        <td><input id="rblDescriptionPosition_2" type="radio" name="rblDescriptionPosition" value="4">下</td>
+                                                        <td><input id="rblDescriptionPosition_3" type="radio" name="rblDescriptionPosition" value="8">左</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>排版模式</td>
+                                        <td colspan="3">
+                                            <table id="rblItemMode" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input id="rblItemMode_0" type="radio" name="rblItemMode" value="1" checked="checked">一款排一片</td>
+                                                        <td><input id="rblItemMode_1" type="radio" name="rblItemMode" value="2">一款排一行</td>
+                                                        <td><input id="rblItemMode_2" type="radio" name="rblItemMode" value="3">一款排一列</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>排模顺序:</td>
+                                        <td colspan="3">
+                                            <table id="rblSortType" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input id="rblSortType_0" type="radio" name="rblSortType" value="1" checked="checked">从小到大</td>
+                                                        <td><input id="rblSortType_1" type="radio" name="rblSortType" value="2">从大到小</td>
+                                                        <td><input id="rblSortType_2" type="radio" name="rblSortType" value="3">扩散</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="row-fluid">
+                                <div class="span2 span2_hide">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"></label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4 ">
+                                    <span></span>
+                                    <button id="btnSave" name="btnSave" class="btn btn-default" onclick="return funcSave(this)" type="button" value="Save">Save</button>
+                                    <button id="btnBack" name="btnBack" class="btn btn-default" type="button" value="Back">Back</button>
+                                </div>
+                                <div class="span4 ">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+}
+
+
+

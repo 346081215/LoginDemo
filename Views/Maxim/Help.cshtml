@@ -1,0 +1,212 @@
+﻿
+@{
+    ViewBag.Title = "Help";
+    Layout = null;
+}
+<script src="~/scripts/Maxim/HelpJS.js"></script>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="portlet box " id="form_wizard_1">
+            <div class="portlet-title">
+
+                <div class="caption">
+
+                    Help<span class="step-title"></span>
+
+                </div>
+
+            </div>
+            <div class="portlet-body form">
+                <div action="#" class="horizontal-form">
+                    <h3 class="form-section" style="text-align:center">Contact Us</h3>
+                    <p style="border-bottom: 2px solid #eaeaea;"></p>
+                    <div class="row-fluid">
+                        <p style="text-align:center;font-size: 16px;">If you have any questions,please feel free to contact us anytime! You can either call us or email us,we will get</p>
+                        <p style="text-align:center;font-size: 16px; padding-bottom:50px;">back to you as soon as possible</p>
+                    </div>
+                    @if (ViewBag.DisplayPrintshopContact == "YES")
+                    {
+                        <table style="margin:auto;font-size:15px;">
+                            <tbody>
+                                <tr>
+                                    <td>Shanghai Printshop</td>
+                                    <td style="padding: 0 30px 0 30px;">Contact:Gloria</td>
+                                    <td style="padding:0 30px 0 0;">Email:gloria.chiang@maxim-group.com</td>
+                                    <td>Contact Tel: +86 21 6406 4228 ext.163</td>
+                                </tr>
+                                <tr>
+                                    <td>Spain Printshop</td>
+                                    <td style="padding: 0 30px 0 30px;">Contact:Joaquim</td>
+                                    <td style="padding:0 30px 0 0;">Email:joaquim.lopez@maxim-group.com</td>
+                                    <td>Contact Tel: +34 696 882 181</td>
+                                </tr>
+                                <tr>
+                                    <td>Turkey Printshop</td>
+                                    <td style="padding: 0 30px 0 30px;">Contact:Emilia</td>
+                                    <td style="padding:0 30px 0 0;">Email:emilia.chen@maxim-group.com</td>
+                                    <td>Contact Tel: +90 534 2897207</td>
+                                </tr>
+                                <tr>
+                                    <td>India Printshop</td>
+                                    <td style="padding: 0 30px 0 30px;">Contact:Sharon</td>
+                                    <td style="padding:0 30px 0 0;">Email:sharon.wu@maxim-group.com</td>
+                                    <td>Contact Tel: +91 080 22585600</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="row-fluid">
+                            <div class="span3 ">
+
+                                <div class="control-group">
+
+                                    <label class="control-label" for="firstName"></label>
+
+                                    <div class="controls">
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="span3 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">Contact Person:</label>
+                                    <div class="controls">
+                                        <p style="padding-top: 10px;">+86(0)21 64064228(ext.707)</p>
+                                        <p>E-mail:Support@maxim-dps.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3 ">
+                                <div class="control-group">
+                                    <label class="control-label" for="lastName">Office hour</label>
+                                    <div class="controls">
+                                        <p style="padding-top: 10px;">Mon-Fri:9am-6pm(China Time)</p>
+                                        <p>Sat-Sun:9am-9pm(China Time)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3 ">
+                                <div class="control-group">
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                    <div class="row-fluid" style="padding-top: 50px;">
+                        <div class="span3 ">
+
+                            <div class="control-group">
+
+                                <label class="control-label" for="firstName"></label>
+
+                                <div class="controls">
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="span3 ">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName">First Name:</label>
+                                <div class="controls">
+                                    <input class="m-wrap span12" id="FristName" name="FristName" type="text" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span3 ">
+                            <div class="control-group">
+                                <label class="control-label" for="lastName">Last Name:</label>
+                                <div class="controls">
+                                    <input class="m-wrap span12" id="LastName" name="LastName" type="text" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span3 ">
+                            <div class="control-group">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span3 ">
+
+                            <div class="control-group">
+
+                                <label class="control-label" for="firstName"></label>
+
+                                <div class="controls">
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="span3 ">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName">Email Address:</label>
+                                <div class="controls">
+                                    <input class="m-wrap span12" id="EmailAddress" name="EmailAddress" type="text" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span3 ">
+                            <div class="control-group">
+                                <label class="control-label" for="lastName">Contact Number:</label>
+                                <div class="controls">
+                                    <input class="m-wrap span12" id="ContactNumber" name="ContactNumber" type="text" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span3 ">
+                            <div class="control-group">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span3 ">
+
+                            <div class="control-group">
+
+                                <label class="control-label" for="firstName"></label>
+
+                                <div class="controls">
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="span3 ">
+                            <div class="control-group">
+                                <label class="control-label" for="firstName">Comments:</label>
+                                <div class="controls">
+                                    <textarea class="m-wrap span12" id="CommentsValue" name="CommentsValue" type="text" value="" style="resize:none;"></textarea>
+                                </div>
+                                All personal information is strictly confidential.
+                            </div>
+                        </div>
+                        <div class="span3 ">
+
+                        </div>
+                        <div class="span3 ">
+                            <div class="control-group">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span4">
+                        </div>
+                        <div class="span4">
+                            <button type="button" class="btn" id="SendEmail" name="SendEmail" style="border: 1px solid #D6D6D6;width: 170px;margin-left: 33%;">Send Email</button>
+                        </div>
+                        <div class="span4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

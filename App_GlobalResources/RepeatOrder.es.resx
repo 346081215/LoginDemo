@@ -1,0 +1,321 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddComments" xml:space="preserve">
+    <value>Comentarios</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Dirección</value>
+  </data>
+  <data name="ApproveOrder" xml:space="preserve">
+    <value>Approve Order</value>
+  </data>
+  <data name="ArtWork" xml:space="preserve">
+    <value>Ver Diseño</value>
+  </data>
+  <data name="AWBNumberPOD" xml:space="preserve">
+    <value>AWB number/POD</value>
+  </data>
+  <data name="AWBPOD" xml:space="preserve">
+    <value>AWB #/POD</value>
+  </data>
+  <data name="BillingAddress" xml:space="preserve">
+    <value>Dirección de facturación</value>
+  </data>
+  <data name="BillTO" xml:space="preserve">
+    <value>Envío de factura</value>
+  </data>
+  <data name="Brand" xml:space="preserve">
+    <value>Marca</value>
+  </data>
+  <data name="CancelOrder" xml:space="preserve">
+    <value>Cancelar pedido</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoría</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Empresa</value>
+  </data>
+  <data name="ConfirmDate" xml:space="preserve">
+    <value>Fecha Confirmación</value>
+  </data>
+  <data name="ConfirmEndTime" xml:space="preserve">
+    <value>ConfirmEndTime</value>
+  </data>
+  <data name="ConfirmStartTime" xml:space="preserve">
+    <value>ConfirmStartTime</value>
+  </data>
+  <data name="CONFIRM_OFFICIAL_ORDER" xml:space="preserve">
+    <value>THE ORDER WILL BE CONFIRM OFFICIAL ORDER.</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Contacto</value>
+  </data>
+  <data name="Contacter" xml:space="preserve">
+    <value>Contacter</value>
+  </data>
+  <data name="CopyOrder" xml:space="preserve">
+    <value>Copy Order</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Mone</value>
+  </data>
+  <data name="CustomerPO" xml:space="preserve">
+    <value>Nº Pedido Cliente</value>
+  </data>
+  <data name="DeliveryDate" xml:space="preserve">
+    <value>Fecha de envío</value>
+  </data>
+  <data name="DeliveryEndTime" xml:space="preserve">
+    <value>DeliveryEndTime</value>
+  </data>
+  <data name="DeliveryStartTime" xml:space="preserve">
+    <value>DeliveryStartTime</value>
+  </data>
+  <data name="FreightCompany" xml:space="preserve">
+    <value>Empresa Transportes</value>
+  </data>
+  <data name="FreightNo" xml:space="preserve">
+    <value>FreightNo</value>
+  </data>
+  <data name="Item" xml:space="preserve">
+    <value>artículo</value>
+  </data>
+  <data name="Maxim" xml:space="preserve">
+    <value>Nº Maxim</value>
+  </data>
+  <data name="OrderQty" xml:space="preserve">
+    <value>Cant Pedido</value>
+  </data>
+  <data name="ORDER_WILL_BE_CANCELED" xml:space="preserve">
+    <value>THE ORDER WILL BE CANCELED.</value>
+  </data>
+  <data name="OriOrderQty" xml:space="preserve">
+    <value>CantPedOri</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Payment</value>
+  </data>
+  <data name="PaymentDate" xml:space="preserve">
+    <value>Payment Date</value>
+  </data>
+  <data name="Performance" xml:space="preserve">
+    <value>Evolución</value>
+  </data>
+  <data name="PrintShop" xml:space="preserve">
+    <value>Imprenta</value>
+  </data>
+  <data name="Query" xml:space="preserve">
+    <value>Búsqueda</value>
+  </data>
+  <data name="QueryResults" xml:space="preserve">
+    <value>Resultado Consulta</value>
+  </data>
+  <data name="RepeatOrders" xml:space="preserve">
+    <value>Repeat Order</value>
+  </data>
+  <data name="RepeatOrdersTrackingConfirm" xml:space="preserve">
+    <value>Repeat order's Tracking(confirm)</value>
+  </data>
+  <data name="RepeatOrdersTrackingQuery" xml:space="preserve">
+    <value>Repeat order's Tracking(query)</value>
+  </data>
+  <data name="RepeatReason" xml:space="preserve">
+    <value>Repeat Reason</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="Seq" xml:space="preserve">
+    <value>Sec</value>
+  </data>
+  <data name="Shipment" xml:space="preserve">
+    <value>Shipment#</value>
+  </data>
+  <data name="ShippedDate" xml:space="preserve">
+    <value>ShippedDate</value>
+  </data>
+  <data name="ShippingAddress" xml:space="preserve">
+    <value>Dirección de envío</value>
+  </data>
+  <data name="ShipTo" xml:space="preserve">
+    <value>Enviar a</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SubcontractSupplier" xml:space="preserve">
+    <value>Subcontract Supplier</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="Telephone" xml:space="preserve">
+    <value>Teléfono</value>
+  </data>
+  <data name="TelNo" xml:space="preserve">
+    <value>Tel No.</value>
+  </data>
+  <data name="Vendor" xml:space="preserve">
+    <value>Nº de Proveedor</value>
+  </data>
+  <data name="VendorName" xml:space="preserve">
+    <value>Nombre del proveedor</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="ViewArtwork" xml:space="preserve">
+    <value>View Artwork</value>
+  </data>
+  <data name="ViewCopyOrder" xml:space="preserve">
+    <value>View Copy Order</value>
+  </data>
+  <data name="ViewDetail" xml:space="preserve">
+    <value>Ver Detalles</value>
+  </data>
+  <data name="ViewShipment" xml:space="preserve">
+    <value>View Shipment</value>
+  </data>
+  <data name="Successfully" xml:space="preserve">
+    <value>successfully! Your Maxim No. is</value>
+  </data>
+  <data name="OrderStatus" xml:space="preserve">
+    <value>Order Status</value>
+  </data>
+  <data name="HAVE_INFORMED_ADOLFO_DOMINGUEZ_TO_CONFIRM_WHETHER_TO_PRODUCE_THE_ORDER_OR_NOT" xml:space="preserve">
+    <value>HAVE INFORMED ADOLFO DOMINGUEZ TO CONFIRM WHETHER TO PRODUCE THE ORDER OR NOT</value>
+  </data>
+  <data name="Please_do_not_repeat_submit" xml:space="preserve">
+    <value>Please do not repeat submit</value>
+  </data>
+  <data name="please_input_correct_number" xml:space="preserve">
+    <value>please input correct number</value>
+  </data>
+  <data name="Please_select_a_repeat_reason" xml:space="preserve">
+    <value>Please select a repeat reason.</value>
+  </data>
+  <data name="Please_select_order_lines_to_copy" xml:space="preserve">
+    <value>Please select order lines to copy</value>
+  </data>
+  <data name="The_Others_repeat_reason_can_not_be_empty" xml:space="preserve">
+    <value>The Others repeat reason can not be empty.</value>
+  </data>
+</root>

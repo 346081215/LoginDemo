@@ -1,0 +1,254 @@
+﻿@using Maxim.Model.BaseModel
+@using System.Data;
+@model CarelableOrderUploadBind
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>BJBBarcodePageLoad</title>
+    <script src="~/scripts/BJB/BJBBarcodePageLoad.js"></script>
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box " id="form_wizard_1">
+                    <div class="portlet-title">
+
+                        <div class="caption">
+
+                            <em class="red-em" id="step1">Barcode</em>
+                            <em class="gray-em" id="step2" style="display:none;">Query Results</em>
+
+
+                        </div>
+                    </div>
+                    @*<div class="portlet-body form">
+
+                        </div>*@
+                    <div class="clearfix main_form" id="CareLabel-step2">
+                        <div id="Body_header" class="clearfix ron">
+                            <div class="clearfix order-y" style="border:solid 1px #ec008c">
+                                <ul class="main_left">
+                                    <li>
+                                        <span>Print Shop</span>: <select id="PSID">
+    @{
+        List<SelectListItem> sel = Model.PSlist as List<SelectListItem>;
+        foreach (SelectListItem item in sel)
+        {
+            if (item.Disabled == true)
+            {
+                <option value="@item.Value" disabled="disabled">@item.Text</option>
+            }
+            else
+            {
+                if (item.Selected == true)
+                {
+                    <option value="@item.Value" style="color:black;font-weight:bold" selected="selected">@item.Text</option>
+                }
+                else
+                {
+                    <option value="@item.Value" style="color:black;font-weight:bold">@item.Text</option>
+                }
+            }
+        }
+    }
+</select>
+
+                                    </li>
+                                    <li>
+                                        <span>Billing To</span>:
+
+                                        @Html.DropDownListFor(x => x.BilltoId, Model.BilltoList)
+                                    </li>
+                                    <li style="width:500px">
+                                        <span>Billing Address</span>:
+                                        <input id="iBilltoAddress" name="iBilltoAddress" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddress " />
+                                    </li>
+                                    <li>
+                                        <span>Contact</span>:
+                                        <input id="iBilltoAddrContact" name="iBilltoAddrContact" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddrContact " />
+                                    </li>
+                                    <li>
+                                        <span>Tel</span>:
+                                        <input id="iBilltoAddrTel" name="iBilltoAddrTel" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddrTel " />
+                                    </li>
+                                    <li>
+                                        <span>Shipment Type<font color="red">*</font></span>:
+                                        @Html.DropDownListFor(x => x._ShipmentType, Model.ShipmentType, new { @id = "DDLShipmentType" })
+                                    </li>
+                                    <li>
+                                        @*<span>Freight Company<font color="red">*</font></span>:
+                                        @Html.DropDownListFor(x => x._ExpressCompany, Model.ExpressCompany, new { @id = "ExpressCompany", @disabled = "disabled" })*@
+                                    </li>
+                                </ul>
+
+                                <ul class="main_right">
+                                    <li>
+                                        <span>Currency</span>:
+                                        <input id="iCurrency" name="iCurrency" class="m-wrap span8" readonly="readonly" type="text" value="@Model.Currency" />
+                                    </li>
+                                    <li style="width:500px">
+                                        <span>Ship To</span>:
+                                        @Html.DropDownListFor(x => x.ShiptoId, Model.ShiptoList)
+                                    </li>
+                                    <li>
+                                        <span>Shipping Address</span>:
+                                        @Html.DropDownListFor(x => x.ShipAddrId, Model.ShipAddrList)
+                                    </li>
+                                    <li>
+                                        <span>Contact</span>:
+                                        <input id="iShipAddrContact" name="iShipAddrContact" class="m-wrap span8" readonly="readonly" type="text" value="@Model.ShipAddrContact" />
+                                    </li>
+                                    <li>
+                                        <span>Tel</span>:
+                                        <input id="iShipAddrTel" name="iShipAddrTel" class="m-wrap span8" readonly="readonly" type="text" value="@Model.ShipAddrTel" />
+                                    </li>
+
+                                    <li>
+                                        <span>Country</span>:
+                                        <input id="iShipAddrCountry" name="iShipAddrCountry" class="m-wrap span8" readonly="readonly" type="text" value="@Model.Country" />
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="clearfix order-y" style="margin-top:3px;border:solid 1px #ec008c">
+                                <ul class="fl main_left">
+                                    <li>
+                                        <span>Item<font color="red">*</font></span>:
+                                        @*@Html.DropDownListFor(x => x.productid, Model.ProductList)*@
+                                        <select id="productid">
+                                            @*BJB001-P1224*@
+                                            <option value="P1224">BJB001-P1224</option>
+                                            <option value="P027">BJB001-P027</option>
+                                        </select>
+                                    </li>
+                                    <li>
+
+                                    </li>
+                                </ul>
+
+                                <ul class="fl main_right">
+                                    <li>
+                                        @*<span style="width:130px;">Made In</span>:
+                                            @Html.DropDownListFor(x => x.madein, Model.MadeInList)*@
+                                        <span style="width:130px;">Comments</span>:
+                                        <input type="text" name="Comments" id="Comments" />
+                                    </li>
+
+                                    <li style="display:none">
+
+                                    </li>
+                                </ul>
+
+                            </div>
+                            @* Original Query Result *@
+                            <div class="clearfix main_table" id="page-inner2">
+                                <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                                    <table id="OrdTable" class="table table-striped table-responsive">
+                                        <thead>
+                                            <tr class="head">
+                                                <th>Line</th>
+                                                <th>Size</th>
+                                                <th>Colour</th>
+                                                <th>Style Number</th>
+
+                                                <th>Style Name</th>
+                                                <th>EAN Code</th>
+                                                <th>OTY </th>
+                                                <th></th>
+                                            </tr>
+                                            <tr>
+                                                <td><font></font><input type="text" value="" style="display:none" /></td>
+                                                <td>
+                                                    <select id="Size" class="Size" >
+                                                        <option value=''>--Please Select--</option>
+                                                        <option value='XS'>XS</option>
+                                                        <option value='S'>S</option>
+                                                        <option value='M'>M</option>
+                                                        <option value='L'>L</option>
+                                                        <option value='XL'>XL</option>
+                                                        <option value='XXL'>XXL</option>
+                                                    </select>
+                                                </td>
+                                                <td><input id="Colour" class="Colour" type="text" /></td>
+                                                <td><input id="Style_Number" name="Style_Number" type="text" /></td>
+                                                @*type="number" min="0"*@
+                                                <td><input id="Style_Name" name="Style_Name" type="text" /></td>
+                                                <td><input id="EAN_Code" name="EAN_Code" type="text" /></td>
+                                                <td><input id="Qty" name="Qty" type="text" /></td>
+                                                <td><button id="btn" type="button" onclick="AddOrderLine(this)">ADD</button></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="OrderDetail" id="OrderDetailCareLabel"></tbody>
+
+
+                                    </table>
+                                </div>
+                            </div>
+                            <hr style="height:1px;border:none;border-top:1px solid #ec008c;width:100%" />
+                        </div>
+                        <button type="button" id="btnSaveFiberAndCare" class="btn btn-default" value="Save" onclick="return funcSaveOriOrder();">Submit</button>
+                        <button type="button" id="btnBackToUpload" class="btn btn-default" value="Back" onclick="return funcBackToMain();">Back</button>
+                    </div>
+
+                    <div id="SuccessSubmitOrderView" style="display:none">
+                        <div style="border: #ec008c solid 1px;">
+                            <span id="lblRemark" style="margin-left: 25px;"> <i>Your Maxim No. is :</i><b id="OrderNo" style="top:0;font-size: 20px;color: #ff0015;"></b> </span>
+                            <span id="lblOrderNO"></span>
+                            <br>
+                            <br>
+                            <div>
+                                <div id="pan_en">
+
+                                    <ul>
+                                        <li style="color:red"><em style="font-size:24px;">Important! </em>Currently system is uploading your data. Click "Confirm Order" icon afterward to submit the order.</li>
+                                        <li>
+                                            1.For barcode items, please confirm artwork before submitting the order.Once submitted,
+                                            the order will be received by our factory and processed immediately.
+                                        </li>
+                                        <li>**Processed orders cannot be cancelled or changed** </li>
+                                        <li>
+                                            2. Payment Terms are ship upon payment. Goods will be delivered after we receive
+                                            your payment.
+                                        </li>
+                                        <li>
+                                            3. If you have any complaints regarding our customer service, delays or product
+                                            quality, please contact us at:<a href="mailto: tescosales03@maxim-group.com" style="color:blue">
+                                                tescosales03@maxim-group.com
+                                            </a>. Your feedback is very important to us.
+                                        </li>
+                                    </ul>
+
+                                </div>
+
+                                <div id="pan_zh" style="display: none;">
+                                    <ul style="list-style: none; width: 960px; padding: 0px; margin: 0px;">
+                                        <li>1.关于barcode产品，请确认画稿无误后再提交订单。我司车间会在您提交订单之后收到订单并会直接安排生产。 </li>
+                                        <li>&nbsp;&nbsp; 若订单已生产是无法取消或做任何更改。 </li>
+                                        <li>2.付款方式：款到发货。收到您的货款后，我司会尽快为您发货。</li>
+                                        <li>
+                                            3.若您对我们业务人员的服务有任何意见或建议，或对我司产品有任何疑问，请联系我们：<a href="mailto: tescosales03@maxim-group.com" style="color:blue">
+                                                tescosales03@maxim-group.com
+                                            </a>. 您的反馈对我们来说至关重要！
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <br>
+
+                            <button id="btnReturnToTescoMain" type="button" class="btn btn-default" name="Cancel" style="margin:10px;" onclick="FunReturnToMainPage()">Return</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>

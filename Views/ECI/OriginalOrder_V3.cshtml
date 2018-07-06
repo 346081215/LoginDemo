@@ -1,0 +1,600 @@
+﻿@using Maxim.Model.BaseModel
+@using System.Data;
+@model CarelableOrderUploadBind
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>OriginalOrder_V3</title>
+    <link href="~/css/viewer.min.css" rel="stylesheet" />
+    <link href="~/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/Content/js/loading.js"></script>
+    <script src="~/scripts/ShowImgJS/viewer-jquery.min.js"></script>
+    <script src="~/scripts/ShowImgJS/viewer.min.js"></script>
+    <style  type="text/css">
+        .Product {
+            width: 300px;
+            float: left;
+        }
+        .ProductImages {
+            height: 100%;
+            vertical-align: bottom !important;
+        }
+        .Description ul {
+        margin:0px
+        }
+        .modal.fade.in {
+            top: 0%;
+        }
+        #Category span {
+            width: 20px;
+        }
+        #Category img {
+        margin-top:-8.8px;
+        }
+        .Product {
+            border:0px inset #ffffff;
+            min-height:1px;
+        }
+        .ProductImages {
+            text-align:center;
+        }
+        .Description {
+            text-align:center;
+        }
+        #pan_en tr td {
+            vertical-align:middle
+        }
+    </style>
+
+</head>
+<body>
+    <div id="Detail-Page1"> 
+        <div style="border:1px inset #ec008c">
+            <input id="OriV3_Fileid"  type="hidden" value="@ViewBag.FileLogid"/>
+            @*<p style="font-size:24px;color:red"> If you don't need the logistic label please select NO or we will default print and charge it. </p>*@
+            <div class="clearfix main_table" id="page-inner2_Org" >
+                <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                    <table id="HeadTable" class="table table-striped table-responsive" style="width:0px;">
+                        <thead>
+                            <tr class="head">
+                                <th class="center">PO_Number<font style="color:red">*</font></th>
+                                <th class="center" style="width:170px">Item Reference<font style="color:red">*</font></th>
+                                <th class="center">Size Code Range</th>
+                                <th class="center">Size Range</th>
+                                <th class="center">Letter Size Range</th>
+                                <th class="center">Hang Tag variable data</th>
+                                <th class="center">Hang Tag with Fibers</th>
+                                <th class="center">Care & Compostion Label</th>
+                                <th class="center">Woven Size Label</th>
+                                <th class="center" style="width:100px;">Include logistic</th>
+                                <th class="center">Wastage</th>
+                            </tr>
+                        </thead>
+                        <tbody class="OrderDetail" id="OrderDetail">
+                            <tr>
+                                <td><input id="OriV3_PO" type="text" class="span8 classPO" readonly="readonly" value="@ViewBag.PO" /></td>
+                                <td>@Html.DropDownListFor(x => x.ItemRefen, Model.ItemRefenList, new { @id = "ItemRef", @class = "span", @style = "width:130px;" })</td>
+                                <td id="size1">@Model.EciSize</td>
+                                <td id="size2">@Model.EciSize@Model.EciLetterSize</td>
+                                <td id="size3">@Model.EciLetterSize</td>
+                                <td>@Html.DropDownListFor(x => x.ECIHangTagVariableData, Model.ECIHangTagVariableDataList, new { @style = "width: 184px", @class = "ECIProductList", @onchange = "FunProductChange(1,this)" })</td>
+                                <td>@Html.DropDownListFor(x => x.ECIHangTagWithFibers, Model.ECIHangTagWithFibersList, new { @style = "width: 170px;", @disabled = "disabled", @class = "ECIProductList", @onchange = "FunProductChange(2,this)" })</td>
+                                <td>@Html.DropDownListFor(x => x.ECICareCompostionLabel, Model.ECICareCompostionLabelList, new { @id = "CareLabelProduct", @style = "width:200px;", @class = "ECIProductList", @onchange = "FunProductChange(3,this)" })</td>
+                                <td>@Html.DropDownListFor(x => x.ECIWowenSizeLabel, Model.ECIWowenSizeLabelList, new { @style = "width: 140px", @class = "ECIProductList", @onchange = "FunProductChange(4,this)" })</td>
+                                <td><select id="Include" name="ProductSel" class="ECIProductList" style="width: 140px" disabled="disabled" onchange="FunProductChange(5,this)"><option value="@Model.ECIIncludelogistic.Split('^')[0]" data-Text="@Model.ECIIncludelogistic.Split('^')[1]">Yes</option><option value="" data-Text="" selected="selected">No</option></select></td>
+                                <td>
+                                    <select style="width:144px" name="bcSel" id="bcSel" class="bcSel">
+                                        <option value="1">--Please Select--</option>
+                                        <option value="1.05" selected="selected">5%</option>
+                                        <option value="1.1">10%</option>
+                                        <option value="1.15">15%</option>
+                                    </select><button id="ApplyBeic" type="button" onclick="FunApply()">Apply</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table id="OriTable" class="table table-striped table-responsive" style="width:60%">
+                        <thead>
+                            <tr class="head">
+                                <th class="center" style="display:none">Line_No</th>
+                                <th class="center">Barcode</th>
+                                <th class="center">EANI</th>
+                                <th class="center">PRICE</th>
+                                <th class="center">Currency</th>
+                                <th class="center">Size Code</th>
+                                <th class="center">Quantity</th>
+                                <th class="center">Quantity<font id="fontbc" style="color:red;">(5%)</font><br /><button type="button" name="qtybtn" onclick="FunResetQty()">Reset</button>  <button type="button" name="qtybtn" onclick="FunClearQty()">Clear</button></th>
+                                <th class="center">Size</th>
+                            </tr>
+                        </thead>
+                        <tbody class="OrderDetail" id="page2-OrderDetail">
+                            @{
+                                var dt = Model.EciDetailByRef as DataTable;
+                                var TotalQty = 0;
+                                for (int i = 0; i < dt.Rows.Count; i++)
+                                {
+                                    string name = "ECIQty" + i;
+                                    string Selid = "bcSel" + i;
+                                    string QTYstr = @dt.Rows[i]["Amount_qty"].ToString();
+                                    string pricestr = @dt.Rows[i]["PVP"].ToString();
+                                    double price = double.Parse(pricestr.Substring(0, pricestr.Length - 2)) / 100;
+                                    int QTY = int.Parse(QTYstr.Substring(0, QTYstr.Length - 2));
+                                    TotalQty += QTY;
+                                    <tr>
+                                        <td style="display:none">@dt.Rows[i]["Line_No"].ToString()</td>
+                                        <td>@dt.Rows[i]["Manufacturer"].ToString()</td>
+                                        <td>@dt.Rows[i]["EANI_EAN"].ToString()</td>
+                                        <td>@price</td>
+                                        <td>@dt.Rows[i]["Currency"].ToString()</td>
+                                        <td>@dt.Rows[i]["Size_Field_not_used"].ToString()</td>
+                                        <td id=@name>@QTYstr.Substring(0, QTYstr.Length - 2).ToString().TrimStart('0')</td>
+                                        <td><input type="number" class="SubQty span4" name=@name min="0" value=@QTY style="width:70px;min-width:80px;" onchange="FunChangeQty()" onkeyup="FunChangeQty()" /></td>
+                                        <td>@dt.Rows[i]["Size_Field_not_used"].ToString()</td>
+                                    </tr>
+                                }
+                                <tr><td colspan="5"></td><td>Total:</td><td id="TotalQty">@TotalQty</td><td colspan="2"></td></tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <table id="OriTable2" class="table table-striped table-responsive" style="width:60%;display:none;">
+                        <thead>
+                            <tr class="head">
+                                <th class="center">Order</th>
+                                <th class="center">Reference</th>
+                                <th class="center">Size</th>
+                                <th class="center">Quantity</th>
+                                <th class="center"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="OrderDetail" id="page2-OrderDetail2">
+                            
+                        </tbody>
+                    </table>
+
+                    <div id="OriTable2FY" class="span4" style="display:none">
+                        <div class="mypage">
+                            <ul>
+                                <li id="PageIndex2"><<</li>
+                                <li id="Pageup2"><</li>
+                                <li><input type="text" id="nowpage2" style="height:30px;" value="1" /></li>
+                                <li>/</li>
+                                <li><i id="TotalPageCount2">0</i></li>
+                                <li id="Pagewown2">></li>
+                                <li id="PageLast2">>></li>
+                                <li id="PageGO2">GO</li>
+                                <li><input id="pc2" name="pc2" type="hidden" value=1><input id="PageTotalCount2" name="PageTotalCount2" type="hidden" value=1></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <table id="CartImgList" class="table-striped table-hover table-full-width dataTable">
+                        <thead>
+                            <tr>
+                                <th style="width:260px;"><font id="ProductItem1"></font></th>
+                                <th style="width:260px;"><font id="ProductItem2"></font></th>
+                                <th style="width:260px;"><font id="ProductItem3"></font></th>
+                                <th style="width:260px;"><font id="ProductItem4"></font></th>
+                                <th style="width:260px;"><font id="ProductItem5"></font></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><img id="productImg1" src="" onmouseover='showimg(this);' onmouseout='hideimg();' onmousemove='showimg(this);'></td>
+                                <td><img id="productImg2" src="" onmouseover='showimg(this);' onmouseout='hideimg();' onmousemove='showimg(this);'></td>
+                                <td><img id="productImg3" src="" onmouseover='showimg(this);' onmouseout='hideimg();' onmousemove='showimg(this);'></td>
+                                <td><img id="productImg4" src="" onmouseover='showimg(this);' onmouseout='hideimg();' onmousemove='showimg(this);'></td>
+                                <td><img id="productImg5" src="" onmouseover='showimg(this);' onmouseout='hideimg();' onmousemove='showimg(this);'></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p></p>
+                </div>
+            </div>
+            
+
+            <div id="divimgpreview" style="display: none; border: 0px solid white;
+        z-index: 1000; width:auto; height:auto; float:left;position:absolute">
+                <img id="imgpreview" src="" style="float: right;" />
+            </div>
+
+            <div id="Page1-ButtonList">
+                <button id="BtnBackOri" type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+                <button id="BtnNext" type="button" class="btn  btn-default">Next<span class="glyphicon glyphicon-chevron-right"></span></button>
+                <button id="BtnEditCompostion" type="button" class="btn  btn-default"><span class="glyphicon glyphicon-edit"></span>Edit Composition For all refernces</button>
+            </div>
+        </div>
+
+        @*洗语洗图 *@
+        <div id="FiberAndCategory" style="display:none;border:1px inset #ec008c">
+            <div id="Category">
+                <table>
+                    <tr>
+                        <td>Importer/Producer</td>
+                        <td>
+                            <select id="Productor" name="Productor">
+                                <option value="A">EL CORTE INGLES,S.A.</option>
+                                <option value="B">IMPORTADO POR EL CORTE INGLES A-28017895</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right;">Made in</td>
+                        <td>
+                            @Html.DropDownListFor(x => x.madein, Model.MadeInList, new { @id = "Madein" })
+                        </td>
+                        <td colspan="2"><font>(In leather garments, required)(Only if required by purchasing)</font></td>
+                    </tr>
+                    <tr>
+                        <td>Compositions</td>
+                        <td><button id="Clearcompositions" type="button"  class="btn btn-default"><span class="glyphicon glyphicon-trash"></span>Clear all compositions</button></td>
+                        <td></td>
+                    </tr>
+                    <tr style="line-height:50px;">
+                        <td style="width:105px;"></td>
+                        <td style="width:180px;">Main fabric</td>
+                        <td width="360px;" style="min-width:360px;">@Html.DropDownListFor(x => x.CategoryId, Model.CategoryList, new { @id = "Cate1", @class = "Cate CateFiber", @onchange = "funChangeCate(this,1)" })</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>1-%<input type="number" id="Per1" max="100" min="0" name="Per" class="Per1 span2" style="width:60px;" value="0" />Fibers @Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList, new { @id = "Fiber1", @class = "fiber CateFiber fiber1", @onchange = "FunChangeFiber(this,1,1)" })</td>
+                        <td>Origin of the skin?@Html.DropDownListFor(x => x.Origin, Model.OriginList, new { @id = "Origin1", @class = "Origin1 madein", @style = "margin-left:20px;" })</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>2<input type="number" id="Per2" max="100" min="0" name="Per" class="Per1 span2" style="width:60px;margin-left:16px;" value="0" /> @Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList, new { @id = "Fiber2", @class = "fiber CateFiber fiber1", style = "margin-left: 40px", @onchange = "FunChangeFiber(this,1,2)" })</td>
+                        <td>@Html.DropDownListFor(x => x.Origin, Model.OriginList, new { @id = "Origin2", @class = "Origin1 madein", @style = "margin-left:133px;" })</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Compositions</td>
+                        <td>3<input type="number" id="Per3" max="100" min="0" name="Per" class="Per1 span2" style="width:60px;margin-left:16px;" value="0" />@Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList, new { @id = "Fiber3", @class = "fiber CateFiber fiber1", style = "margin-left: 45px", @onchange = "FunChangeFiber(this,1,3)" })</td>
+                        <td>@Html.DropDownListFor(x => x.Origin, Model.OriginList, new { @id = "Origin3", @class = "Origin1 madein", @style = "margin-left:133px;" })</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>4<input type="number" id="Per4" max="100" min="0" name="Per" class="Per1 span2" style="width:60px;margin-left:16px;" value="0" /> @Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList, new { @id = "Fiber4", @class = "fiber CateFiber fiber1", @style = "margin-left: 40px", @onchange = "FunChangeFiber(this,1,4)" })</td>
+                        <td>@Html.DropDownListFor(x => x.Origin, Model.OriginList, new { @id = "Origin4", @class = "Origin1 madein", @style = "margin-left:133px;" })</td>
+                    </tr>
+                    <tr style="line-height:50px;">
+                        <td style="width:105px;"></td>
+                        <td style="width:150px;">Other parts of the garment</td>
+                        <td>@Html.DropDownListFor(x => x.CategoryId, Model.CategoryList, new { @id = "Cate2", @class = "Cate CateFiber", @onchange = "funChangeCate(this,2)" })</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>1-%<input type="number" id="Per5" max="100" min="0" name="Per"  class="span2 Per2" style="width:60px;" value="0" />Fibers @Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList, new { @id = "Fiber5", @class = "fiber CateFiber fiber2", @onchange = "FunChangeFiber(this,2,5)" })</td>
+                        <td>Origin of the skin?@Html.DropDownListFor(x => x.Origin, Model.OriginList, new { @id = "Origin5", @class = "Origin2 madein", @style = "margin-left:20px;" })</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Compositions</td>
+                        <td>2<input type="number" id="Per6" max="100" min="0" name="Per" class="span2 Per2" style="width:60px;margin-left:16px;" value="0" /> @Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList, new { @id = "Fiber6", @class = "fiber CateFiber fiber2", @style = "margin-left: 40px", @onchange = "FunChangeFiber(this,2,6)" })</td>
+                        <td>@Html.DropDownListFor(x => x.Origin, Model.OriginList, new { @id = "Origin6", @class = "Origin2 madein", @style = "margin-left:133px;" })</td>
+                    </tr>
+                    <tr style="line-height:50px;">
+                        <td style="width:105px;"></td>
+                        <td style="width:150px;">Other parts of the garment</td>
+                        <td>@Html.DropDownListFor(x => x.CategoryId, Model.CategoryList, new { @id = "Cate3", @class = "Cate CateFiber", @onchange = "funChangeCate(this,3)" })</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>1-%<input type="number" id="Per7" max="100" min="0" name="Per" class="span2 Per3" style="width:60px;" value="0" />Fibers @Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList, new { @id = "Fiber7", @class = "fiber CateFiber fiber3", @onchange = "FunChangeFiber(this,3,7)" })</td>
+                        <td>Origin of the skin?@Html.DropDownListFor(x => x.Origin, Model.OriginList, new { @id = "Origin7", @class = "Origin3 madein", @style = "margin-left:20px;" })</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Compositions</td>
+                        <td>2<input type="number" id="Per8" max="100" min="0" name="Per" class="span2 Per3"  style="width:60px;margin-left:16px;" value="0" /> @Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList, new { @id = "Fiber8", @class = "fiber CateFiber fiber3", @style = "margin-left: 40px", @onchange = "FunChangeFiber(this,3,8)" })</td>
+                        <td>@Html.DropDownListFor(x => x.Origin, Model.OriginList, new { @id = "Origin8", @class = "Origin3 madein", @style = "margin-left:133px;" })</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input id="CONTAINS" type="checkbox" class="m-wrap span2" data-val="true" style="float:right;"/></td>
+                        <td>CONTAINS NON-TEXTILE PARTS OF ANIMAL ORIGIN</td>
+                    </tr>
+                    <tr>
+                        <td>Automatic conservation code</td>
+                        <td><button id="Clearsymbols" type="button" name="Clearsymbols" value="" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span>Clear all symbols</button></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>@Html.DropDownListFor(x => x.EciCustCode, Model.EciCustCodeList)</td>
+                        <td></td>
+                    </tr>
+                    <tr style="height:50px;">
+                        <td></td>
+                        <td>Wash <img id="Washimg" src="" sym="" style="float:right;width:40px;" /></td>
+                        <td><select id="Wash" name="symbol" class="WashSymbols" symbol="" onchange="FunChangeWashInstructions(this, 'Washimg')"><option>DO NOT WASH</option></select></td>
+                    </tr>
+                    <tr style="height:50px;">
+                        <td></td>
+                        <td>Bleach<img id="Bleachimg" src="" sym="" style="float:right;width:40px;" /></td>
+                        <td><select id="Bleach" name="symbol" class="WashSymbols" symbol="" onchange="FunChangeWashInstructions(this, 'Bleachimg')"><option>ANY BLEACH</option></select></td>
+                    </tr>
+                    <tr style="height:50px;">
+                        <td></td>
+                        <td>Tumble dry <img id="Tumbleimg" src="" sym="" style="float:right;width:40px;" /></td>
+                        <td><select id="Tumbledry" name="symbol" class="WashSymbols" symbol="" onchange="FunChangeWashInstructions(this, 'Tumbleimg')"><option>DO NOT TUMBLE DRY</option></select></td>
+                    </tr>
+                    <tr style="height:50px;">
+                        <td></td>
+                        <td>Iron <img id="Ironimg" src="" sym="" style="float:right;width:40px;" /></td> 
+                        <td><select id="Iron" name="symbol" class="WashSymbols" symbol="" onchange="FunChangeWashInstructions(this, 'Ironimg')"><option>DO NOT IRON</option></select></td>
+                    </tr>
+                    <tr style="height:50px;">
+                        <td></td>
+                        <td>Dry clean <img id="Dryimg" src="" sym="" style="float:right;width:40px;"/></td>
+                        <td><select id="Dryclean" name="symbol" class="WashSymbols" symbol="" onchange="FunChangeWashInstructions(this, 'Dryimg')"><option>DO NOT DRY CLEAN</option></select></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Special instructions<font style="float:right">1 </font></td>
+                        <td><select id="Speinstructions1" class="WashSymbols" name="Dryclean"></select></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><font style="float:right">2 </font></td>
+                        <td><select id="Speinstructions2" class="WashSymbols" name="Dryclean"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><font style="float:right">3 </font></td>
+                        <td>
+                            <select id="Speinstructions3" class="WashSymbols" name="Dryclean"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><font style="float:right">4 </font></td>
+                        <td>
+                            <select id="Speinstructions4" class="WashSymbols" name="Dryclean"></select>
+                        </td>
+                    </tr>
+                    <tr style="display:none;">
+                        <td></td>
+                        <td><font style="float:right">5 </font></td>
+                        <td>
+                            <select id="Speinstructions5" class="WashSymbols" name="Dryclean"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td colspan="2"><button id="btnFiberBack" type="button" class="btn  btn-default"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+                        <button id="btnPreView" type="button" class="btn btn-default"><span class="glyphicon glyphicon-picture"></span>PreView</button>
+<button id="btnFiberNext" type="button" class="btn  btn-default" data-toggle="modal" data-target="#myModal">Next<span class="glyphicon glyphicon-chevron-right"></span></button></td>
+                        
+                    </tr>
+                </table>
+            </div>
+            <div id="PreviewImg" style="display:none;">
+                <ul id="dowebok"></ul>
+            </div>
+        </div>
+
+      
+        @* 无变量购物车明细 *@
+        <div id="NoSizeCart" style="display:none;">
+            <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid" style="border:1px solid #ec008c;height:500px;overflow-y:scroll">
+                <table id="ProductsDetail" class="table table-striped table-responsive" style="width:auto;">
+                    <caption>Search all the fields<input id="txtBuscar" name="Buscar" type="text" class="span4" /></caption>
+                    <thead>
+                        <tr class="head">
+                            <td>Article<br /><input id="Articulo" name="Articulo" type="text" class="span" /></td>
+                            <td>Description<br /><input id="Descripcion" name="Descripcion" type="text" class="span" /></td>
+                            <td style="display:none;"></td>
+                            <td>Quantity<br /><input id="Cantidad" name="Cantidad" type="text" class="span8" /></td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody class="NoSizeCartDetail" id="NoSizeCartDetail">
+                        @{ 
+                            DataTable table = Model.ECINone_Variable as DataTable;
+
+                            for (int i = 0; i < table.Rows.Count; i++)
+                            {
+                                string id = "Cart"+i;
+                                string CHKID = "PCHK" + i;
+                                string src =string.Format(@"../WebDocuments/ProductImg/ECI001/small-img/{0}/{0}.jpg", @table.Rows[i][0].ToString().Trim());
+                                <tr>
+                                    <td style="vertical-align:middle">@table.Rows[i][0].ToString()</td>
+                                    <td style="vertical-align:middle">@table.Rows[i][1].ToString()</td>
+                                    @if (table.Rows[i][2].ToString() == "0")
+                                    {
+                                        <td style="vertical-align:middle"><input id=@id name="NoSizeCart" type="number" class="span8 NoSizeCart" value="" onchange="FunKeypress(this)" /><font style="display:none"></font></td>
+                                        <td style="display:none;">0</td>
+                                    }
+                                    else
+                                    {
+                                        <td style="vertical-align:middle"><input id=@id name="NoSizeCart" type="number" class="span8 NoSizeCart" style="display:none;" value="" onchange="FunKeypress(this)"/><font style="display:none"></font></td>
+                                        <td style="display:none;">1</td>
+                                    }
+                                    <td><img src="@src" /></td>
+                                    <td style="vertical-align:middle;width:100px;"><input  type="checkbox" class="CartCHK m-wrap span2" id="@CHKID" data-val="true"/></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" id="NoSizeBack" name="Atras" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+            <button type="button" id="NoSizeCartNext" name="Siguiente" class="btn btn-default">Next<span class="glyphicon glyphicon-chevron-right"></span></button>
+            <input type="checkbox" class="m-wrap span1" data-val="true" id="CKHangtag" disabled="disabled" />seal hangtag labels cord
+            <input type="checkbox" class="m-wrap span1" data-val="true" id="CKSize" />woven size label
+            @*<input type="checkbox" class="m-wrap span1" data-val="true" id="CKLogisticSticker" />Order logistic sticker label*@
+            <span style="font-weight:600">(Note:please tick in the coresponding checkbox if you don't need seal or woven label with size)</span>
+        </div>
+
+            @* 选择开票客户 出货地址 *@
+        <div class="clearfix main_form" id="UserInfo" style="display:none;">
+                <div id="Body_header" class="clearfix ron">
+                    <div class="clearfix order-y" style="margin-top:3px;border:solid 1px #ec008c;padding-bottom:11px;margin-bottom: 3px;display:none;">
+                        <p><img src="~/images/proImages/Landmark/AEO logo.jpg" style="width:400px;margin-left:20px;margin-top:20px;margin-bottom:20px" /></p>
+                        <span style="width:200px;margin-left:20px;margin-top:5px">Garment's Final Destination</span>:
+                        @*@Html.DropDownListFor(x => x._Shipment, Model.Shipment)*@
+
+                    </div>
+                    <div class="clearfix order-y" style="border:solid 1px #ec008c">
+                        <ul class="main_left">
+                            <li>
+                                <span>Print Shop</span>:
+                                @Html.DropDownListFor(x => x.PSID, Model.PSlist)
+                            </li>
+                            <li>
+                                <span>Billing To</span>:
+
+                                @Html.DropDownListFor(x => x.BilltoId, Model.BilltoList)
+                            </li>
+                            <li style="width:500px">
+                                <span>Billing Address</span>:
+                                <input id="iBilltoAddress" name="iBilltoAddress" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddress " />
+                            </li>
+                            <li>
+                                <span>Contact</span>:
+                                <input id="iBilltoAddrContact" name="iBilltoAddrContact" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddrContact " />
+                            </li>
+                            <li>
+                                <span>Tel</span>:
+                                <input id="iBilltoAddrTel" name="iBilltoAddrTel" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddrTel " />
+                            </li>
+                            <li>
+                                <span>Shipment Type<font color="red">*</font></span>:
+                                @Html.DropDownListFor(x => x._ShipmentType, Model.ShipmentType, new { @id = "DDLShipmentType" })
+                            </li>
+                            @*<li style="display:none">
+                                <span>Freight Company<font color="red">*</font></span>:
+                                @Html.DropDownListFor(x => x._ExpressCompany, Model.ExpressCompany, new { @id = "ExpressCompany", @disabled = "disabled" })
+                            </li>*@
+                            <li>
+                                <span style="width:130px;">Comments</span>:
+                                <input type="text" name="Comments" id="Comments" class="span4" />
+                            </li>
+                        </ul>
+
+                        <ul class="main_right">
+                            <li>
+                                <span>Currency</span>:
+                                <input id="iCurrency" name="iCurrency" class="m-wrap span8" readonly="readonly" type="text" value="@Model.Currency" />
+                            </li>
+                            <li style="width:500px">
+                                <span>Ship To</span>:
+                                @Html.DropDownListFor(x => x.ShiptoId, Model.ShiptoList)
+                            </li>
+                            <li>
+                                <span style="margin-top:10px;">Shipping Address</span>:
+                                @Html.DropDownListFor(x => x.ShipAddrId, Model.ShipAddrList)
+                            </li>
+                            <li>
+                                <span>Contact</span>:
+                                <input id="iShipAddrContact" name="iShipAddrContact" class="m-wrap span8" readonly="readonly" type="text" value="@Model.ShipAddrContact" />
+                            </li>
+                            <li>
+                                <span>Tel</span>:
+                                <input id="iShipAddrTel" name="iShipAddrTel" class="m-wrap span8" readonly="readonly" type="text" value="@Model.ShipAddrTel" />
+                            </li>
+
+                            <li>
+                                <span>Country</span>:
+                                <input id="iShipAddrCountry" name="iShipAddrCountry" class="m-wrap span8" readonly="readonly" type="text" value="@Model.Country"  />
+                            </li>
+                            
+                        </ul>
+                        <div id="pan_en" class="table table-bordered table-full-width dataTable" style="width:100%;float:left;">
+                            <table cellpadding="1" cellspacing="1" class="table table-striped table-responsive table-condensed table-bordered" style="border:1px inset #ec008c;width:60%">
+                                <caption style="font-size:24px;">Your order information is:</caption>
+                                <thead>
+                                    <tr><th></th><th>PO#</th><th>Item Reference</th><th>Item</th><th>Quantity</th></tr>
+                                </thead>
+                                <tbody id="Orderlist">
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <p></p>
+                        <div style="width:100%;float:left">
+                            <button id="submitOrderBack" class="btn btn-default" type="button"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+                            <button id="submitOrder" class="btn btn-default" type="button"><span class="glyphicon glyphicon-ok"></span>submit</button>
+                        </div>
+                       
+                    </div>
+                  
+                </div>
+        </div>
+
+    </div>
+    @* 订单提交成功界面 *@
+    <div id="Detail-Page2" style="display:none;">
+        <div id="panSuccess">
+            <div style="border: #ec008c solid 1px;">
+                <div>
+                    <div id="pan_en">
+                        <em style="font-size:24px;">Ordering Successfully! </em>
+                        <div class="table table-bordered table-full-width dataTable" style="width:100%;float:left;">
+                            <table cellpadding="1" cellspacing="1" class="table table-striped table-responsive table-condensed  table-bordered" style="border:1px inset #ec008c;width:60%">
+                                <caption style="font-size:24px;">Your order information is:</caption>
+                                <thead>
+                                    <tr><th>PO#</th><th>Maxim#</th><th>Item</th><th>Quantity</th></tr>
+                                </thead>
+                                <tbody id="OrderSuccessBody"></tbody>
+
+                            </table>
+                            <font>
+                                &nbsp;&nbsp; Order confirmation:it OK to get sales order order number but the details of the order should be available so
+                                the vendor can save it or printed in case they need to request the printshop for rush deliver,delay or just
+                                call about the order. they need to have this information on hand until the order is shipped. It should also
+                                indicate if freights is included or not.We need to add comment at end saying that once the order is
+                                receiver they have two weeks to complain for any missing or damage items.
+                            </font>
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <button id="btnReturnToTescoMain" type="button" class="btn btn-default" name="Cancel" style="margin:10px;" onclick="FunReturnToMainPage()">Return</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:100%;height:100%;margin:0px;padding:0px;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">ATTENTION</h4>
+                </div>
+                <div class="modal-body" style="align-content:center">
+                    <ul>
+                        <li><font>COMPOSITIONS HAVE NOT BEEN INTRODUCED</font></li>
+                        <li><font style="color:red">WE DON'T SERVE COMPOSITIONS LABELS.</font></li>
+                        <li><font>if correct press the button NEXT,otherwise press the button BACK</font></li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon glyphicon-chevron-left"></span>BACK</button>
+                    <button id="modalNext" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">NEXT<span class="glyphicon glyphicon glyphicon-chevron-right"></span></button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <script src="~/scripts/ECI/OriginalOrder_V3.js"></script>
+</body>
+</html>

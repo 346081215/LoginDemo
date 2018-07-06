@@ -1,0 +1,185 @@
+﻿@using Maxim.Model.BaseModel
+@model UserMode
+@{
+    ViewBag.Title = "SignChangePwd";
+    Layout = null;
+}
+
+<script type="text/javascript">
+        $(document).ready(init);
+        function init() {
+            $("#btnQuery").click(function () {
+                var password = $('#Password').val();
+                var Newpassword = $('#NewPassword').val();
+                if (password.length == 0) {
+                    //alert("旧密码不能为空");
+                    $("#labtxt").html("Old password can not empty.");
+                    showDiv();
+                    return;
+                }
+                if (Newpassword.length == 0) {
+                    //alert("新密码不能为空");
+                    $("#labtxt").html("New password can not empty.");
+                    showDiv();
+                    return;
+                }
+                if (Newpassword == password) {
+                    //alert("新旧密码不能相同");
+                    $("#labtxt").html("New and old passwords can not be the same.");
+                    showDiv();
+                    return;
+                }
+                GetOrder();
+            });
+            $("#btnCancel").click(function () {
+                parent.document.location.replace("/Maxim/Welcome");
+            });
+        }
+        function GetOrder() {
+            var urlPost = "/Maxim/SignChangePwdUpdate";
+            $.post(urlPost, $("form").serialize(), function (data, status) {
+                if (data.IsokPassword == true) {
+                    //alert("密码修改成功");
+                    $("#labtxt").html("Your new password changed success.");
+                    showDiv();
+                    parent.document.location.replace("/Home/Login");
+                } else {
+                    //alert("密码修改失败");
+                    $("#labtxt").html("Change password failed.");
+                    showDiv();
+                }
+            });
+        }
+      
+</script>
+@using (Html.BeginForm("SignChangePwd", "Maxim", FormMethod.Post))
+{
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box"  id="form_wizard_1">
+                <div class="portlet-title">
+
+                    <div class="caption">
+
+                        Settings  <span class="step-title"></span>
+
+                    </div>
+
+
+                </div>
+                
+                <div class="portlet-body form" style="height:500px;">
+                   
+                    <div action="#" class="horizontal-form" id="ChangePwd">
+                        <div class="row-fluid">
+                            <div class="span4">
+
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+
+                                    <div class="controls">
+                                      <p style="font-size:20px;margin-bottom: 50px;margin-top: 50px;"> Change Password</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+
+                            </div>
+                        </div>
+                        
+                        <div class="row-fluid">
+                            <div class="span4 span4_hide">
+                               
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName">UserName</label>
+                                    
+                                    <div class="controls">
+                                        @Html.TextBoxFor(x => x.UserName, new { @readonly = "readonly", @placeholder = "User name", @class = "m-wrap span10" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 span4_hide">
+
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4 span4_hide">
+
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+                                   
+                                    <div class="controls">
+                                        @Html.TextBoxFor(x => x.Password, new { @type = "password", @placeholder = "Old Password", @class = "m-wrap span10" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 span4_hide">
+
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+
+                                    <div class="controls">
+                                        @Html.TextBoxFor(x => x.NewPassword, new { @type = "password", @placeholder = "New Password", @class = "m-wrap span10" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+
+                            </div>
+                        </div>
+                        <div class="row-fluid" >
+                            <div class="span4 span4_hide">
+
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+
+                                    <div class="controls">
+                                        <button type="button" id="btnQuery" class="fl btn btn-default" style="width:80px;margin-left:0;">OK</button>
+                                        <button type="button" id="btnCancel" class="fr btn btn-default" style="border: 1px solid #D6D6D6;width:80px;">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4 span4_hide">
+
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+
+                            </div>
+                            <div class="span4">
+                                <div class="control-group">
+                                    <label class="control-label" for="firstName"></label>
+
+                                    <div class="controls">
+                                                <p>The password should contain at least 4 characters.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span4">
+
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </div>
+     </div>
+}
+

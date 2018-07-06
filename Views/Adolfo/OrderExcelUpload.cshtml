@@ -1,0 +1,86 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>OrderExcelUpload</title>
+    <script src="~/scripts/Adolfo/OrderExcelUpload.js"></script>
+    <script type="text/javascript">
+        $('input[id=UploadFile]').change(function () {
+            $('#photoCover').val($(this).val());
+        });
+    </script>
+</head>
+@using (Html.BeginForm("OrderUpload", "Adolfo", FormMethod.Post, new { enctype = "multipart/form-data", id = "FormUpload" }))
+{
+    <body>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box" id="form_wizard_1">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <em class="red-em" id="step">OrderUpload</em>
+                            <em class="gray-em" id="step1" style="display:none;"></em>
+                            <em class="gray-em" id="step2" style="display:none;"></em>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div id="Query">
+                            <h3 class="form-section" style="text-align:center"></h3>                            
+                            @*第七行*@
+                            <div class="row-fluid">
+                                <div class="span2 span2_hide">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"></label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4 ">
+                                    <span>File:</span>
+                                    <input id="photoCover" class="m-wrap span8" type="text" style="position:relative;">
+                                    <input id="UploadFile" type="file" style="display:none" name="UploadFile">
+
+                                </div>
+                                <div class="span4" style="margin-left: 10px;">
+                                    <a class="btn Browse" style="margin-top:0 !important;" onclick="$('input[id=UploadFile]').click();">Browse...</a>
+                                </div>
+
+
+                            </div>
+                            @*第八行*@
+                            <div class="row-fluid">
+                                <div class="span2 span2_hide">
+                                    <div class="control-group">
+                                        <label class="control-label" for="firstName"></label>
+                                        <div class="controls">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4 ">
+                                    <span></span>
+                                    <button type="button" id="btnUpload" name="Upload" class="btn btn-default">Upload</button>
+                                </div>
+                                <div class="span4 ">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="portlet-body" id="Query-Results">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </body>
+}
+</html>
+    

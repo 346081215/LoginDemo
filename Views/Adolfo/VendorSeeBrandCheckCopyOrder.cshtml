@@ -1,0 +1,121 @@
+﻿@using System.Data;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>VendorSeeBrandCheckCopyOrder</title>
+</head>
+<body>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="portlet box " id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <em class="red-em" id="step1">Repeat VendorSeeBrandCheckCopyOrder</em>
+                        <em class="gray-em" id="step2" style="display:none;">Query Results</em>
+                        <em class="gray-em" id="step_ViewDetail" style="display:none;">View Detail</em>
+                        <em class="gray-em" id="step_ViewArtwork" style="display:none;">View Artwork</em>
+                        <em class="gray-em" id="step_ViewShipOrder" style="display:none;">View Shipment</em>
+                        <em class="gray-em" id="step_ViewCopyOrder" style="display:none;">View Copy Order</em>
+
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div action="#" class="horizontal-form">
+                        <div id="Query-order">
+                            @*<tr role="row">
+                                <th class="center">订单状态</th>
+                                <th class="center">MaximNo</th>
+                                <th class="center">BrandID</th>
+                                <th class="center">PrintShopId</th>
+                                <th class="center">CustomerID</th>
+                                <th class="center">PrintShopId</th>
+                            </tr>*@
+                        </div>
+                        @*Table*@
+                        <div class="portlet-body" id="Query-Results" >
+                            <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                                <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="Order" aria-describedby="sample_2_info">
+                                    <thead>
+
+                                        @{
+                                            var data = ViewData["getDT"] as DataTable;
+                                            for (int i = 0; i < data.Columns.Count; i++)
+                                            {
+                                                var columname = data.Columns[i].ColumnName;
+                                            <th class="center">@columname</th>
+                                            }
+                                        }
+                                  
+                                    </thead>
+
+
+
+                                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                        @{
+                                           
+
+                                            if (data.Rows.Count > 0)
+                                            {
+
+                                                for (int i = 0; i < data.Rows.Count; i++)
+                                                {
+                                                    <tr>
+                                                        @for (int j = 0; j < data.Columns.Count; j++)
+                                                        {
+                                                            <td class="center">@data.Rows[i][j]</td>
+                                                        }
+
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            @*分页*@
+                            <div class="row-fluid" style="display:none">
+
+                                <div class="span4">
+                                    <div class="mypage">
+                                        <ul>
+                                            <li id="PageIndex"><<</li>
+                                            <li id="Pageup"><</li>
+                                            <li><input type="text" id="nowpage" value="1" /></li>
+                                            <li>/</li>
+                                            <li><i id="TotalPageCount">1</i></li>
+                                            <li id="Pagewown">></li>
+                                            <li id="PageLast">>></li>
+                                            <li><input id="pc" name="pc" type="hidden" value=1><input id="PageTotalCount" name="PageTotalCount" type="hidden" value=1></li>
+                                            <li id="PageGO">GO</li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                                @*导出Excel*@
+                                <div class="span4">
+                                    @*<button class="btn" type="submit" formaction="/Maxim/RepeatOrderExcel" id="btnExcel" name="btnExcel" style="border: 1px solid #D6D6D6;width: 170px;margin-left: 33%;margin-top: -2px;">Export to Excel<i class="m-icon-swapright m-icon-white"></i></button>*@
+                                    @*<button type="button" class="btn" id="btnQuery" style="border: 1px solid #D6D6D6;width: 170px;margin-left: -14%;">Apply Filters</button>*@
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                        @*ViewDetail*@
+                        <div class="portlet-body" id="Results-ViewDetail" style="display:none;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

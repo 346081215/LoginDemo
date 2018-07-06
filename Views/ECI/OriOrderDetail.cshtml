@@ -1,0 +1,675 @@
+﻿@using Maxim.Model.BaseModel
+@using System.Data;
+@model CarelableOrderUploadBind
+@{
+    ViewBag.Title = "OriOrderDetail";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>OriOrderDetail</title>
+    <link href="~/css/viewer.min.css" rel="stylesheet" />
+    <script src="~/scripts/ShowImgJS/jquery.min.js"></script>
+    <script src="~/scripts/ShowImgJS/viewer.min.js"></script>
+    <script src="~/scripts/ShowImgJS/viewer-jquery.min.js"></script>
+    <script src="~/Content/js/jquery.imgareaselect.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //$("#DDLShipmentType").change(function () {
+            //    if (this.selectedIndex == 2) {
+            //        $("#ExpressCompany").prop("disabled", "")
+            //    } else {
+            //        $("#ExpressCompany").val("")
+            //        $("#ExpressCompany").prop("disabled", "disabled")
+            //    }
+            //})
+
+            
+            $("#Waste").change(function () {
+                var bci = 1 + $("#Waste").val() / 100
+                var QtyTable = document.getElementById("OrderDetailCareLabel");
+                for (var i = 0; i < QtyTable.rows.length; i++) {
+                    debugger;
+                    var oldQtystr = QtyTable.rows[i].cells[15].innerHTML;
+                    oldQtystr = oldQtystr.substring(0, oldQtystr.length - 2);
+                    var oldQty = parseInt(oldQtystr);
+                    var newQty = Math.ceil(oldQty * bci)
+                    $("[name=ECIQty" + i + "]").val(newQty);
+                }
+            })
+            
+            $("#BilltoId").change(function () {
+                var data = {
+                    NewBillto: $("select[name='BilltoId']").val()
+                };
+
+                if ($("#BilltoId option:selected").text() == "--Please Select--") {
+                    $("#iBilltoAddress").val("");
+                    $("#iCurrency").val("")
+                    $("#iBilltoAddrContact").val("");
+                    $("#iBilltoAddrTel").val("");
+                }
+                else {
+                    var urlPost = "/OrderCommon/GetBilltoAccountInfobyAccountId?billtoId=" + $("select[name='BilltoId']").val();
+                    $.post(urlPost, data, function (data, status) {
+                        $("#iBilltoAddress").val(data.ContactAddress);
+                        $("#iCurrency").val(data.CurrencyId)
+                        $("#iBilltoAddrContact").val(data.ContactPerson);
+                        $("#iBilltoAddrTel").val(data.ContactTelephone);
+                    });
+                }
+            });
+            $("#ShiptoId").change(function () {
+                var data = {
+                    NewBillto: $("#ShiptoId").val()
+
+                };
+
+                if ($("#ShiptoId option:selected").text() == "--Please Select--") {
+                    $("#ShipAddrId").html("");
+                    $("#ShipAddrId").hide();
+                    $("#ShipAddrId").show();
+                    $("#iShipAddrContact").val("");
+                    $("#iShipAddrTel").val("");
+                    $("#iShipAddrCountry").val("");
+                } else {
+                    $("#ShipAddrId").html("");
+                    $("#ShipAddrId").hide();
+                    $("#ShipAddrId").show();
+                    $("#iShipAddrContact").val("");
+                    $("#iShipAddrTel").val("");
+                    $("#iShipAddrCountry").val("");
+                    var urlPost = "/OrderCommon/GetShipAddressInforlistbyShipToId?ShipToId=" + $("select[name='ShiptoId']").val();
+                    $.post(urlPost, data, function (data, status) {
+                        $.each(data, function (i, item) {
+                            $("#ShipAddrId").append("<option value='" + item.ShipToAddressId + "'>" + item.oos_address + "</option>");
+                        });
+                        var _seq = 0;
+                        $.each(data, function (i, item) {
+                            if (_seq == 0) {
+                                $("#ShipAddrId").val(item.ShipToAddressId);
+                                $("#iShipAddrContact").val(item.oos_contactname);
+                                $("#iShipAddrTel").val(item.oos_contacttel);
+                                $("#iShipAddrCountry").val(item.oos_country);
+                                _seq++;
+                            }
+                        });
+                    });
+                }
+
+
+            })
+            $("#ShipAddrId").change(function () {
+                if ($("#ShipAddrId").val() == "" || $("#ShipAddrId").val() == null) {
+                    $("#iShipAddrContact").val("");
+                    $("#iShipAddrTel").val("");
+                    $("#iShipAddrCountry").val("");
+                } else {
+                    var data = {
+                        _shipaddressId: $(this).val()
+                    };
+                    var urlPost = "/OrderCommon/GetShipAddressInfobyShipAddressId?ShippAddrId=" + $(this).val();
+                    $.post(urlPost, data, function (data, status) {
+                        //$("textarea[name='ShipAddress']").val(data.oos_address);
+                        $("#iShipAddrContact").val(data.oos_contactname);
+                        $("#iShipAddrTel").val(data.oos_contacttel);
+                        $("#iShipAddrCountry").val(data.oos_country);
+                    });
+                }
+            });
+
+            $("#NexttoCare").click(function () {
+                $("[name='Stick']").attr("disabled", "disabled")
+                $("#GC_CareLabel").attr("disabled", "disabled")
+                $("[name='cart']").attr("disabled", "disabled")
+                if ($("#GC_CareLabel").is(checked)) {
+                    $("#EditFiberCareInstr").show();
+                } else {
+                    $("#NoneLabelList").show();
+                }
+
+                //var count = 0;
+                //$("[name='Stick']").each(function () {
+                //    if (this.checked) {
+                //        count++;
+                //    }
+                //})
+                //if (count > 0) {
+                //    $("#EditFiberCareInstr").show();
+                //} else {
+                //    $("#NoneLabelList").show();
+                //}
+            })
+            $("#NexttoCart").click(function () {
+
+                var count = 0;
+                $("[name='Cart']").each(function () {
+                    if (this.checked) {
+                        count++;
+                    }
+                })
+                if (count > 0) {
+                    $("#NoneLabelList").show();
+                } else {
+                    $("#NoneLabelList").show();
+                }
+            })
+        })
+        function FunResetQty() {
+            var QtyTable = document.getElementById("OrderDetailCareLabel");
+            for (var i = 0; i < QtyTable.rows.length; i++) {
+                var oldQtystr = QtyTable.rows[i].cells[15].innerHTML;
+                oldQtystr = oldQtystr.substring(0, oldQtystr.length - 2);
+                var oldQty = parseInt(oldQtystr);
+                $("[name=ECIQty" + i + "]").val(oldQty);
+            }
+        }
+        function FunClearQty() {
+            var QtyTable = document.getElementById("OrderDetailCareLabel");
+            for (var i = 0; i < QtyTable.rows.length; i++) {
+                $("[name=ECIQty" + i + "]").val("0");
+            }
+        }
+        function FunApply(index) {
+            var bci = $("#bcSel" + index).val();
+            var oldQtystr = $("#ECIQty" + index).text();
+            oldQtystr = oldQtystr.substring(0, oldQtystr.length - 2);
+            var oldQty = parseInt(oldQtystr);
+            var newQty = Math.ceil(oldQty * bci)
+            $("[name=ECIQty" + index + "]").val(newQty);
+        }
+        //添加洗语
+        function funcAddCommCustUsedClick() {
+
+            var SelectCommCustUsed = $("#WashcareID option:selected").text();
+            if (SelectCommCustUsed=="--Please Select--") {
+                $("#labtxt").html("Please Select Washcare Instructions");
+                showDiv();
+                return;
+            }
+
+            var Symbol = $("#WashcareID").val().split('⊥');
+            if (SelectCommCustUsed == "") {
+                $("#labtxt").html("Please select Additional Washcare Instructions.");
+                showDiv();
+                return false;
+            }
+
+
+
+            var trList = $(".LineWashCare").children("tr")
+
+            var trList_length = $(".LineWashCare").children("tr").length;
+            if (trList_length > 4) {
+
+                $("#labtxt").html("Cannot exceed 5 items.");
+                showDiv();
+                return false;
+
+            }
+            for (var i = 0; i < trList.length; i++) {
+                var tdArr = trList.eq(i).find("td");
+                var history_income_type = tdArr.eq(0).text();
+
+                if (history_income_type == SelectCommCustUsed) {
+                    $("#labtxt").html("Cannot add repeatedly.");
+                    showDiv();
+                    return false;
+                }
+                else {
+
+                }
+            }
+
+
+            var Html = ""
+            Html += "<tr>";
+            Html += "<td class='center'>" + SelectCommCustUsed + "</td>";
+            Html += "<td class='center'><Button class='btn btn-default' onclick='return Remove(this);'>Remove</Button></td>";
+            debugger;
+            if (Symbol.length > 1) {
+                Html += '<td><input type="hidden" value="' + Symbol[0]+ '"/><img  class="" src="../../eciWashImg/' + Symbol[1] + '.jpg" width="40" height="40"  value="' + Symbol[0] + '" type="imgpro"/><td>';
+            } else {
+                Html += "<td><input type='hidden' value=''/><td>";
+            }
+            Html += "</tr>";
+            $("#Item tbody").append(Html);
+            $("#Item").css("display", "block");
+            $("#WashcareID").val("");
+
+        }
+
+        //成功页面  返回到原始订单查询页面
+        function FunReturnToMainPage() {
+            showloading();
+            $.ajax({
+                url: "/ECI/OriginalOrderQuery?FormatId=FMT003",
+                dataType: "html",
+                type: "get",
+                success: function (html) {
+                    $("#content").html(html);
+                    hideloading();
+                }
+            })
+
+        }
+    </script>
+</head>
+<body>
+    <form id="frmOrderQuery" method="post" enctype="multipart/form-data">
+        @RenderPage("~/Views/Shared/PopDiv.cshtml")
+        @RenderPage("~/Views/Shared/loading.cshtml")
+        <input id="hidfilelogid" type="hidden" value="@ViewBag.FileLogid" />
+        <input id="order_number" type="hidden" value="@ViewBag.PO" />
+        <div id="Carepage-inner">
+            <div id="careLabelBody" class="main_body">
+                @* 选择开票客户 出货地址 *@
+                <div class="clearfix main_form" id="CareLabel-step2" style="width:100%">
+                    <div id="Body_header" class="clearfix ron">
+                        <div class="clearfix order-y" style="margin-top:3px;border:solid 1px #ec008c;padding-bottom:11px;margin-bottom: 3px;display:none;">
+                            <p><img src="~/images/proImages/Landmark/AEO logo.jpg" style="width:400px;margin-left:20px;margin-top:20px;margin-bottom:20px" /></p>
+                            <span style="width:200px;margin-left:20px;margin-top:5px">Garment's Final Destination</span>:
+                            @*@Html.DropDownListFor(x => x._Shipment, Model.Shipment)*@
+
+                        </div>
+                        <div class="clearfix order-y" style="border:solid 1px #ec008c">
+                            <ul class="main_left">
+                                <li>
+                                    <span>Print Shop</span>:
+                                    @Html.DropDownListFor(x => x.PSID, Model.PSlist)
+                                </li>
+                                <li>
+                                    <span>Billing To</span>:
+
+                                    @Html.DropDownListFor(x => x.BilltoId, Model.BilltoList)
+                                </li>
+                                <li style="width:500px">
+                                    <span>Billing Address</span>:
+                                    <input id="iBilltoAddress" name="iBilltoAddress" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddress " />
+                                </li>
+                                <li>
+                                    <span>Contact</span>:
+                                    <input id="iBilltoAddrContact" name="iBilltoAddrContact" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddrContact " />
+                                </li>
+                                <li>
+                                    <span>Tel</span>:
+                                    <input id="iBilltoAddrTel" name="iBilltoAddrTel" class="m-wrap span8" readonly="readonly" type="text" value="@Model.BilltoAddrTel " />
+                                </li>
+                                <li>
+                                    <span>Shipment Type<font color="red">*</font></span>:
+                                    @Html.DropDownListFor(x => x._ShipmentType, Model.ShipmentType, new { @id = "DDLShipmentType" })
+                                </li>
+                                <li style="display:none">
+                                    <span>Freight Company<font color="red">*</font></span>:
+                                    @Html.DropDownListFor(x => x._ExpressCompany, Model.ExpressCompany, new { @id = "ExpressCompany", @disabled = "disabled" })
+                                </li>
+                                <li>
+                                    <span style="width:130px;">Comments</span>:
+                                    <input type="text" name="Comments" id="Comments" />
+                                </li>
+                            </ul>
+                            <ul class="main_right">
+                                <li>
+                                    <span>Currency</span>:
+                                    <input id="iCurrency" name="iCurrency" class="m-wrap span8" readonly="readonly" type="text" value="@Model.Currency" />
+                                </li>
+                                <li style="width:500px">
+                                    <span>Ship To</span>:
+                                    @Html.DropDownListFor(x => x.ShiptoId, Model.ShiptoList)
+                                </li>
+                                <li>
+                                    <span style="margin-top:10px;">Shipping Address</span>:
+                                    @Html.DropDownListFor(x => x.ShipAddrId, Model.ShipAddrList)
+                                </li>
+                                <li>
+                                    <span>Contact</span>:
+                                    <input id="iShipAddrContact" name="iShipAddrContact" class="m-wrap span8" readonly="readonly" type="text" value="@Model.ShipAddrContact" />
+                                </li>
+                                <li>
+                                    <span>Tel</span>:
+                                    <input id="iShipAddrTel" name="iShipAddrTel" class="m-wrap span8" readonly="readonly" type="text" value="@Model.ShipAddrTel" />
+                                </li>
+
+                                <li>
+                                    <span>Country</span>:
+                                    <input id="iShipAddrCountry" name="iShipAddrCountry" class="m-wrap span8" readonly="readonly" type="text" value="@Model.Country" />
+                                </li>
+                                <li>
+                                    <span style="width:130px;">Made In<font color="red">*</font></span>:
+                                    @Html.DropDownListFor(x => x.madein, Model.MadeInList)
+                                </li>
+                            </ul>
+                        </div>
+                        <fieldset id="Page2-Barcodeitem" style="border:1px solid #ec008c; width:auto">
+                            <legend style="width:auto;">Barcode&Stick item list:</legend>
+                            <div class="clearfix main_table" id="" style="width:80%;">
+                                <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                                    <table id="OrdTable" class="table table-striped table-responsive">
+                                        <tr><th></th><th>Product Sample</th><th>item</th></tr>
+                                        <tr><td><input class="m-wrap span8" data-val="true" id="Stick" name="Stick" type="radio" value="true"></td><td></td><td></td></tr>
+                                        <tr><td><input class="m-wrap span8" data-val="true" id="Hangtag" name="Stick" type="radio" value="true"></td><td></td><td></td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset id="Page2-Carelabelitem" style="border:1px solid #ec008c; width:auto;">
+                            <legend style="width:auto;">CareLabel item list:</legend>
+                            <div class="clearfix main_table" id="" style="width:80%;">
+                                <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                                    <table id="OrdTable" class="table table-striped table-responsive">
+                                        <tr><th></th><th>Product Sample</th><th>item</th></tr>
+                                        <tr><td><input class="m-wrap span8" data-val="true" id="GC_CareLabel" type="checkbox" value="true"></td><td></td><td></td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset id="Page2-Sizelabel" style="border:1px solid #ec008c;width:auto;">
+                            <legend style="width:auto;">SizeLabel list:</legend>
+                            <div class="clearfix main_table" id="" style="width:80%;">
+                                <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                                    <table id="OrdTable" class="table table-striped table-responsive">
+                                        <tr><th></th><th>Product Sample</th><th>item</th></tr>
+                                        <tr><td><input class="m-wrap span8" data-val="true" id="cart1" name="cart" type="checkbox" value="true"></td><td></td><td></td></tr>
+                                        <tr><td><input class="m-wrap span8" data-val="true" id="cart2" name="cart" type="checkbox" value="true"></td><td></td><td></td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </fieldset>
+                        @* Original Query Result *@
+                        <div class="clearfix main_table" id="page-inner2" style="display:none">
+                            <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                                <table id="OrdTable" class="table table-striped table-responsive">
+                                    <thead>
+                                        <tr class="head">
+                                            <th class="center">Line</th>
+                                            @*<th class="center">OrdStatus</th>*@
+                                            <th style="display:none" class="center">Venture</th>
+                                            <th class="center" style="display:none">VendorID</th>
+                                            <th style="display:none" class="center">Department</th>
+                                            <th class="center">PO_Number</th>
+                                            <th style="display:none" class="center">Model_not_used</th>
+                                            <th style="display:none" class="center">COLOR_not_used</th>
+                                            <th class="center">Department_not_used</th>
+                                            <th class="center">Family</th>
+                                            <th class="center">Bar</th>
+                                            <th class="center">Size_Field_not_used</th>
+                                            <th class="center">EANI_EAN</th>
+                                            <th class="center">Manufacturer</th>
+                                            <th class="center">PVP</th>
+                                            <th class="center">Currency</th>
+                                            <th class="center">Amount_qty</th>
+                                            <th class="center">QTY<br /><button type="button" onclick="FunResetQty()">Reset</button><button type="button" onclick="FunClearQty()">Clear</button></th>
+                                            <th class="center">Wastage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="OrderDetail" id="OrderDetailCareLabel">
+                                        @{
+                                            var dt = Model.EciDetail as DataTable;
+                                            for (int i = 0; i < dt.Rows.Count; i++)
+                                            {
+                                                string name = "ECIQty" + i;
+                                                string Selid = "bcSel" + i;
+                                                string QTYstr = @dt.Rows[i]["Amount_qty"].ToString();
+                                                int QTY = int.Parse(QTYstr.Substring(0, QTYstr.Length - 2));
+                                                <tr>
+                                                    <td>@(i + 1)</td>
+                                                    @*<td>@dt.Rows[i]["OrdStatus"].ToString()</td>*@
+                                                    <td style="display:none">@dt.Rows[i]["Venture"].ToString()</td>
+                                                    <td style="display:none">@dt.Rows[i]["VendorID"].ToString()</td>
+                                                    <td style="display:none">@dt.Rows[i]["Department"].ToString()</td>
+                                                    <td>@dt.Rows[i]["PO_Number"].ToString()</td>
+                                                    <td style="display:none">@dt.Rows[i]["Model_not_used"].ToString()</td>
+                                                    <td style="display:none">@dt.Rows[i]["COLOR_not_used"].ToString()</td>
+                                                    <td>@dt.Rows[i]["Department_not_used"].ToString()</td>
+                                                    <td>@dt.Rows[i]["Family"].ToString()</td>
+                                                    <td>@dt.Rows[i]["Bar"].ToString()</td>
+                                                    <td>@dt.Rows[i]["Size_Field_not_used"].ToString()</td>
+                                                    <td>@dt.Rows[i]["EANI_EAN"].ToString()</td>
+                                                    <td>@dt.Rows[i]["Manufacturer"].ToString()</td>
+                                                    <td>@dt.Rows[i]["PVP"].ToString()</td>
+                                                    <td>@dt.Rows[i]["Currency"].ToString()</td>
+                                                    <td id=@name>@dt.Rows[i]["Amount_qty"].ToString()</td>
+                                                    <td><input type="number" name=@name min="0" value=@QTY style="width:70px;" /></td>
+                                                    <td>
+                                                        <select style="width:144px" id=@Selid>
+                                                            <option value="1">--Please Select--</option>
+                                                            <option value="1.05">5%</option>
+                                                            <option value="1.1">10%</option>
+                                                            <option value="1.15">15%</option>
+                                                        </select><button type="button" onclick="FunApply(@i)">Apply</button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+
+
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <button id="NexttoCare" type="button">Next</button><button id="backtoOriOrder" type="button">Back</button>
+                        <hr style="height:1px;border:none;border-top:1px solid #ec008c;width:100%" />
+                    </div>
+                </div>
+
+                <div class="ron" id="EditFiberCareInstr" style="display:none;">
+                    <div class="page-inner" style="background-color:white">
+                        <div class="main_body">
+                            @* 洗标选择成分  *@
+                            <div id="divMadeInFiber" class="clearfix main_form">
+                                <div class="clearfix main_form">
+                                    <div class="clearfix">
+                                        <ul class="fl main_left">
+                                            <li>
+                                            </li>
+                                            <li>
+                                                <span style="margin-top:10px;">Composition for</span>:
+                                                @Html.DropDownListFor(x => x.CategoryId, Model.CategoryList)
+                                                <button type="button" id="btnAdd" class="btn btn-default" value="Add" style="padding:5px 12px; margin:0;display:none;" onclick="return funcAddorUpdateTableFiberComp();">Add</button>
+                                                <input id="txtCategoryAdd" name="txtCategoryAdd" value="" type="text" style="display:none">
+
+                                            </li>
+                                        </ul>
+
+                                        <ul class="fl main_right">
+                                            <li></li>
+                                            <li>
+                                                <span style="margin-top:10px !important">Fiber:</span>
+                                                <input id="ComPercent" name="ComPercent" value="" type="text" style="margin-left:-90px !important;width:36px;">%
+                                                @Html.DropDownListFor(x => x.FiberID, Model.TescoFiberList)
+                                                <button type="button" id="btnAdd" class="btn btn-default" value="Add" style="padding:5px 12px; margin-top:-10px;" onclick="return funcAddorUpdateTableFiberComp();">Add</button>
+                                            </li>
+
+                                        </ul>
+                                        <span style="width:130px;">Made In<font color="red">*</font></span>:
+                                        @Html.DropDownListFor(x => x.madein, Model.MadeInList)
+                                    </div>
+
+                                    <div class="col-sm-6 col-xs-12" id="Items" style="width:50%;">
+                                        <div class="clearfix main_table">
+                                            <table id="LineFiberComposition" class="table table-striped table-responsive" style="border: 1px solid #c6c6c6;">
+                                                <thead>
+                                                    <tr class="head">
+                                                        <th class="center">ID</th>
+                                                        <th class="center">Composition for(Category)</th>
+                                                        <th class="center">%</th>
+                                                        <th class="center">Fiber</th>
+                                                        <th class="center" style="width: 1px;"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="fiberDetailCareLabel"></tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <hr style="height:1px;border:none;border-top:1px solid #ec008c;width:100%" />
+                                    <div class="clearfix" style="width:60%;padding-left:25px;">
+                                        <span style="font-size:14px;">Additional Washcare Instructions：</span>
+                                        @Html.DropDownListFor(x => x.WashcareID, Model.WashcareList)
+                                        <button type="button" id="btnAddCommCustUsed" class="btn btn-default" value="Add" style="padding:5px 12px;margin-top:-10px;" onclick="return funcAddCommCustUsedClick();">Add</button>
+                                    </div>
+                                    <div class="col-sm-6 col-xs-12" id="Item" style="display:none;">
+                                        <div class="clearfix main_table">
+                                            <table id="LineWashCare" class="table table-striped table-responsive">
+                                                <thead>
+                                                    <tr class="head">
+                                                        <th class="center">Washing Instructions</th>
+                                                        <th></th>
+                                                        <th>Img</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="LineWashCare"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <hr style="height:1px;border:none;border-top:1px solid #ec008c;width:100%" />
+
+                                    @*洗标选择Washing Instructions  未启用 *@
+                                    <div id="divWashCare" class="clearfix main_form" style="display:none;">
+
+                                        <div class="clearfix" style="height:40px;">
+                                            <b style="font-size:14px;">Astm Washcare Symbols</b>
+                                        </div>
+                                        <div class="clearfix" style="margin-left: 2%;">
+                                            <table border="1" style="border:1px inset #000000">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Type</th>
+                                                        <th>SelectImg</th>
+                                                        <th>ImgList</th>
+                                                    </tr>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><span>Washing</span></td>
+                                                        <td align="center"><img id="imgwash" src="" value="" width="40" height="40" /></td>
+                                                        <td id="tdwash"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Bleaching</td>
+                                                        <td align="center"><img id="imgbleach" src="" value="" width="40" height="40" /></td>
+                                                        <td id="tdbleach"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Drying</td>
+                                                        <td align="center"><img id="imgdry" src="" value="" width="40" height="40" /></td>
+                                                        <td id="tddry"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>lroning</td>
+                                                        <td align="center"><img id="imglron" src="" value="" width="40" height="40" /></td>
+                                                        <td id="tdlron"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Professional cleaning</td>
+                                                        <td align="center"><img id="imgpro" src="" value="" width="40" height="40" /></td>
+                                                        <td id="tdpro"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        @*<div class="clearfix main_submit">
+
+                                                <button type="button" id="btnBackToFiber" class="btn btn-default" value="Back" onclick="return funcBackToShowFiber();">Back</button>
+                                            </div>*@
+                                    </div>
+
+
+                                    <div class="clearfix main_submit">
+                                        @*<button type="button" id="btnPreview" class="btn" value="Preview" style="border: 1px solid #D6D6D6;" onclick="return funcSaveOriOrder(this);">Preview</button>
+                                        <button type="button" id="btnSaveFiberAndCare" class="btn btn-default" value="Save" onclick="return funcSaveOriOrder(this);">Submit</button>
+                                        <button type="button" id="btnBackToUpload" class="btn btn-default" value="Back" onclick="return funcBackToCare();">Back</button>*@
+
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="hfWashCode" name="hfWashCode" type="hidden" value="">
+                            <div id="divWashImage" style="display:none;position:absolute;z-index:1001"><img src="#" alt="" style="height:auto;width:auto;" /></div>
+
+                            <div id="PreviewImg" style="display:none;">
+                                <ul id="dowebok"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="NexttoCart" type="button">Next</button><button id="BacktoCare" type="button">back</button>
+                </div>
+                <hr style="height:1px;border:none;border-top:1px solid #ec008c;width:100%" />
+
+                <div class="ron" id="NoneLabelList" style="display:none;">
+                    <fieldset style="border:1px solid #ec008c">
+                        <legend>None Variable Label List:</legend>
+                        <div class="clearfix main_table" id="">
+                            <div id="Gridview" class="table table-striped table-bordered table-hover table-full-width dataTable" role="grid">
+                                <table id="OrdTable" class="table table-striped table-responsive">
+                                    <tr><th></th><th>Quantity</th><th>Product Sample</th><th>item</th></tr>
+                                    <tr><td><input class="m-wrap span8" data-val="true" id="GC_CareLabel" type="checkbox" value="true"></td><td></td><td></td><td></td></tr>
+                                    <tr><td><input class="m-wrap span8" data-val="true" id="GC_CareLabel" type="checkbox" value="true"></td><td></td><td></td><td></td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        <ul class="main_left">
+                            <li style="width:248px;"><input class="m-wrap span2" data-val="true"  type="checkbox" value="true"><font style="float:none;width:auto;">Is need place picking label?</font></li>
+                            <li><input class="m-wrap span2" data-val="true"  type="checkbox" value="true"><font>Is need place carton label?</font></li>
+                        </ul>
+                    </fieldset>
+                </div>
+                <div id="submitOrder" style="display:none;">
+                    <button id="submit" type="button">Submit</button><button id="Back" type="button">Back</button>
+                </div>
+
+            </div>
+        </div>
+        @* 提交成功  *@
+        <div id="panSuccess" style="display:none;">
+            <div style="border: #ec008c solid 1px;">
+                <span id="lblRemark" style="margin-left: 25px;"> <i>Your Maxim No. is :</i><b id="ECIOrderNo" style="top:0;font-size: 20px;color: #ff0015;"></b> </span>
+                <span id="lblOrderNO"></span>
+                <br>
+                <br>
+                <div>
+                    <div id="pan_en">
+                       <em style="font-size:24px;">Ordering Successfully! </em>
+                         You order information is:
+                        <ul>
+                            <li>
+
+                            </li>
+                            <li>
+
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <div id="pan_zh" style="display: none;">
+                        <ul style="list-style: none; width: 960px; padding: 0px; margin: 0px;">
+                            <li>1.关于barcode产品，请确认画稿无误后再提交订单。我司车间会在您提交订单之后收到订单并会直接安排生产。 </li>
+                            <li>&nbsp;&nbsp; 若订单已生产是无法取消或做任何更改。 </li>
+                            <li>2.付款方式：款到发货。收到您的货款后，我司会尽快为您发货。</li>
+                            <li>
+                                3.若您对我们业务人员的服务有任何意见或建议，或对我司产品有任何疑问，请联系我们：<a href="mailto: fo26.as-1@maxim-group.com" style="color:blue">
+                                    fo26.as-1@maxim-group.com
+                                </a>. 您的反馈对我们来说至关重要！
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+                <br>
+
+                <button id="btnReturnToTescoMain" type="button" class="btn btn-default" name="Cancel" style="margin:10px;" onclick="FunReturnToMainPage()">Return</button>
+            </div>
+
+        </div>
+
+
+
+    </form>
+</body>
+</html>

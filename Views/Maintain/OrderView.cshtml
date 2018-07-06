@@ -1,0 +1,241 @@
+﻿@using System.Data;
+@{
+    Layout = null;
+}
+<script src="~/scripts/Maintain/OrderView.js"></script>
+<style type="text/css" >
+    #mypage_MX li {
+    cursor:pointer;
+    }
+    .MLNCP {
+    border-left: 5px solid black;
+    border-top: 5px solid black;
+    border-bottom: 1px solid black;
+     padding-top: 5px;
+    margin-top: 12px;
+    }
+    #span_cp {
+    background-color:black;
+    font-size:19px;
+    color:white;
+    }
+</style>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="portlet box " id="form_wizard_1">
+
+            <div class="portlet-body form">
+                <div class="portlet-body" id="ProductTplQuery-Results" style="display:block;">
+                    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                        <div class="MLNCP">
+                            <span id="span_cp">目录内产品：</span>
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="center">Product</th>
+                                        <th class="center">订单产品的项次号</th>
+                                        <th class="center">ERP料号</th>
+                                        <th class="center">原始数量</th>
+                                        <th class="center">正式数量（收钱数量）</th>
+                                        <th class="center">已出货数量</th>
+                                        <th class="center">此订单产品取消理由</th>
+                                        <th class="center">客人画稿</th>
+                                        <th class="center">生产画稿</th>
+                                        <th class="center">此订单产品的单价</th>
+                                        <th class="center">此订单产品的金额</th>
+                                        <th class="center">此订单产品的美元单价</th>
+                                        <th class="center">此订单产品的美元金额</th>
+                                        <th class="center">此订单的特别要求记录的币别</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all">
+                                    @{
+                                        var data = ViewData["Product"] as DataTable;
+
+                                        if (data.Rows.Count > 0)
+                                        {
+
+                                            for (int i = 0; i < data.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    @for (int j = 0; j < data.Columns.Count; j++)
+                                                    {
+                                                        if (j == 7 || j == 8)
+                                                        {
+                                                            <td class="center"><a href="@data.Rows[i][j]" target="_blank">@data.Rows[i][j]</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="center">@data.Rows[i][j]</td>
+                                                        }
+
+                                                    }
+
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                        <div class="MLNCP">
+                            <span id="span_cp">工单信息：</span>
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="center">工单号</th>
+                                        <th class="center">状态</th>
+                                        <th class="center">最后打印时间</th>
+                                        <th class="center">工单接单时间</th>
+                                        <th class="center">有明细笔数</th>
+                                        <th class="center">Product</th>
+                                        <th class="center">ERP料号</th>
+                                        <th class="center">原始数量</th>
+                                        <th class="center">正式数量（收钱数量）</th>
+                                        <th class="center">已出货数量</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all">
+                                    @{
+                                        var data_WorkOrder = ViewData["WorkOrder"] as DataTable;
+
+                                        if (data_WorkOrder.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i < data_WorkOrder.Rows.Count; i++)
+                                            {
+                                                <tr>
+                                                    @for (int j = 0; j < data_WorkOrder.Columns.Count; j++)
+                                                    {
+                                                        <td class="center">@data_WorkOrder.Rows[i][j]</td>
+                                                    }
+
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                        <div class="MLNCP">
+                            <span id="span_cp">产品明细：</span>
+                            <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                <thead>
+
+                                    <tr role="row">
+                                        <th class="center">查看操作</th>
+                                        @*<th class="center"></th>*@
+                                        @{ DataTable data_OrderProductItem = ViewData["OrderProductItem"] as DataTable;
+                                            foreach (DataColumn col in data_OrderProductItem.Columns)
+                                            {
+                                                <th class="center">@col.ColumnName</th>
+                                            }
+
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody class="OrderDetail" id="OrderDetail_MX" role="alert" aria-live="polite" aria-relevant="all">
+                                    @*@{
+                                            DataTable data_OrderProduct = ViewData["OrderProductItem"] as DataTable;
+
+                                            if (data_OrderProduct.Rows.Count > 0)
+                                            {
+                                                for (int i = 0; i < data_OrderProduct.Rows.Count; i++)
+                                                {
+                                                    <tr>
+                                                        @for (int j = 0; j < data_OrderProduct.Columns.Count; j++)
+                                                        {
+                                                            <td class="center">@data_OrderProduct.Rows[i][j]</td>
+                                                        }
+
+                                                    </tr>
+                                                }
+                                            }
+                                        }*@
+                                </tbody>
+
+                            </table>
+                            <div class="span4">
+                                <div class="mypage">
+                                    <ul id="mypage_MX">
+                                        <li id="PageIndex_MX"><<</li>
+                                        <li id="Pageup_MX"><</li>
+                                        <li><input type="text" id="nowpage_MX" value="1" /></li>
+                                        <li>/</li>
+                                        <li><i id="TotalPageCount_MX">0</i></li>
+                                        <li id="Pagewown_MX">></li>
+                                        <li id="PageLast_MX">>></li>
+                                        <li id="PageGO_MX">GO</li>
+                                        <li><input id="pc_MX" name="pc" type="hidden" value=1><input id="PageTotalCount_MX" name="PageTotalCount" type="hidden" value=1></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                        <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail_O_OrderProductItemVarData" aria-describedby="sample_2_info">
+                            <thead id="OrderDetail_O_OrderProductItemVarData">
+
+                            </thead>
+
+                        </table>
+
+                    </div>
+
+                    
+                        <div class="MLNCP">
+                            <div id="Gridview" class="dataTables_wrapper form-inline" role="grid">
+                                <span id="span_cp">出货单：</span>
+                                <table class="table table-striped table-bordered table-hover table-full-width dataTable" id="OrderDetail" aria-describedby="sample_2_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="center">名称</th>
+                                            <th class="center">出货公司</th>
+                                            <th class="center">出货公司地址</th>
+                                            <th class="center">	出货公司联系人</th>
+                                            <th class="center">出货公司联系电话</th>
+                                            <th class="center">出货客户编号</th>
+                                            <th class="center">	出货状态</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="OrderDetail" role="alert" aria-live="polite" aria-relevant="all">
+                                        @{
+                                            var data_ShipOrder = ViewData["ShipOrder"] as DataTable;
+
+                                            if (data_ShipOrder.Rows.Count > 0)
+                                            {
+                                                for (int i = 0; i < data_ShipOrder.Rows.Count; i++)
+                                                {
+                                                    <tr>
+                                                        @for (int j = 0; j < data_ShipOrder.Columns.Count; j++)
+                                                        {
+                                                            <td class="center">@data_ShipOrder.Rows[i][j]</td>
+                                                        }
+
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+
+
+
+
+
+
+                </div>
+                <div id="ProductTplEditView" style="display:none"></div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

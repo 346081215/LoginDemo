@@ -1,0 +1,232 @@
+﻿@using Resources
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>OrderQueryForVendor</title>
+    <link href="../css/theme-cosmo.css" rel="stylesheet" />
+    <link href="../css/site.css" rel="stylesheet" />
+    <link href="../css/GrapeCity.ActiveReports.Viewer.Html.css" rel="stylesheet" />
+    <link href="../css/bootstrap.css" rel="stylesheet" />
+    <script src="../scripts/GrapeCity.ActiveReports.Viewer.Html.js"></script>
+    <script type="text/javascript">
+       function refresh()
+       {
+           $("#inProgress").css("display", "block");
+           $("#SearchActive").removeAttr("disabled");
+           $(".sidebar").css("display", "none");
+           if ($("#Language").html() == "zh-CN") {
+               $("div[pname='PrintShop']").prevAll().text("生产地:");
+               $("div[pname='MaximNO']").prevAll().text("美声订单号:");
+               $("div[pname='CustomerPO']").prevAll().text("客户PO号:");
+               $("div[pname='CustomerNO']").prevAll().text("客户代号:");
+               $("div[pname='OrderDateStart']").prevAll().text("下单时间:");
+               $("div[pname='OrderStatus']").prevAll().text("订单状态:");
+               $("div[pname='ETD']").prevAll().text("订单预交日:");
+               $("div[pname='Style']").prevAll().text("款式:");
+               $("#refresh-button").text("查询");
+           }
+           else {
+               $("div[pname='PrintShop']").prevAll().text("Print Shop:");
+               $("div[pname='MaximNO']").prevAll().text("Maxim#:");
+               $("div[pname='CustomerPO']").prevAll().text("Customer PO#:");
+               $("div[pname='CustomerNO']").prevAll().text("Vendor#:");
+               $("div[pname='OrderDateStart']").prevAll().text("Order Date:");
+               $("div[pname='OrderStatus']").prevAll().text("Order Status:");
+               $("div[pname='ETD']").prevAll().text("ETD:");
+               $("div[pname='Style']").prevAll().text("Style:");
+               $("#refresh-button").text("View report");
+           }
+           if ($(".sidebar").css("display") == "block")
+           {
+               $("#Responsetype").css("height", "78%");
+               $("#inProgress").css("height", "660px");
+           }
+           else {
+               $("#Responsetype").css("height", "100%");
+               $("#inProgress").css("height", "700px");
+           }
+       }
+    </script>
+</head>
+<body>
+    <div>
+        @{
+            if (ViewBag.CustomerNO.ToString().Contains("%"))
+            {
+                <label id="CustomerNo12">帐号未设置所属客户,无法访问,请设置所属客户后重新登陆系统.</label>
+                <label id="CustomerNo13">(The account has not been set up to the customer, can not be accessed, please set up the customer tore login the system.)</label>
+                return;
+            }
+        }
+        <label id="CustomerNo" style="display:none;">@ViewBag.CustomerNO</label>
+        <label id="Language" style="display:none;">@ViewBag.Language</label>
+        <label id="RoleGroupName" style="display:none">@ViewBag.RoleGroupName</label>
+        <label id="EnableBigVndFunc" style="display:none">@ViewBag.flag</label>
+        <label id="CustomerId" style="display:none">@ViewBag.CustomerId</label>
+    </div>
+    <form action="/Basicxx/VendorOrderTracking?_=1492414248739" method="post">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="portlet box " id="form_wizard_1">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <em class="red-em" id="step1">@ActiveReportQuery.OrderTracking</em>
+                            <em class="gray-em" id="step2" style="display:none;">Query Results</em>
+                            <em class="gray-em" id="step_ViewDetail" style="display:none;">View Detail</em>
+                            <em class="gray-em" id="step_ViewArtwork" style="display:none;">View Artwork</em>
+                            <em class="gray-em" id="step_ViewShipOrder" style="display:none;">View Shipment</em>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div id="viewer" style="height:700px;" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+<script type="text/javascript">
+    $(function () {
+
+        var searchURL = $("#ReportUrl").html();
+        searchURL = searchURL.substring(1, searchURL.length);
+        var ReportUrl = searchURL.split("&")[0].split("=")[1];
+
+        var viewer = GrapeCity.ActiveReports.Viewer(
+        {
+            element: '#viewer',
+            report: {
+                id: "WebDocuments/OOSRptTpl/" + ReportUrl,
+                parameters: [
+                 //{
+                 //    name: 'CustomerNO',
+                 //    value: $("#CustomerNo").html(),
+                 //},
+                  {
+                      name: 'CNo',
+                      value: $("#CustomerNo").html(),
+                  },
+                  {
+                      name: 'RoleGroupName',
+                      value: $("#RoleGroupName").html(),
+                  },
+                  {
+                      name: 'EnableBigVndFunc',
+                      value: $("#EnableBigVndFunc").html(),
+                  },
+                     {
+                         name: 'CustomerId',
+                         value: $("#CustomerId").html(),
+                     },
+                  {
+                      name: 'Language',
+                      value: $("#Language").html(),
+                  }
+                ]
+            },
+            selectedReportIndex: 0,
+            reportService: {
+                url: '/ActiveReports.ReportService.asmx'
+            },
+            uiType: 'desktop',
+            documentLoaded: function reportLoaded() {
+                console.log(viewer.pageCount);
+            },
+            reportLoaded: function (reportInfo) {
+                console.log(reportInfo.parameters);
+                //$("div[pname='CustomerNO']").find('input').eq(0).attr("disabled", "disabled");
+                if ($("#Language").html() == "zh-CN")
+                {
+                    $("div[pname='PrintShop']").prevAll().text("生产地:");
+                    $("div[pname='MaximNO']").prevAll().text("美声订单号:");
+                    $("div[pname='CustomerPO']").prevAll().text("客户PO号:");
+                    $("div[pname='CustomerNO']").prevAll().text("客户代号:");
+                    $("div[pname='OrderDateStart']").prevAll().text("下单时间:");
+                    $("div[pname='OrderStatus']").prevAll().text("订单状态:");
+                    $("div[pname='ETD']").prevAll().text("订单预交日:");
+                    $("div[pname='Style']").prevAll().text("款式:");
+                    $("#refresh-button").text("查询");
+                }
+                else
+                {
+                    $("div[pname='PrintShop']").prevAll().text("Print Shop:");
+                    $("div[pname='MaximNO']").prevAll().text("Maxim#:");
+                    $("div[pname='CustomerPO']").prevAll().text("Customer PO#:");
+                    $("div[pname='CustomerNO']").prevAll().text("Vendor#:");
+                    $("div[pname='OrderDateStart']").prevAll().text("Order Date:");
+                    $("div[pname='OrderStatus']").prevAll().text("Order Status:");
+                    $("div[pname='ETD']").prevAll().text("ETD:");
+                    $("div[pname='Style']").prevAll().text("Style:");
+                    $("#refresh-button").text("View report");
+                }
+            },
+            error: function (error) {
+                console.log("error");
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+            $(".sidebar").css("display", "block");
+            $("#inProgress").css("display", "none");
+            $("#gc-viewer-tab-params").attr("class", "tab-pane active");
+            $("#gc-viewer-tab-search").css("display", "none");
+            $("#SearchActive").attr("disabled", "disabled");
+            $("#SearchActive").click(function () {
+                if ($(".sidebar").css("display") == "block")
+                {
+                    $("#Responsetype").css("height", "78%");
+                    $("#inProgress").css("height", "660px");
+                    $("#inProgress").css("display", "none");
+                    $("#gc-viewer-tab-params").attr("class", "tab-pane active");
+                }
+                else
+                {
+                    $("#Responsetype").css("height", "100%");
+                    $("#inProgress").css("height", "700px");
+                }
+            });
+            $("#backToParent").click(function () {
+                if ($("#Language").html() == "zh-CN") {
+                    $("div[pname='PrintShop']").prevAll().text("生产地:");
+                    $("div[pname='MaximNO']").prevAll().text("美声订单号:");
+                    $("div[pname='CustomerPO']").prevAll().text("客户PO号:");
+                    $("div[pname='CustomerNO']").prevAll().text("客户代号:");
+                    $("div[pname='OrderDateStart']").prevAll().text("下单时间:");
+                    $("div[pname='OrderStatus']").prevAll().text("订单状态:");
+                    $("div[pname='ETD']").prevAll().text("订单预交日:");
+                    $("div[pname='Style']").prevAll().text("款式:");
+                    $("#refresh-button").text("查询");
+                }
+                else {
+                    $("div[pname='PrintShop']").prevAll().text("Print Shop:");
+                    $("div[pname='MaximNO']").prevAll().text("Maxim#:");
+                    $("div[pname='CustomerPO']").prevAll().text("Customer PO#:");
+                    $("div[pname='CustomerNO']").prevAll().text("Vendor#:");
+                    $("div[pname='OrderDateStart']").prevAll().text("Order Date:");
+                    $("div[pname='OrderStatus']").prevAll().text("Order Status:");
+                    $("div[pname='ETD']").prevAll().text("ETD:");
+                    $("div[pname='Style']").prevAll().text("Style:");
+                    $("#refresh-button").text("View report");
+                }
+                if ($(".sidebar").css("display") == "block") {
+                    $("#Responsetype").css("height", "78%");
+                    $("#inProgress").css("height", "660px");
+  
+                }
+                else {
+                    $("#Responsetype").css("height", "100%");
+                    $("#inProgress").css("height", "700px");
+                }
+            });
+        });
+</script>

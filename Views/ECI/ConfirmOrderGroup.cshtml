@@ -1,0 +1,87 @@
+﻿
+@{
+    Layout = null;
+}
+
+<style>
+    .table th, .table td {
+        vertical-align: middle;
+        border: 1px solid #ccc;
+    }
+
+    #queryResult {
+        width: 800px;
+    }
+</style>
+<script src="~/scripts/ECI/ConfirmOrderGroup.js"></script>
+
+<div class="portlet box">
+    <div class="portlet-title">
+        <div class="caption">
+            <em class="gray-em" id="step1">Order PO List</em>
+            <em class="gray-em" id="OK" style="display:none;">Success</em>
+        </div>
+    </div>
+    <input id="HidPO" type="hidden"/>
+    <div class="portlet-body">
+        <div id="Query">
+            <div class="row-fluid">
+                <div class="span3">
+                    <span>Vendor:</span>
+                    <input type="text" id="txtVendorNo" readonly="readonly" value="@ViewBag.VendorNo" />
+                </div>
+                <div class="span3">
+                    <span>PO_Number:</span>
+                    <input type="text" id="txtOrderNumber" />
+                </div>
+                <div class="span1">
+                    <button type="button" id="btnQuery" class="btn">Query</button>
+                </div>
+            </div>
+            <div id="queryResult"></div>
+        </div>
+        <div class="ron" id="Success" style="display:none;">
+            <div id="ConformOK" class="row-fluid">
+                <span style="font-size: 18px;margin-left: 25px;">
+                    Thank You for Maxim Web Order number
+                </span>
+                <table class="table table-bordered table-responsive table-striped" style="width:230px;margin-left:20px;">
+                    <thead>
+                        <tr>
+                            <th>PO#</th>
+                            <th>MaximNo#</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lblOrderNO">
+
+
+                    </tbody>
+                </table>
+                <br />
+                <span>You will shortly receive an order confirmation,confirming the order details.</span>
+                <span style="font-size: 18px;margin-left: 25px;">
+                    Your Order has been placed in a queue for batching and will be showing in the "Production Files In
+                    Progress" shortly. If there is an error during offline batching , the support team will be e-mailed to resolve the problem
+                </span>
+                <ul>
+                    <li>
+                        1.For Care Label items, please confirm artwork before submitting the order.Once submitted,
+                        the order will be received by our factory and processed immediately.
+                    </li>
+                    <li>**Processed orders cannot be cancelled or changed** </li>
+                    <li>
+                        2. Payment Terms are ship upon payment. Goods will be delivered after we receive
+                        your payment.
+                    </li>
+                    <li>
+                        3. If you have any complaints regarding our customer service, delays or product
+                        quality, please contact us at:<a href="mailto: fo26.as-1@maxim-group.com" style="color:blue">
+                            fo26.as-1@maxim-group.com
+                        </a>. Your feedback is very important to us.
+                    </li>
+                </ul>
+                <p><button type="button" id="Close" class="btn btn-default" style="border: 1px solid #D6D6D6;margin-left:23px;">Return</button></p>
+            </div>
+        </div>
+    </div>
+</div>
